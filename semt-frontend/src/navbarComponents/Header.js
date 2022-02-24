@@ -1,36 +1,89 @@
-import Navbar from 'react-bootstrap/Navbar';
-import Offcanvas from 'react-bootstrap/Offcanvas';
-import { Container, Nav, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
+import Navbar from "react-bootstrap/Navbar";
+import Offcanvas from "react-bootstrap/Offcanvas";
+import { Container, Nav, NavDropdown, Image } from "react-bootstrap";
+import CloseButton from "react-bootstrap/CloseButton";
+import { Link, useLocation } from "react-router-dom";
+import { OffcanvasData } from "./OffcanvasData";
 
-import './Header.css'
+import "./Header.css";
 
 const Header = () => {
+  //const { pathname } = useLocation()
+  const pathname = "";
+  //const path = pathname.split("/")
+  //const projId = path[1]
+  const projId = "0";
+
   return (
-    <Navbar className='navbar-custom' expand={false}>
+    <Navbar className="navbar-custom" expand={false}>
       <Container fluid>
         <Navbar.Offcanvas
+          style={{width: "330px"}}
           id="offcanvasNavbar"
           aria-labelledby="offcanvasNavbarLabel"
           placement="start"
         >
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title id="offcanvasNavbarLabel">Offcanvas</Offcanvas.Title>
+            <Link to="inDev" className="header">
+              <Offcanvas.Title id="offcanvasNavbarLabel">
+                Mehmet Mehmetoğlu
+              </Offcanvas.Title>
+            </Link>
           </Offcanvas.Header>
 
           <Offcanvas.Body>
-            <Nav className="justify-content-end flex-grow-1 pe-3">
-              <Nav.Link href="#action1">Home</Nav.Link>
-              <Nav.Link href="#action2">Link</Nav.Link>
-            </Nav>
+            {projId === ""
+              ? OffcanvasData.map((item, index) => {
+                  return (
+                    <Nav.Item key={index}>
+                      <Link
+                        to={""}
+                        className={`${
+                          projId === "" && item.path.includes("home")
+                            ? "selected"
+                            : "invisible"
+                        }`}
+                      >
+                        {item.icon}
+                        <span>{item.title}</span>
+                      </Link>
+                    </Nav.Item>
+                  );
+                })
+              : OffcanvasData.map((item, index) => {
+                  return (
+                    <Nav.Item key={index}>
+                      <Link
+                        to={`${
+                          item.path.includes("home")
+                            ? "/"
+                            : "/" + projId + "/" + item.path
+                        } `}
+                        className={`${
+                          item.path.includes(item.path) &&
+                          pathname.includes(item.path)
+                            ? "selected"
+                            : ""
+                        }`}
+                      >
+                        {item.icon}
+                        <span className="row">{item.title}</span>
+                      </Link>
+                    </Nav.Item>
+                  );
+                })}
           </Offcanvas.Body>
-
         </Navbar.Offcanvas>
 
         <Navbar.Toggle aria-controls="offcanvasNavbar" />
-        <Navbar.Brand className='title'>Cey Defence Software Engineering Management Tool</Navbar.Brand>
+        <Navbar.Brand>
+          <Link to="inDev" className="title">
+            Cey Defence Software Engineering Management Tool
+          </Link>
+        </Navbar.Brand>
       </Container>
     </Navbar>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

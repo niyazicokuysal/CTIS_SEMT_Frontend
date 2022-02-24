@@ -2,14 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Header from './navbarComponents/Header';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import InDevelopment from './InDevelopment'
+
 ReactDOM.render(
-  <React.StrictMode>
-    <Header />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <React.StrictMode>
+      <Header />
+
+      <Routes>
+        <Route path="inDev" element={<InDevelopment />} />
+      </Routes>
+    </React.StrictMode>
+  </BrowserRouter>,
   document.getElementById('root')
 );
 
