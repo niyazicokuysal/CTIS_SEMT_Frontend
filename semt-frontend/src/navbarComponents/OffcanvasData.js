@@ -8,7 +8,7 @@ export const OffcanvasData = [
     icon: <FaIcons.FaHome />,
   },
   {
-    title: "Main",
+    title: "Main Page",
     path: "main",
     icon: <FaIcons.FaFileInvoice />,
   },

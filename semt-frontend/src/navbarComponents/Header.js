@@ -8,11 +8,9 @@ import { OffcanvasData } from "./OffcanvasData";
 import "./Header.css";
 
 const Header = () => {
-  //const { pathname } = useLocation()
-  const pathname = "";
-  //const path = pathname.split("/")
-  //const projId = path[1]
-  const projId = "0";
+  const { pathname } = useLocation()
+  const path = pathname.split("/")
+  const projId = path[1]
 
   return (
     <Navbar className="navbar-custom" expand={false}>

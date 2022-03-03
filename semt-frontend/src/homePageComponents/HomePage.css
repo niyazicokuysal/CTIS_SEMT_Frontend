@@ -1,0 +1,23 @@
+.titleHP{
+    color: #f46e0f;
+    text-align: center;
+    font-size: 60px;
+    font-weight: bolder;
+    text-shadow: 2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 1px 1px black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;
+}
+
+.projectsList{
+    text-align: center;
+    margin-top: 50px;
+}
+
+.projectsListItems{
+    color: black;
+    font-size: 35px;
+    text-decoration: none;
+}
+
+.projectsListItems:hover{
+    color: #f46e0f;
+    text-decoration: underline;
+}

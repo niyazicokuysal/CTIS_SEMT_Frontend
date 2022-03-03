@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import Header from './navbarComponents/Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Header from './navbarComponents/Header';
 import InDevelopment from './InDevelopment'
+import HomePage from './homePageComponents/HomePage'
+import ProjectMainPage from './projectMainPageComponents/ProjectMainPage';
+
+
 
 ReactDOM.render(
   <BrowserRouter>
@@ -14,6 +18,10 @@ ReactDOM.render(
       <Header />
 
       <Routes>
+        <Route path="/" element={<HomePage />}  />
+        <Route path="/:project_id/main" element={<ProjectMainPage />}  />
+
+
         <Route path="inDev" element={<InDevelopment />} />
       </Routes>
     </React.StrictMode>

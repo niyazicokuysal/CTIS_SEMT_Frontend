@@ -1,0 +1,72 @@
+
+.projectMainPageList{
+    text-decoration: none;
+  }
+  
+  .projectMainPageList:hover{
+    text-decoration:underline;
+    color: #000;
+  }
+  
+  .bars {
+    font-size: 55px;
+  }
+  
+  .projectMainPage{
+    margin-left: 100px;
+    margin-top: 20px;
+    margin-right: 100px;
+  }
+  
+  .projectMainPage h1 {
+    color: red;
+    font-weight: bolder;
+  }
+  
+  .projectMainPage a {
+    display: block;
+    margin-top: 35px;
+    margin-bottom: 35px;
+    margin-right: 300px;
+    font-size: larger;
+    font-weight: bolder;
+  }
+  
+  .projectMainPage li{
+    list-style-type:square ;
+  }
+  
+  .projectMainPageHeader{
+    display: flex; align-items: center; justify-content:space-between;
+  }
+  
+  .projectMainPageHeader button{
+    width: 170px;
+    height: 40px;
+    font-weight: bold;
+    font-size: large;
+    border-radius: 20px;
+    border-color: black;
+    color: white;
+  }
+  
+  .projectMainPageHeader button:hover{
+    color: black;
+  }
+  
+  .addMemberBtn{
+    margin-bottom: 100px;
+    background: #110f96;
+    color:white;
+    width: 250px;
+    height: 40px;
+    font-weight: bold;
+    font-size: large;
+    border-radius: 20px;
+    border-color: black
+  }
+  
+  .addMemberBtn:hover{
+    color: black;
+  }
+  
