@@ -1,23 +1,29 @@
 .titleHP{
     color: #f46e0f;
-    text-align: center;
-    font-size: 60px;
+    font-size: 40px;
     font-weight: bolder;
-    text-shadow: 2px 0 0 black, -2px 0 0 black, 0 2px 0 black, 0 -2px 0 black, 1px 1px black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;
+/*     text-shadow: 2px 0 0 blueviolet, -2px 0 0 blueviolet, 0 2px 0 blueviolet, 0 -2px 0 blueviolet, 1px 1px blueviolet, -1px -1px 0 blueviolet, 1px -1px 0 blueviolet, -1px 1px 0 blueviolet;
+ */}
+
+.containerM{
+    margin-top: 20px;
+    padding-right: 30px;
 }
 
-.projectsList{
-    text-align: center;
-    margin-top: 50px;
+.welcome{
+    height: 60px;
 }
 
-.projectsListItems{
+tr td{
     color: black;
-    font-size: 35px;
-    text-decoration: none;
+    font-size: 16px;
+    font-weight: bolder;
 }
 
-.projectsListItems:hover{
-    color: #f46e0f;
-    text-decoration: underline;
+.tableRow:hover .tableCol{
+    background-color: #f46e0f;  
+    color: whitesmoke;
 }
+
+
+

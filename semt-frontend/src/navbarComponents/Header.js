@@ -20,6 +20,7 @@ const Header = () => {
           id="offcanvasNavbar"
           aria-labelledby="offcanvasNavbarLabel"
           placement="start"
+          scroll= "true"
         >
           <Offcanvas.Header closeButton>
             <Link to="inDev" className="header">
