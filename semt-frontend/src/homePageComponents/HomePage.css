@@ -16,7 +16,7 @@
 
 tr td{
     color: black;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bolder;
 }
 
@@ -24,6 +24,20 @@ tr td{
     background-color: #f46e0f;  
     color: whitesmoke;
 }
+
+.btnDelete {
+    height: 32px;
+    width: 140px;
+  }
+
+
+  .tableCol .progress {
+    height: 24px;
+  }
+  
+  .tableCol .progress-bar {
+    font-size: 18px;
+  }
 
 
 

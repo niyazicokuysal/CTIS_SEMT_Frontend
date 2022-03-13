@@ -1,9 +1,29 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
+import { useState } from "react";
 
-const CreateProjectModal = (props) => {
+function CreateProjectModal(props) {
+ 
+/* setOpenModal, addProject,  */
+ const [name, setName] = useState("");
+  const [description, setDesc] = useState("");
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    if (!name || !description) {
+      alert("Please add the credentials");
+      return;
+    }
+
+   // addProject({ name, description });
+    setName("");
+    setDesc("");
+    //setOpenModal(false);
+  }; 
+
   return (
-    <Modal
+     <Modal
       {...props}
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
@@ -15,19 +35,36 @@ const CreateProjectModal = (props) => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h4>Please fill the credentials for the project.</h4>
-        <p>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-          dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-          consectetur ac, vestibulum at eros.
-        </p>
+        <Form onSubmit={onSubmit}>
+          <Form.Group className="mb-3" controlId="formCreateProject">
+            <Form.Label>Project Name</Form.Label>
+            <Form.Control
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              placeholder="Enter the name for the Project"
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3" controlId="formBasicPassword">
+            <Form.Label>Project Description</Form.Label>
+            <Form.Control
+              value={description}
+              onChange={(e) => setDesc(e.target.value)}
+              style={{ height: "200px" }}
+              rows="5"
+              as="textarea"
+              placeholder="Enter the description for the Project"
+            />
+          </Form.Group>
+          <Modal.Footer>
+            <Button variant="primary" type="submit">
+              Add The Project
+            </Button>
+          </Modal.Footer>
+        </Form>
       </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={props.onHide} variant="success">
-          Add The Project
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    </Modal> 
   );
 };
 

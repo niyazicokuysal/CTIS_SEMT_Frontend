@@ -2,7 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./HomePage.css";
 import CreateProjectModal from "./CreateProjectModal";
-import { Container, Row, Col, Table, Button, ProgressBar  } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Table,
+  Button,
+  ProgressBar,
+} from "react-bootstrap";
 import moment from "moment";
 
 const HomePage = () => {
@@ -12,8 +19,6 @@ const HomePage = () => {
 
   const now = 60;
 
-   
-
   useEffect(() => {
     const getProjects = async () => {
       const projectsFromServer = await fetchProjects();
@@ -22,6 +27,29 @@ const HomePage = () => {
 
     getProjects();
   }, []);
+
+  const addProject = async (project) => {
+    console.log(JSON.stringify(project))
+    const res = await fetch('https://localhost:44335/api/project/add', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(project)
+    })
+
+    const newProjects = await fetchProjects()
+    setProjects(newProjects)
+}
+
+  const deleteProject = async (id) => {
+    await fetch(`https://localhost:44335/api/project/delete?id=${id}`, {
+      method: "POST",
+    });
+    const projectsFromServer = await fetchProjects();
+    setProjects(projectsFromServer);
+  };
 
   const fetchProjects = async () => {
     const res = await fetch("https://localhost:44335/api/project/getall");
@@ -37,18 +65,14 @@ const HomePage = () => {
           <h1 className="titleHP">Welcome Mehmet Mehmetoğlu</h1>
         </Col>
         <Col sm={4} style={{ textAlign: "end" }}>
-        <Button
-            size="lg"
-            variant="warning"
-            onClick={() => navigate("inDev")}
-          >
+          <Button size="lg" variant="warning" onClick={() => navigate("inDev")}>
             Manage Users
           </Button>
           <Button
             size="lg"
             variant="success"
-            style={{ marginLeft: "20px"}}
-            onClick={() => setModalShow(true)}
+            style={{ marginLeft: "20px" }}
+            onClick={() =>  setModalShow(true)}
           >
             Create New Project
           </Button>
@@ -56,6 +80,7 @@ const HomePage = () => {
         <CreateProjectModal
           show={modalShow}
           onHide={() => setModalShow(false)}
+          /* addProject={addProject}  */
         />
       </Row>
       <Row>
@@ -68,6 +93,7 @@ const HomePage = () => {
                 <th>User Count</th>
                 <th>Creation Date</th>
                 <th>Progress</th>
+                <th>Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -77,11 +103,32 @@ const HomePage = () => {
                   onClick={() => navigate(`${project.id}/main`)}
                   className="tableRow"
                 >
-                  <td className="tableCol" style={{ width:"150px"}}>{project.id}</td>
+                  <td className="tableCol" style={{ width: "150px" }}>
+                    {project.id}
+                  </td>
                   <td className="tableCol">{project.name}</td>
-                  <td className="tableCol" style={{ width:"150px"}}>12323</td>
-                  <td className="tableCol" style={{ width:"320px"}}>{moment(project.createdDate).format("LLLL")}</td>
-                  <td className="tableCol" style={{ width:"500px", paddingTop:"12px"}}><ProgressBar animated now={now} label={`${now}%`} /></td>
+                  <td className="tableCol" style={{ width: "150px" }}>
+                    12323
+                  </td>
+                  <td className="tableCol" style={{ width: "430px" }}>
+                    {moment(project.createdDate).format("LLLL")}
+                  </td>
+                  <td
+                    className="tableCol"
+                    style={{ width: "500px", paddingTop: "12px" }}
+                  >
+                    <ProgressBar animated now={now} label={`${now}%`} />
+                  </td>
+                  <td  onClick={e => e.stopPropagation()} id="deleteColumn" style={{ width: "157px" }} >
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      className="btnDelete"
+                      onClick={() => deleteProject(project.id)}
+                    >
+                      Delete the Project
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -93,6 +140,14 @@ const HomePage = () => {
         <Col sm={6}></Col>
       </Row>
     </Container>
+
+
+
+
+
+
+
+
   );
 };
 
