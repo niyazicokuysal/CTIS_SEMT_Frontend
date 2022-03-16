@@ -150,7 +150,7 @@ const HomePage = () => {
                         className="btnDelete"
                         onClick={() => deleteProject(project.id)}
                       >
-                        Delete the Project
+                        Delete the Project sdfgsdfgsdfg
                       </Button>
                     </td>
                   </tr>
