@@ -96,7 +96,7 @@ const ProjectMainPage = ({ dummyProject }) => {
             Edit Project Info
           </Button>
           <Button size="lg" variant="danger" className="btnProjectMain">
-            Add Project Documentation
+            Project Documentation
           </Button>
           <Button size="lg" variant="info" className="btnProjectMain">
             Add Project Member
