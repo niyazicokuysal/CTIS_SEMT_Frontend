@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./ProjectMainPage.css";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -20,6 +20,8 @@ const ProjectMainPage = ({ dummyProject }) => {
   const projId = path[1];
 
   const now = 60;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getProject = async () => {
@@ -62,34 +64,6 @@ const ProjectMainPage = ({ dummyProject }) => {
               <a>{project.description}</a>
             </Col>
           </Row>
-          {/* <div className="projectMainPageHeader">
-        <h1 style={{ paddingRight: "300px" }}>{project.name}</h1>
-        <Link to={"/inDev"} style={{ margin: "0px" }}>
-          {" "}
-          <button style={{ marginLeft: "400px", background: "#f46e0f" }}>
-            Create Base Line{" "}
-          </button>{" "}
-        </Link>
-        <Link to={"/inDev"} style={{ margin: "0px" }}>
-          {" "}
-          <button style={{ background: "#2f7509" }}>Edit</button>{" "}
-        </Link>
-        <Link to={"/inDev"} style={{ margin: "0px" }}>
-          {" "}
-          <button style={{ background: "#a60a0a" }}>Delete</button>{" "}
-        </Link>
-      </div>
-      <a>{project.description}</a>
-      <h3>Previous Versions</h3>
-      <ul>
-        {dummyProject.version_ids.map((version) => (
-          <li key={version}>
-            <Link to={"/inDev"} className="projectMainPageList">
-              {"version_" + projId + "_" + version}
-            </Link>
-          </li>
-        ))}
-      </ul> */}
         </Col>
         <Col sm={2}>
           <Button size="lg" variant="success" className="btnProjectMain">
@@ -98,8 +72,8 @@ const ProjectMainPage = ({ dummyProject }) => {
           <Button size="lg" variant="danger" className="btnProjectMain">
             Project Documentation
           </Button>
-          <Button size="lg" variant="info" className="btnProjectMain">
-            Add Project Member
+          <Button size="lg" variant="info" className="btnProjectMain" onClick={() => navigate("/inDev")}>
+            Edit Project Member
           </Button>
         </Col>
       </Row>
