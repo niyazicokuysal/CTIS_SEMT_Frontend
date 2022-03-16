@@ -19,9 +19,21 @@ const ProjectMainPage = ({ dummyProject }) => {
   const path = pathname.split("/");
   const projId = path[1];
 
+  const navigate = useNavigate();
+
   const now = 60;
 
-  const navigate = useNavigate();
+  
+
+
+
+  const documents = [
+    {requirementsDocuments: "System Requirements", testDocuments: "System Test Document" },
+    {requirementsDocuments: "Software Requirements", testDocuments: "Software Test Document" },
+    {requirementsDocuments: "Authentication Requirements", testDocuments: "Authentication Test Document" },
+    {requirementsDocuments: "Visual Requirements", testDocuments: "Visual Test Document" },
+    {requirementsDocuments: "Non-Functional Requirements", testDocuments: "Non-Functional Test Document" },
+  ]
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -81,36 +93,28 @@ const ProjectMainPage = ({ dummyProject }) => {
         </Col>
       </Row>
       <Row>
-        <Col>
-          <Table striped bordered hover className="documantTable">
+      <Col sm={8}>
+          <Table className="documantTable">
             <thead>
               <tr>
-                <th>Requirements Documentation</th>
-                <th>Test Documentation</th>
+                <th style={{ width: "320px" }}>Requirements Documentation</th>
+                <th style={{ width: "320px" }}>Test Documentation</th>
+                <th>Requirements Validation Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>System Requirements</td>
-                <td>System Tests</td>
+            {documents.map((document, i) => (
+              
+              <tr key={i}>
+              <td><Link to={"/inDev"} className="documentRow">{document.requirementsDocuments}</Link></td>
+              <td><Link to={"/inDev"} className="documentRow">{document.testDocuments}</Link></td>
+              <td><ProgressBar variant="danger" now={now} label={`${now}%`} /></td>
               </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
+            ))}
             </tbody>
           </Table>
         </Col>
-        <Col style={{ background: "green" }}>2 of 3</Col>
-        <Col>
+        <Col sm={4}>
           <h3>Project Members</h3>
           <ListGroup variant="flush">
             {dummyProject.members.map((member, i) => (
@@ -136,7 +140,7 @@ ProjectMainPage.defaultProps = {
       "Zeynep Zeynep Oğlu - Tester",
       "Deniz Tuzlu - Tester",
     ],
-  },
+  }
 };
 
 export default ProjectMainPage;

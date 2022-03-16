@@ -48,6 +48,12 @@
 
 }
 
+.documentRow{
+  text-decoration: none;
+  font-weight: normal;
+  font-size: smaller;
+}
+
 .projectMembers{
   color: black;
   text-decoration: none;
