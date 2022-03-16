@@ -14,7 +14,7 @@ import {
 
 const ProjectMainPage = ({ dummyProject }) => {
   const [project, setProject] = useState([]);
-
+  const [show, setShow] = useState(false);
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
@@ -22,6 +22,9 @@ const ProjectMainPage = ({ dummyProject }) => {
   const now = 60;
 
   const navigate = useNavigate();
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     const getProject = async () => {
