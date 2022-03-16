@@ -23,10 +23,6 @@ const ProjectMainPage = ({ dummyProject }) => {
 
   const now = 60;
 
-  
-
-
-
   const documents = [
     {requirementsDocuments: "System Requirements", testDocuments: "System Test Document" },
     {requirementsDocuments: "Software Requirements", testDocuments: "Software Test Document" },
@@ -34,9 +30,6 @@ const ProjectMainPage = ({ dummyProject }) => {
     {requirementsDocuments: "Visual Requirements", testDocuments: "Visual Test Document" },
     {requirementsDocuments: "Non-Functional Requirements", testDocuments: "Non-Functional Test Document" },
   ]
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   useEffect(() => {
     const getProject = async () => {
