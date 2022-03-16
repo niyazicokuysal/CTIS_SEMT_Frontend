@@ -70,7 +70,7 @@ const ProjectMainPage = ({ dummyProject }) => {
             Edit Project Info
           </Button>
           <Button size="lg" variant="danger" className="btnProjectMain">
-            Project Documentation
+            Edit Project Documentation
           </Button>
           <Button size="lg" variant="info" className="btnProjectMain" onClick={() => navigate("/inDev")}>
             Edit Project Member
