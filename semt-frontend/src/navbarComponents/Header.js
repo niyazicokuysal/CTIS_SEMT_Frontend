@@ -17,41 +17,37 @@ const Header = () => {
   const projId = path[1]
 
   console.log(projId);
+  
   useEffect(() => {
     const getProjectReq = async () => {
-      if (projId !== ""){
+      if (projId !== "") {
         const projectReq = await getProjectDocuments(projId);
         setprojectReq(projectReq)
       }
-      
-    }
-    
 
-    
-      getProjectReq();
-    
-  
+    }
+
+    getProjectReq();
+
   }, [projId]);
 
   const getProjectDocuments = async (id) => {
     const res = await fetch(`https://localhost:44335/api/requirement-document/getall?projectId=${id}`);
     const data = await res.json();
 
-
     console.log(data);
     return data;
-
   };
 
   return (
     <Navbar className="navbar-custom" expand={false}>
       <Container fluid>
         <Navbar.Offcanvas
-          style={{width: "330px"}}
+          style={{ width: "330px" }}
           id="offcanvasNavbar"
           aria-labelledby="offcanvasNavbarLabel"
           placement="start"
-          scroll= "true"
+          scroll="true"
         >
           <Offcanvas.Header closeButton>
             <Link to="inDev" className="header">
@@ -63,36 +59,35 @@ const Header = () => {
 
 
           <Offcanvas.Body>
-          <Nav.Item key={0}>
-                      <Link
-                        to={""}
-                        className={`${projId === ""
-                            ? "selected"
-                            : ""
-                        }`}
-                      >
-                        <span className="row" >Home</span>
-                      </Link>
-                    </Nav.Item>
+            <Nav.Item key={0}>
+              <Link
+                to={""}
+                className={`${projId === ""
+                  ? "selected"
+                  : ""
+                  }`}
+              >
+                <span className="row" >Home</span>
+              </Link>
+            </Nav.Item>
             {projId === ""
               ? null
               : projectReq.map((item, index) => {
-                  return (
-                    <Nav.Item key={index}>
-                      <Link
-                        to={`${"/" + projId + "/req/" + item.id} `}
-                        className={`${
-                          item.id === item.id &&
+                return (
+                  <Nav.Item key={index}>
+                    <Link
+                      to={`${"/" + projId + "/req/" + item.id} `}
+                      className={`${item.id === item.id &&
                           pathname.includes(item.id)
-                            ? "selected"
-                            : ""
+                          ? "selected"
+                          : ""
                         }`}
-                      >
-                        <span className="row">{item.typeName}</span>
-                      </Link>
-                    </Nav.Item>
-                  );
-                })}
+                    >
+                      <span className="row">{item.typeName}</span>
+                    </Link>
+                  </Nav.Item>
+                );
+              })}
           </Offcanvas.Body>
         </Navbar.Offcanvas>
 
