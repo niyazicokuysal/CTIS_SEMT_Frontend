@@ -18,8 +18,12 @@ const ProjectMainPage = ({ dummyProject }) => {
   const [project, setProject] = useState([]);
   const [show, setShow] = useState(false);
   const [showDoc, setDoc] = useState(false);
+
+
   const [name, setName] = useState("");
   const [description, setDesc] = useState("");
+  const [newDocName, setNewDocName] = useState("");
+
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
@@ -88,6 +92,19 @@ const ProjectMainPage = ({ dummyProject }) => {
     setShow(false);
   };
 
+  const onSubmitDocument = (e) => {
+    e.preventDefault();
+
+    if (!newDocName) {
+      alert("Please add the credentials");
+      return;
+    }
+
+    setNewDocName("");
+    docClose(false);
+  };
+
+
   return (
     <>
       <Container fluid className="projectMainPage">
@@ -118,7 +135,7 @@ const ProjectMainPage = ({ dummyProject }) => {
             >
               Edit Project Info
             </Button>
-            <Button size="lg" variant="danger" className="btnProjectMain">
+            <Button size="lg" variant="danger" className="btnProjectMain" onClick={docShow}>
               Edit Project Documentation
             </Button>
             <Button
@@ -144,17 +161,17 @@ const ProjectMainPage = ({ dummyProject }) => {
               <tbody>
                 {documents.map((document, i) => (
                   <tr key={i}>
-                    <td>
-                      <Link to={"/inDev"} className="documentRow">
+                    <td className="documentRow">
+                      <Link to={"/inDev"}>
                         {document.requirementsDocuments}
                       </Link>
                     </td>
-                    <td>
-                      <Link to={"/inDev"} className="documentRow">
+                    <td className="documentRow">
+                      <Link to={"/inDev"} >
                         {document.testDocuments}
                       </Link>
                     </td>
-                    <td>
+                    <td style={{ paddingTop: "13px" }}>
                       <ProgressBar
                         variant="danger"
                         now={now}
@@ -196,7 +213,7 @@ const ProjectMainPage = ({ dummyProject }) => {
         <Modal.Body>
           <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3" controlId="formCreateProject">
-              <Form.Label>Project Name</Form.Label>
+              <Form.Label>Edit Project Name</Form.Label>
               <Form.Control
                 value={project.name}
                 onChange={(e) => setName(e.target.value)}
@@ -206,7 +223,7 @@ const ProjectMainPage = ({ dummyProject }) => {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Project Description</Form.Label>
+              <Form.Label>Edit Project Description</Form.Label>
               <Form.Control
                 value={project.description}
                 onChange={(e) => setDesc(e.target.value)}
@@ -238,45 +255,39 @@ const ProjectMainPage = ({ dummyProject }) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Table striped bordered hover className="documantTable">
-            <thead>
-              <tr>
-                <th>Requirements Documentation</th>
-                <th>Test Documentation</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>System Requirements</td>
-                <td>System Tests</td>
-              </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
-            </tbody>
+          <Table hover className="documantTable">
+          <thead>
+                <tr>
+                  <th style={{ width: "320px" }}>Requirements Documentation</th>
+                  <th style={{ width: "320px" }}>Test Documentation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {documents.map((document, i) => (
+                  <tr key={i}>
+                    <td>   
+                        {document.requirementsDocuments}
+                    </td>
+                    <td>
+                        {document.testDocuments}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
           </Table>
-          <Form /*onSubmit={onSubmit} buraya bak !!!!!!!!!!!!!!!!!!!!!!!!!!*/>
+          <Form onSubmit={onSubmitDocument}>
             <Form.Group className="mb-3" controlId="formCreateProject">
-              <Form.Label>New requirement</Form.Label>
+              <Form.Label>New requirement document</Form.Label>
               <Form.Control
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => newDocName(e.target.value)} 
                 type="text"
-                placeholder="Enter the name for the requirement"
+                placeholder="Enter the name for the requirement document"
               />
             </Form.Group>
 
             <Modal.Footer>
               <Button variant="primary" type="submit">
-                Add Requirement
+                Add Requirement Documentation
               </Button>
             </Modal.Footer>
           </Form>

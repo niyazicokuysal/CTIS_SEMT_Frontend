@@ -48,10 +48,16 @@
 
 }
 
-.documentRow{
+.documentRow a{
   text-decoration: none;
-  font-weight: normal;
-  font-size: smaller;
+  color: #000;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.documentRow a:hover{
+  text-decoration: underline;
+  color: #f46e0f;
 }
 
 .projectMembers{
