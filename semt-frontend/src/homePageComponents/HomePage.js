@@ -56,6 +56,12 @@ const HomePage = () => {
     if (!name || !description) {
       alert("Please add the credentials");
       return;
+    } else if (name.length > 50) {
+      alert(`Project Name is ${name.length} character should be Max 50`);
+      return;
+    } else if (description.length > 300) {
+      alert(`Project Name is ${description.length} character should be Max 300`);
+      return;
     }
 
     addProject({ name, description });

@@ -23,6 +23,8 @@ const ProjectMainPage = ({ dummyProject }) => {
   const [name, setName] = useState("");
   const [description, setDesc] = useState("");
   const [newDocName, setNewDocName] = useState("");
+  const [newDocHeader, setNewDocHeader] = useState("");
+
 
   const { pathname } = useLocation();
   const path = pathname.split("/");
@@ -85,6 +87,12 @@ const ProjectMainPage = ({ dummyProject }) => {
     if (!name || !description) {
       alert("Please add the credentials");
       return;
+    } else if (name.length > 50) {
+      alert(`Project Name is ${name.length} character should be Max 50`);
+      return;
+    } else if (description.length > 300) {
+      alert(`Project Name is ${description.length} character should be Max 300`);
+      return;
     }
 
     setName("");
@@ -95,12 +103,13 @@ const ProjectMainPage = ({ dummyProject }) => {
   const onSubmitDocument = (e) => {
     e.preventDefault();
 
-    if (!newDocName) {
+    if (!newDocName || !newDocHeader) {
       alert("Please add the credentials");
       return;
     }
 
     setNewDocName("");
+    setNewDocHeader("");
     docClose(false);
   };
 
@@ -111,11 +120,10 @@ const ProjectMainPage = ({ dummyProject }) => {
         <Row>
           <Col sm={10} style={{ height: "200px" }}>
             <Row className="projInfoRow">
-              <Col sm={4}>
-                {" "}
+              <Col sm={5}>
                 <h1>{project.name}</h1>
               </Col>
-              <Col sm={8} className="progressBar">
+              <Col sm={7} className="progressBar">
                 {" "}
                 <ProgressBar animated now={now} label={`Validation: ${now}%`} />
               </Col>
@@ -215,8 +223,7 @@ const ProjectMainPage = ({ dummyProject }) => {
             <Form.Group className="mb-3" controlId="formCreateProject">
               <Form.Label>Edit Project Name</Form.Label>
               <Form.Control
-                value={project.name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setName(e.target.value)} 
                 type="text"
                 placeholder="Enter the name for the Project"
               />
@@ -225,7 +232,6 @@ const ProjectMainPage = ({ dummyProject }) => {
             <Form.Group className="mb-3" controlId="formBasicPassword">
               <Form.Label>Edit Project Description</Form.Label>
               <Form.Control
-                value={project.description}
                 onChange={(e) => setDesc(e.target.value)}
                 style={{ height: "200px" }}
                 rows="5"
@@ -277,11 +283,17 @@ const ProjectMainPage = ({ dummyProject }) => {
           </Table>
           <Form onSubmit={onSubmitDocument}>
             <Form.Group className="mb-3" controlId="formCreateProject">
-              <Form.Label>New requirement document</Form.Label>
+              <Form.Label>New Requirement Document</Form.Label>
               <Form.Control
-                onChange={(e) => newDocName(e.target.value)} 
+                onChange={(e) => setNewDocName(e.target.value)} 
                 type="text"
                 placeholder="Enter the name for the requirement document"
+              />
+              <Form.Label style={{ marginTop: "20px" }}>New Requirement Document's Header</Form.Label>
+              <Form.Control 
+                onChange={(e) => setNewDocHeader(e.target.value)} 
+                type="text"
+                placeholder="Enter the header"
               />
             </Form.Group>
 
