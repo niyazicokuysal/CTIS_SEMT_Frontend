@@ -4,13 +4,44 @@ import { Container, Nav, NavDropdown, Image } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 import { Link, useLocation } from "react-router-dom";
 import { OffcanvasData } from "./OffcanvasData";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 import "./Header.css";
 
 const Header = () => {
+  const [projectReq, setprojectReq] = useState([]);
+
   const { pathname } = useLocation()
   const path = pathname.split("/")
   const projId = path[1]
+
+  console.log(projId);
+  useEffect(() => {
+    const getProjectReq = async () => {
+      if (projId !== ""){
+        const projectReq = await getProjectDocuments(projId);
+        setprojectReq(projectReq)
+      }
+      
+    }
+    
+
+    
+      getProjectReq();
+    
+  
+  }, [projId]);
+
+  const getProjectDocuments = async (id) => {
+    const res = await fetch(`https://localhost:44335/api/requirement-document/getall?projectId=${id}`);
+    const data = await res.json();
+
+
+    console.log(data);
+    return data;
+
+  };
 
   return (
     <Navbar className="navbar-custom" expand={false}>
@@ -30,41 +61,34 @@ const Header = () => {
             </Link>
           </Offcanvas.Header>
 
+
           <Offcanvas.Body>
-            {projId === ""
-              ? OffcanvasData.map((item, index) => {
-                  return (
-                    <Nav.Item key={index}>
+          <Nav.Item key={0}>
                       <Link
                         to={""}
-                        className={`${
-                          projId === "" && item.path.includes("home")
-                            ? "selected"
-                            : "invisible"
-                        }`}
-                      >
-                        <span className="row" >{item.title}</span>
-                      </Link>
-                    </Nav.Item>
-                  );
-                })
-              : OffcanvasData.map((item, index) => {
-                  return (
-                    <Nav.Item key={index}>
-                      <Link
-                        to={`${
-                          item.path.includes("home")
-                            ? "/"
-                            : "/" + projId + "/" + item.path
-                        } `}
-                        className={`${
-                          item.path.includes(item.path) &&
-                          pathname.includes(item.path)
+                        className={`${projId === ""
                             ? "selected"
                             : ""
                         }`}
                       >
-                        <span className="row">{item.title}</span>
+                        <span className="row" >Home</span>
+                      </Link>
+                    </Nav.Item>
+            {projId === ""
+              ? null
+              : projectReq.map((item, index) => {
+                  return (
+                    <Nav.Item key={index}>
+                      <Link
+                        to={`${"/" + projId + "/req/" + item.id} `}
+                        className={`${
+                          item.id === item.id &&
+                          pathname.includes(item.id)
+                            ? "selected"
+                            : ""
+                        }`}
+                      >
+                        <span className="row">{item.typeName}</span>
                       </Link>
                     </Nav.Item>
                   );
@@ -74,7 +98,7 @@ const Header = () => {
 
         <Navbar.Toggle aria-controls="offcanvasNavbar" />
         <Navbar.Brand>
-          <Link to="inDev" className="title">
+          <Link to="" className="title">
             Cey Defence Software Engineering Management Tool
           </Link>
         </Navbar.Brand>

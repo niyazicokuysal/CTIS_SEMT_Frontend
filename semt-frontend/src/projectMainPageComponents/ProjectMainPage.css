@@ -68,3 +68,7 @@
 .projectMembers:hover{
   color: #f46e0f;
 }
+
+.projectMainPage .col-sm-4{
+  border-left: 1px solid black;
+}

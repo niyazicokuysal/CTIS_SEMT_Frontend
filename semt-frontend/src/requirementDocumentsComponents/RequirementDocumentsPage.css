@@ -19,26 +19,43 @@
 }
 
 .projInfoRow {
-    padding-left: 0;
-  }
-  
-  .btnReqDoc {
-    margin-top: 15px;
-    padding: 5px;
-    height: 46px;
-    width: 289px;
-  }
-  
-  .reqDocMainPage .progress {
-    height: 30px;
-  }
-  
-  .reqDocMainPage .progress-bar {
-    font-size: 18px;
-    font-weight: bolder;
-  }
+  padding-left: 0;
+}
 
+.btnReqDoc {
+  margin-top: 15px;
+  padding: 5px;
+  height: 46px;
+  width: 289px;
+}
 
-  Table .header {
-    background-color:bisque;
+.reqDocMainPage .progress {
+  height: 30px;
+}
+
+.reqDocMainPage .progress-bar {
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+Table .header {
+  background-color: bisque;
+}
+
+.btnTable {
+  height: 32px;
+  width: 100px;
+}
+
+.btnTable {
+  font-weight: bold;
+}
+
+tr .trueRow {
+  background-color: #198754;
+  color: white;
+}
+
+tr td {
+  vertical-align: baseline;
 }

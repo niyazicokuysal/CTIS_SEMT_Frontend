@@ -19,12 +19,10 @@ const ProjectMainPage = ({ dummyProject }) => {
   const [show, setShow] = useState(false);
   const [showDoc, setDoc] = useState(false);
 
-
   const [name, setName] = useState("");
   const [description, setDesc] = useState("");
   const [newDocName, setNewDocName] = useState("");
   const [newDocHeader, setNewDocHeader] = useState("");
-
 
   const { pathname } = useLocation();
   const path = pathname.split("/");
@@ -32,7 +30,6 @@ const ProjectMainPage = ({ dummyProject }) => {
 
   const reqDocId = 1;
   const testDocId = 1;
-
 
   const navigate = useNavigate();
 
@@ -95,7 +92,9 @@ const ProjectMainPage = ({ dummyProject }) => {
       alert(`Project Name is ${name.length} character should be Max 50`);
       return;
     } else if (description.length > 300) {
-      alert(`Project Name is ${description.length} character should be Max 300`);
+      alert(
+        `Project Name is ${description.length} character should be Max 300`
+      );
       return;
     }
 
@@ -117,7 +116,6 @@ const ProjectMainPage = ({ dummyProject }) => {
     docClose(false);
   };
 
-
   return (
     <>
       <Container fluid className="projectMainPage">
@@ -125,7 +123,11 @@ const ProjectMainPage = ({ dummyProject }) => {
           <Col sm={10} style={{ height: "200px" }}>
             <Row className="projInfoRow">
               <Col sm={5}>
-                <h1>{project.name}</h1>
+                <h1>
+                  {`${project.name}`.length > 30
+                    ? `${project.name}`.slice(0, 27).concat("...")
+                    : `${project.name}`}
+                </h1>
               </Col>
               <Col sm={7} className="progressBar">
                 {" "}
@@ -147,7 +149,12 @@ const ProjectMainPage = ({ dummyProject }) => {
             >
               Edit Project Info
             </Button>
-            <Button size="lg" variant="danger" className="btnProjectMain" onClick={docShow}>
+            <Button
+              size="lg"
+              variant="danger"
+              className="btnProjectMain"
+              onClick={docShow}
+            >
               Edit Project Documentation
             </Button>
             <Button
@@ -227,7 +234,7 @@ const ProjectMainPage = ({ dummyProject }) => {
             <Form.Group className="mb-3" controlId="formCreateProject">
               <Form.Label>Edit Project Name</Form.Label>
               <Form.Control
-                onChange={(e) => setName(e.target.value)} 
+                onChange={(e) => setName(e.target.value)}
                 type="text"
                 placeholder="Enter the name for the Project"
               />
@@ -266,36 +273,34 @@ const ProjectMainPage = ({ dummyProject }) => {
         </Modal.Header>
         <Modal.Body>
           <Table hover className="documantTable">
-          <thead>
-                <tr>
-                  <th style={{ width: "320px" }}>Requirements Documentation</th>
-                  <th style={{ width: "320px" }}>Test Documentation</th>
+            <thead>
+              <tr>
+                <th style={{ width: "320px" }}>Requirements Documentation</th>
+                <th style={{ width: "320px" }}>Test Documentation</th>
+              </tr>
+            </thead>
+            <tbody>
+              {documents.map((document, i) => (
+                <tr key={i}>
+                  <td>{document.requirementsDocuments}</td>
+                  <td>{document.testDocuments}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {documents.map((document, i) => (
-                  <tr key={i}>
-                    <td>   
-                        {document.requirementsDocuments}
-                    </td>
-                    <td>
-                        {document.testDocuments}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+              ))}
+            </tbody>
           </Table>
           <Form onSubmit={onSubmitDocument}>
             <Form.Group className="mb-3" controlId="formCreateProject">
               <Form.Label>New Requirement Document</Form.Label>
               <Form.Control
-                onChange={(e) => setNewDocName(e.target.value)} 
+                onChange={(e) => setNewDocName(e.target.value)}
                 type="text"
                 placeholder="Enter the name for the requirement document"
               />
-              <Form.Label style={{ marginTop: "20px" }}>New Requirement Document's Header</Form.Label>
-              <Form.Control 
-                onChange={(e) => setNewDocHeader(e.target.value)} 
+              <Form.Label style={{ marginTop: "20px" }}>
+                New Requirement Document's Header
+              </Form.Label>
+              <Form.Control
+                onChange={(e) => setNewDocHeader(e.target.value)}
                 type="text"
                 placeholder="Enter the header"
               />

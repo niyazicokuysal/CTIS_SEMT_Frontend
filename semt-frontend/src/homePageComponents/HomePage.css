@@ -1,43 +1,41 @@
-.titleHP{
-    color: #f46e0f;
-    font-size: 40px;
-    font-weight: bolder;
-/*     text-shadow: 2px 0 0 blueviolet, -2px 0 0 blueviolet, 0 2px 0 blueviolet, 0 -2px 0 blueviolet, 1px 1px blueviolet, -1px -1px 0 blueviolet, 1px -1px 0 blueviolet, -1px 1px 0 blueviolet;
- */}
-
-.containerM{
-    margin-top: 20px;
-    padding-right: 30px;
+.titleHP {
+  color: #f46e0f;
+  font-size: 40px;
+  font-weight: bolder;
+  /*     text-shadow: 2px 0 0 blueviolet, -2px 0 0 blueviolet, 0 2px 0 blueviolet, 0 -2px 0 blueviolet, 1px 1px blueviolet, -1px -1px 0 blueviolet, 1px -1px 0 blueviolet, -1px 1px 0 blueviolet;
+ */
 }
 
-.welcome{
-    height: 60px;
+.containerM {
+  margin-top: 20px;
+  padding-right: 30px;
 }
 
-tr td{
-    color: black;
-    font-size: 18px;
-    font-weight: bolder;
+.welcome {
+  height: 60px;
 }
 
-.tableRow:hover .tableCol{
-    background-color: #f46e0f;  
-    color: whitesmoke;
+tr td {
+  vertical-align: baseline;
+  color: black;
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.tableRow:hover .tableCol {
+  background-color: #f46e0f;
+  color: whitesmoke;
 }
 
 .btnDelete {
-    height: 32px;
-    width: 140px;
-  }
+  height: 32px;
+  width: 140px;
+}
 
+.tableCol .progress {
+  height: 24px;
+}
 
-  .tableCol .progress {
-    height: 24px;
-  }
-  
-  .tableCol .progress-bar {
-    font-size: 18px;
-  }
-
-
-
+.tableCol .progress-bar {
+  font-size: 18px;
+}

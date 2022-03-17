@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./HomePage.css";
 import {
@@ -29,11 +29,15 @@ const HomePage = () => {
   useEffect(() => {
     const getProjects = async () => {
       const projectsFromServer = await fetchProjects();
-      setProjects(projectsFromServer);
+      setProjects(projectsFromServer); 
     };
 
     getProjects();
   }, []);
+
+  const { pathname } = useLocation()
+  const path = pathname.split("/")
+  const projId = path[1]
 
   const addProject = async (project) => {
     console.log(JSON.stringify(project));
@@ -141,7 +145,7 @@ const HomePage = () => {
                     </td>
                     <td
                       className="tableCol"
-                      style={{ width: "500px", paddingTop: "12px" }}
+                      style={{ width: "500px", paddingTop: "14px" }}
                     >
                       <ProgressBar animated now={now} label={`${now}%`} />
                     </td>

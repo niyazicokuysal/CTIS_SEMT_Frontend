@@ -48,7 +48,14 @@ const RequirementDocumentsPage = () => {
           <Col sm={10} style={{ height: "200px" }}>
             <Row className="projInfoRow">
               <Col sm={5}>
-                <h1>System Requirements Documents of {project.name}</h1>
+                <h1>
+                  {`System Requirements Documents of ${project.name}`.length >
+                  50
+                    ? `System Requirements Documents of ${project.name}`
+                        .slice(0, 50)
+                        .concat("...")
+                    : `System Requirements Documents of ${project.name}`}
+                </h1>
               </Col>
               <Col sm={7} className="progressBar">
                 {" "}
@@ -99,18 +106,15 @@ const RequirementDocumentsPage = () => {
         </Row>
         <Row>
           <Col>
-            <Table hover bordered>
+            <Table hover bordered className="reqTable">
               <thead>
                 <tr>
-                  <th>Req Id</th>
-                  <th>Name</th>
+                  <th style={{ width: "140px" }}>Req Id</th>
                   <th>Description</th>
-                  <th>Comment</th>
-                  <th>Test Types</th>
-                  <th>Created Date</th>
-                  <th>Updated Date</th>
-                  <th>Is Verified</th>
-                  <th>Delete</th>
+                  <th style={{ width: "170px" }}>Test Types</th>
+                  <th style={{ width: "120px" }}>Is Verified</th>
+                  <th style={{ width: "118px" }}>View Details</th>
+                  <th style={{ width: "118px" }}>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -118,47 +122,41 @@ const RequirementDocumentsPage = () => {
                   <td>1</td>
                   <td>Mark</td>
                   <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>1</td>
-                </tr>
-                <tr>
-                <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>1</td>
+                  <td 
+                   className={`${
+                    true === true
+                      ? "trueRow"
+                      : "falseRow"
+                  }`}
+                  >Yes</td>
+                  <td>
+                    <Button
+                      size="sm"
+                      variant="info"
+                      className="btnTable" //onClick={docShow}
+                    >
+                      View
+                    </Button>
+                  </td>
+                  <td>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      className="btnTable" //onClick={docShow}
+                    >
+                      Delete
+                    </Button>
+                  </td>
                 </tr>
                 <tr className="header">
-                  <td colspan="9">ASDFASDF</td>
+                  <td colSpan="6">ASDFASDF</td>
                 </tr>
                 <tr>
-                <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
                   <td>1</td>
                   <td>Mark</td>
                   <td>Otto</td>
                   <td>@mdo</td>
                   <td>1</td>
-                </tr>
-                <tr>
-                <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
                   <td>1</td>
                 </tr>
               </tbody>
