@@ -10,11 +10,16 @@ import {
   Button,
   ListGroup,
   ProgressBar,
+  Modal,
+  Form
 } from "react-bootstrap";
 
 const ProjectMainPage = ({ dummyProject }) => {
   const [project, setProject] = useState([]);
   const [show, setShow] = useState(false);
+  const [showDoc, setDoc] = useState(false);
+  const [name, setName] = useState("");
+  const [description, setDesc] = useState("");
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
@@ -25,6 +30,9 @@ const ProjectMainPage = ({ dummyProject }) => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const docClose = () => setDoc(false);
+  const docShow= () => setDoc(true);
 
   useEffect(() => {
     const getProject = async () => {
@@ -44,86 +52,205 @@ const ProjectMainPage = ({ dummyProject }) => {
     return data;
   };
 
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    if (!name || !description) {
+      alert("Please add the credentials");
+      return;
+    }
+
+    setName("");
+    setDesc("");
+    setShow(false);
+  };
+
   return (
-    <Container fluid className="projectMainPage">
-      <Row>
-        <Col sm={10} style={{ height: "200px" }}>
-          <Row className="projInfoRow">
-            <Col sm={4}>
-              {" "}
-              <h1>{project.name}</h1>
-            </Col>
-            <Col sm={8} className="progressBar">
-              {" "}
-              <ProgressBar
-                animated
-                now={now}
-                label={`Validation: ${now}%`}
-              />
-            </Col>
-          </Row>
-          <Row className="projInfoRow">
-            <Col>
-              <a>{project.description}</a>
-            </Col>
-          </Row>
-        </Col>
-        <Col sm={2}>
-          <Button size="lg" variant="success" className="btnProjectMain">
+    <>
+
+      <Container fluid className="projectMainPage">
+        <Row>
+          <Col sm={10} style={{ height: "200px" }}>
+            <Row className="projInfoRow">
+              <Col sm={4}>
+                {" "}
+                <h1>{project.name}</h1>
+              </Col>
+              <Col sm={8} className="progressBar">
+                {" "}
+                <ProgressBar
+                  animated
+                  now={now}
+                  label={`Validation: ${now}%`}
+                />
+              </Col>
+            </Row>
+            <Row className="projInfoRow">
+              <Col>
+                <a>{project.description}</a>
+              </Col>
+            </Row>
+          </Col>
+          <Col sm={2}>
+            <Button size="lg" variant="success" className="btnProjectMain" onClick={handleShow}>
+              Edit Project Info
+            </Button>
+            <Button size="lg" variant="danger" className="btnProjectMain" onClick={docShow}>
+              Edit Project Documentation
+            </Button>
+            <Button size="lg" variant="info" className="btnProjectMain" onClick={() => navigate("/inDev")}>
+              Edit Project Members
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table striped bordered hover className="documantTable">
+              <thead>
+                <tr>
+                  <th>Requirements Documentation</th>
+                  <th>Test Documentation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>System Requirements</td>
+                  <td>System Tests</td>
+                </tr>
+                <tr>
+                  <td>Software Requirements</td>
+                  <td>Software Tests</td>
+                </tr>
+                <tr>
+                  <td>Software Requirements</td>
+                  <td>Software Tests</td>
+                </tr>
+                <tr>
+                  <td>Software Requirements</td>
+                  <td>Software Tests</td>
+                </tr>
+              </tbody>
+            </Table>
+          </Col>
+          <Col style={{ background: "green" }}>2 of 3</Col>
+          <Col>
+            <h3>Project Members</h3>
+            <ListGroup variant="flush">
+              {dummyProject.members.map((member, i) => (
+                <ListGroup.Item key={i}>
+                  <Link to={"/inDev"} className="projectMembers">
+                    {member}
+                  </Link>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Col>
+        </Row>
+      </Container>
+                
+      <Modal
+        show={show}
+        onHide={handleClose}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
             Edit Project Info
-          </Button>
-          <Button size="lg" variant="danger" className="btnProjectMain">
-            Edit Project Documentation
-          </Button>
-          <Button size="lg" variant="info" className="btnProjectMain" onClick={() => navigate("/inDev")}>
-            Edit Project Members
-          </Button>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <Table striped bordered hover className="documantTable">
-            <thead>
-              <tr>
-                <th>Requirements Documentation</th>
-                <th>Test Documentation</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>System Requirements</td>
-                <td>System Tests</td>
-              </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
-              <tr>
-                <td>Software Requirements</td>
-                <td>Software Tests</td>
-              </tr>
-            </tbody>
-          </Table>
-        </Col>
-        <Col style={{ background: "green" }}>2 of 3</Col>
-        <Col>
-          <h3>Project Members</h3>
-          <ListGroup variant="flush">
-            {dummyProject.members.map((member, i) => (
-              <ListGroup.Item key={i}>
-                <Link to={"/inDev"} className="projectMembers">
-                  {member}
-                </Link>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Col>
-      </Row>
-    </Container>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={onSubmit}>
+            <Form.Group className="mb-3" controlId="formCreateProject">
+              <Form.Label>Project Name</Form.Label>
+              <Form.Control
+                value={project.name}
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Enter the name for the Project"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Project Description</Form.Label>
+              <Form.Control
+                value={project.description}
+                onChange={(e) => setDesc(e.target.value)}
+                style={{ height: "200px" }}
+                rows="5"
+                as="textarea"
+                placeholder="Enter the description for the Project"
+              />
+            </Form.Group>
+            <Modal.Footer>
+              <Button variant="primary" type="submit">
+                Update Project
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showDoc}
+        onHide={docClose}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Project Documentation
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Table striped bordered hover className="documantTable">
+              <thead>
+                <tr>
+                  <th>Requirements Documentation</th>
+                  <th>Test Documentation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>System Requirements</td>
+                  <td>System Tests</td>
+                </tr>
+                <tr>
+                  <td>Software Requirements</td>
+                  <td>Software Tests</td>
+                </tr>
+                <tr>
+                  <td>Software Requirements</td>
+                  <td>Software Tests</td>
+                </tr>
+                <tr>
+                  <td>Software Requirements</td>
+                  <td>Software Tests</td>
+                </tr>
+              </tbody>
+            </Table>
+          <Form /*onSubmit={onSubmit} buraya bak !!!!!!!!!!!!!!!!!!!!!!!!!!*/> 
+            <Form.Group className="mb-3" controlId="formCreateProject">
+              <Form.Label>New requirement</Form.Label>
+              <Form.Control
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Enter the name for the requirement"
+              />
+            </Form.Group>
+
+            <Modal.Footer>
+              <Button variant="primary" type="submit">
+                Add Requirement
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+    </>
   );
 };
 
