@@ -29,7 +29,7 @@
 .nav-item a {
     text-decoration: none;
     color: #000;
-    font-size: 26px;
+    font-size: 21px;
     width: 95%;
     height: 95%;
     display: flex;
@@ -39,30 +39,12 @@
 }
 
 .selected {
-    text-decoration: none;
-    color: #000;
-    font-size: 26px;
-    width: 95%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    border-radius: 4px;
     background-color: #f46e0f;
+    font-weight: bold;
 }
 
 .invisible {
     visibility: hidden;
-    text-decoration: none;
-    color: #000;
-    font-size: 26px;
-    width: 95%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    border-radius: 4px;
-    background-color: #f46e0f;
 }
 
 .nav-item a:hover {

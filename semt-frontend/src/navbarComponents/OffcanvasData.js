@@ -5,31 +5,41 @@ export const OffcanvasData = [
   {
     title: "Home",
     path: "home",
-    icon: <FaIcons.FaHome />,
   },
   {
     title: "Main Page",
     path: "main",
-    icon: <FaIcons.FaFileInvoice />,
   },
   {
-    title: "Requirements",
-    path: "requirements",
-    icon: <FaIcons.FaListUl />,
+    title: "System Requirements",
+    path: "req/1",
   },
   {
-    title: "Tasks",
-    path: "tasks",
-    icon: <FaIcons.FaHammer />,
+    title: "System Requirements",
+    path: "req/1",
   },
   {
-    title: "Test Requirements",
-    path: "testRequirements",
-    icon: <FaIcons.FaCartPlus />,
+    title: "System Requirements",
+    path: "req/1",
   },
   {
-    title: "Tests",
-    path: "tests",
-    icon: <FaIcons.FaHiking />,
+    title: "System Requirements",
+    path: "req/1",
+  },
+  {
+    title: "System Test Document",
+    path: "test/1",
+  },
+  {
+    title: "System Test Document",
+    path: "test/1",
+  },
+  {
+    title: "System Test Document",
+    path: "test/1",
+  },
+  {
+    title: "System Test Document",
+    path: "test/1",
   },
 ];

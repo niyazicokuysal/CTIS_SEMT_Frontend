@@ -43,8 +43,7 @@ const Header = () => {
                             : "invisible"
                         }`}
                       >
-                        {item.icon}
-                        <span>{item.title}</span>
+                        <span className="row" >{item.title}</span>
                       </Link>
                     </Nav.Item>
                   );
@@ -65,7 +64,6 @@ const Header = () => {
                             : ""
                         }`}
                       >
-                        {item.icon}
                         <span className="row">{item.title}</span>
                       </Link>
                     </Nav.Item>

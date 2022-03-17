@@ -30,6 +30,10 @@ const ProjectMainPage = ({ dummyProject }) => {
   const path = pathname.split("/");
   const projId = path[1];
 
+  const reqDocId = 1;
+  const testDocId = 1;
+
+
   const navigate = useNavigate();
 
   const now = 60;
@@ -170,12 +174,12 @@ const ProjectMainPage = ({ dummyProject }) => {
                 {documents.map((document, i) => (
                   <tr key={i}>
                     <td className="documentRow">
-                      <Link to={"/inDev"}>
+                      <Link to={`/${projId}/req/${reqDocId}`}>
                         {document.requirementsDocuments}
                       </Link>
                     </td>
                     <td className="documentRow">
-                      <Link to={"/inDev"} >
+                      <Link to={`/${projId}/test/${testDocId}`}>
                         {document.testDocuments}
                       </Link>
                     </td>
