@@ -16,6 +16,7 @@ import {
 
 const ProjectMainPage = ({ dummyProject }) => {
   const [project, setProject] = useState([]);
+  const [projectReqDocs, setProjectReqDocs] = useState([]);
   const [show, setShow] = useState(false);
   const [showDoc, setDoc] = useState(false);
 
@@ -98,9 +99,26 @@ const ProjectMainPage = ({ dummyProject }) => {
       return;
     }
 
+    const id = Number(projId)
+    updateProject({ id, name, description })
     setName("");
     setDesc("");
     setShow(false);
+  };
+
+  const updateProject = async (project) => {
+    console.log(JSON.stringify(project));
+    const res = await fetch("https://localhost:44335/api/project/update", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(project),
+    });
+
+    const newProject = await fetchProject(projId);
+    setProject(newProject);
   };
 
   const onSubmitDocument = (e) => {
@@ -111,9 +129,32 @@ const ProjectMainPage = ({ dummyProject }) => {
       return;
     }
 
+    const typeName = newDocName
+    const header = newDocHeader
+    const description = "Can add description via Edit Document"
+    const projectId = Number(projId)
+    const testDocuments = [{
+      projectId: projectId,
+      name: newDocName + "Test Document",
+      description: description
+    }]
+    addDocuments({ projectId, typeName, header, description, testDocuments})
     setNewDocName("");
     setNewDocHeader("");
     docClose(false);
+  };
+
+  const addDocuments = async (docInfoo) => {
+    console.log(JSON.stringify(docInfoo));
+    const res = await fetch("https://localhost:44335/api/requirement-document/add", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(docInfoo),
+    });
+    
   };
 
   return (
