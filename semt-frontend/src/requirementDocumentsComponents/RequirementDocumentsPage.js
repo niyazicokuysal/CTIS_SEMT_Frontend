@@ -223,17 +223,6 @@ const RequirementDocumentsPage = () => {
                   <td>@mdo</td>
                   <td>1</td>
                 </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>1</td>
-                </tr>
               </tbody>
             </Table>
           </Col>
