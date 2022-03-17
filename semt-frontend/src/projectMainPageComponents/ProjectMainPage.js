@@ -44,30 +44,6 @@ const ProjectMainPage = ({ dummyProject }) => {
 
   const now = 60;
 
-  const documents = [
-
-    /*{
-      requirementsDocuments: "System Requirements",
-      testDocuments: "System Test Document",
-    },
-    {
-      requirementsDocuments: "Software Requirements",
-      testDocuments: "Software Test Document",
-    },
-    {
-      requirementsDocuments: "Authentication Requirements",
-      testDocuments: "Authentication Test Document",
-    },
-    {
-      requirementsDocuments: "Visual Requirements",
-      testDocuments: "Visual Test Document",
-    },
-    {
-      requirementsDocuments: "Non-Functional Requirements",
-      testDocuments: "Non-Functional Test Document",
-    },*/
-  ];
-
   useEffect(() => {
     const getProject = async () => {
       const projectInfo = await fetchProject(projId);
@@ -143,7 +119,7 @@ const ProjectMainPage = ({ dummyProject }) => {
   return (
     <>
       <Container fluid className="projectMainPage">
-        <Row>
+        <Row>""
           <Col sm={10} style={{ height: "200px" }}>
             <Row className="projInfoRow">
               <Col sm={5}>
@@ -304,7 +280,7 @@ const ProjectMainPage = ({ dummyProject }) => {
               </tr>
             </thead>
             <tbody>
-              {documents.map((document, i) => (
+              {projectReq.map((document, i) => (
                 <tr key={i}>
                   <td>{document.requirementsDocuments}</td>
                   <td>{document.testDocuments}</td>

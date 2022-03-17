@@ -17,6 +17,7 @@ import {
 const RequirementDocumentsPage = () => {
   const [project, setProject] = useState([]);
 
+  const [showDetails, setDetails] = useState(false);
   const [showDoc, setDoc] = useState(false);
   const [showGroup, setGroup] = useState(false);
   const [showReq, setReq] = useState(false);
@@ -37,6 +38,9 @@ const RequirementDocumentsPage = () => {
 
   const docClose = () => setDoc(false);
   const docShow = () => setDoc(true);
+
+  const detailsClose = () => setDetails(false);
+  const detailsShow = () => setDetails(true);
 
   const groupClose = () => setGroup(false);
   const groupShow = () => setGroup(true);
@@ -64,7 +68,7 @@ const RequirementDocumentsPage = () => {
   const onSubmitDocument = (e) => {
     e.preventDefault();
 
-    if (!docName || !docDescription ) {
+    if (!docName || !docDescription) {
       alert("Please add the credentials");
       return;
     }
@@ -104,6 +108,15 @@ const RequirementDocumentsPage = () => {
     return data;
   };
 
+  const document = {
+    description: "Dummy description",
+    comment: "Comment",
+    createDate: "31/01/2031",
+    updateDate: "31/31/3131",
+    name: "name",
+    testtype: "31 Testi"
+  };
+
   return (
     <>
       <Container fluid className="reqDocMainPage">
@@ -113,10 +126,10 @@ const RequirementDocumentsPage = () => {
               <Col sm={5}>
                 <h1>
                   {`System Requirements Documents of ${project.name}`.length >
-                  50
+                    50
                     ? `System Requirements Documents of ${project.name}`
-                        .slice(0, 50)
-                        .concat("...")
+                      .slice(0, 50)
+                      .concat("...")
                     : `System Requirements Documents of ${project.name}`}
                 </h1>
               </Col>
@@ -187,18 +200,17 @@ const RequirementDocumentsPage = () => {
                   <td>1</td>
                   <td>Mark</td>
                   <td>Otto</td>
-                  <td 
-                   className={`${
-                    true === true
+                  <td
+                    className={`${true === true
                       ? "trueRow"
                       : "falseRow"
-                  }`}
+                      }`}
                   >Yes</td>
                   <td>
                     <Button
                       size="sm"
                       variant="info"
-                      className="btnTable" //onClick={docShow}
+                      className="btnTable" onClick={detailsShow}
                     >
                       View
                     </Button>
@@ -365,6 +377,28 @@ const RequirementDocumentsPage = () => {
         </Modal.Body>
       </Modal>
 
+      <Modal
+        //View Details Modal
+        show={showDetails}
+        onHide={detailsClose}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {document.name}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>Description:</h5> {document.description}
+          <h5>Comment:</h5> {document.comment}
+          <h5>Create Date:</h5> {document.createDate}
+          <h5>Update Date:</h5> {document.updateDate}
+          <h5>Test Type:</h5> {document.testtype}
+
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
