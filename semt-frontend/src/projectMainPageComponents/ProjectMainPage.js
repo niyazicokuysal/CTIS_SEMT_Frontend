@@ -16,6 +16,8 @@ import {
 
 const ProjectMainPage = ({ dummyProject }) => {
   const [project, setProject] = useState([]);
+  const [projectReq, setprojectReq] = useState([]);
+  
   const [show, setShow] = useState(false);
   const [showDoc, setDoc] = useState(false);
 
@@ -25,6 +27,7 @@ const ProjectMainPage = ({ dummyProject }) => {
   const [newDocHeader, setNewDocHeader] = useState("");
 
   const { pathname } = useLocation();
+  
   const path = pathname.split("/");
   const projId = path[1];
 
@@ -33,10 +36,17 @@ const ProjectMainPage = ({ dummyProject }) => {
 
   const navigate = useNavigate();
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const docClose = () => setDoc(false);
+  const docShow = () => setDoc(true);
+
   const now = 60;
 
   const documents = [
-    {
+
+    /*{
       requirementsDocuments: "System Requirements",
       testDocuments: "System Test Document",
     },
@@ -55,14 +65,8 @@ const ProjectMainPage = ({ dummyProject }) => {
     {
       requirementsDocuments: "Non-Functional Requirements",
       testDocuments: "Non-Functional Test Document",
-    },
+    },*/
   ];
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const docClose = () => setDoc(false);
-  const docShow = () => setDoc(true);
 
   useEffect(() => {
     const getProject = async () => {
@@ -72,6 +76,26 @@ const ProjectMainPage = ({ dummyProject }) => {
 
     getProject();
   }, []);
+
+  useEffect(() => {
+    const getProjectReq = async () => {
+      if (projId !== "") {
+        const projectReq = await getProjectDocuments(projId);
+        setprojectReq(projectReq)
+      }
+    } 
+    
+    getProjectReq();
+  
+  }, [projId]);
+
+  const getProjectDocuments = async (id) => {
+    const res = await fetch(`https://localhost:44335/api/requirement-document/getall?projectId=${id}`);
+    const data = await res.json();
+
+    console.log(data);
+    return data;
+  };
 
   const fetchProject = async (id) => {
     const res = await fetch(
@@ -178,11 +202,11 @@ const ProjectMainPage = ({ dummyProject }) => {
                 </tr>
               </thead>
               <tbody>
-                {documents.map((document, i) => (
+                {projectReq.map((document, i) => (
                   <tr key={i}>
                     <td className="documentRow">
-                      <Link to={`/${projId}/req/${reqDocId}`}>
-                        {document.requirementsDocuments}
+                      <Link to={`/${projId}/req/${document.id}`}>
+                        {document.typeName}
                       </Link>
                     </td>
                     <td className="documentRow">
