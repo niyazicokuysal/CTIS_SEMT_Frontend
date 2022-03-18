@@ -18,7 +18,8 @@ const ProjectMainPage = ({ dummyProject }) => {
   const [project, setProject] = useState([]);
   const [projectReqDocs, setProjectReqDocs] = useState([]);
   const [projectReq, setprojectReq] = useState([]);
-  
+  const [projectTest, setProjectTest] = useState([]);
+
   const [show, setShow] = useState(false);
   const [showDoc, setDoc] = useState(false);
 
@@ -28,7 +29,7 @@ const ProjectMainPage = ({ dummyProject }) => {
   const [newDocHeader, setNewDocHeader] = useState("");
 
   const { pathname } = useLocation();
-  
+
   const path = pathname.split("/");
   const projId = path[1];
 
@@ -45,30 +46,6 @@ const ProjectMainPage = ({ dummyProject }) => {
 
   const now = 60;
 
-  const documents = [
-
-    /*{
-      requirementsDocuments: "System Requirements",
-      testDocuments: "System Test Document",
-    },
-    {
-      requirementsDocuments: "Software Requirements",
-      testDocuments: "Software Test Document",
-    },
-    {
-      requirementsDocuments: "Authentication Requirements",
-      testDocuments: "Authentication Test Document",
-    },
-    {
-      requirementsDocuments: "Visual Requirements",
-      testDocuments: "Visual Test Document",
-    },
-    {
-      requirementsDocuments: "Non-Functional Requirements",
-      testDocuments: "Non-Functional Test Document",
-    },*/
-  ];
-
   useEffect(() => {
     const getProject = async () => {
       const projectInfo = await fetchProject(projId);
@@ -79,22 +56,21 @@ const ProjectMainPage = ({ dummyProject }) => {
   }, []);
 
   useEffect(() => {
-    const getProjectReq = async () => {
-      if (projId !== "") {
-        const projectReq = await getProjectDocuments(projId);
-        setprojectReq(projectReq)
-      }
-    } 
-    
-    getProjectReq();
-  
+    const getProjectAllDoc = async () => {
+      const projectAllDoc = await getProjectAllDocuments(projId);
+      setProjectReqDocs(projectAllDoc);
+    };
+
+    getProjectAllDoc();
+    console.log(projectReqDocs);
   }, [projId]);
 
-  const getProjectDocuments = async (id) => {
-    const res = await fetch(`https://localhost:44335/api/requirement-document/getall?projectId=${id}`);
+  const getProjectAllDocuments = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/requirement-document/getall-with-test-document?projectId=${id}`
+    );
     const data = await res.json();
 
-    console.log(data);
     return data;
   };
 
@@ -123,8 +99,8 @@ const ProjectMainPage = ({ dummyProject }) => {
       return;
     }
 
-    const id = Number(projId)
-    updateProject({ id, name, description })
+    const id = Number(projId);
+    updateProject({ id, name, description });
     setName("");
     setDesc("");
     setShow(false);
@@ -153,32 +129,37 @@ const ProjectMainPage = ({ dummyProject }) => {
       return;
     }
 
-    const typeName = newDocName
-    const header = newDocHeader
-    const description = "Can add description via Edit Document"
-    const projectId = Number(projId)
-    const testDocuments = [{
-      projectId: projectId,
-      name: newDocName + "Test Document",
-      description: description
-    }]
-    addDocuments({ projectId, typeName, header, description, testDocuments})
+    const typeName = newDocName;
+    const header = newDocHeader;
+    const description = "Can add description via Edit Document";
+    const projectId = Number(projId);
+    const testDocuments = [
+      {
+        projectId: projectId,
+        name: newDocName + "Test Document",
+        description: description,
+      },
+    ];
+    addDocuments({ projectId, typeName, header, description, testDocuments });
     setNewDocName("");
     setNewDocHeader("");
     docClose(false);
+    navigate("")
   };
 
   const addDocuments = async (docInfoo) => {
     console.log(JSON.stringify(docInfoo));
-    const res = await fetch("https://localhost:44335/api/requirement-document/add", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(docInfoo),
-    });
-    
+    const res = await fetch(
+      "https://localhost:44335/api/requirement-document/add",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(docInfoo),
+      }
+    );
   };
 
   return (
@@ -243,7 +224,7 @@ const ProjectMainPage = ({ dummyProject }) => {
                 </tr>
               </thead>
               <tbody>
-                {projectReq.map((document, i) => (
+                {projectReqDocs.map((document, i) => (
                   <tr key={i}>
                     <td className="documentRow">
                       <Link to={`/${projId}/req/${document.id}`}>
@@ -252,7 +233,7 @@ const ProjectMainPage = ({ dummyProject }) => {
                     </td>
                     <td className="documentRow">
                       <Link to={`/${projId}/test/${testDocId}`}>
-                        {document.testDocuments}
+                        {document.testDocument.name}
                       </Link>
                     </td>
                     <td style={{ paddingTop: "13px" }}>
@@ -345,12 +326,20 @@ const ProjectMainPage = ({ dummyProject }) => {
               </tr>
             </thead>
             <tbody>
-              {documents.map((document, i) => (
-                <tr key={i}>
-                  <td>{document.requirementsDocuments}</td>
-                  <td>{document.testDocuments}</td>
-                </tr>
-              ))}
+                {projectReqDocs.map((document, i) => (
+                  <tr key={i}>
+                    <td className="documentRow">
+                      <Link to={`/${projId}/req/${document.id}`}>
+                        {document.typeName}
+                      </Link>
+                    </td>
+                    <td className="documentRow">
+                      <Link to={`/${projId}/test/${testDocId}`}>
+                        {document.testDocument.name}
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
           <Form onSubmit={onSubmitDocument}>

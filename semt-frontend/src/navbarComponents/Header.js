@@ -11,6 +11,7 @@ import "./Header.css";
 
 const Header = () => {
   const [projectReq, setprojectReq] = useState([]);
+  const [projectTest, setProjectTest] = useState([]);
 
   const { pathname } = useLocation()
   const path = pathname.split("/")
@@ -23,6 +24,8 @@ const Header = () => {
       if (projId !== "") {
         const projectReq = await getProjectDocuments(projId);
         setprojectReq(projectReq)
+        const projectTest = await getProjectTestDocuments(projId);
+        setProjectTest(projectTest)
       }
 
     }
@@ -33,6 +36,14 @@ const Header = () => {
 
   const getProjectDocuments = async (id) => {
     const res = await fetch(`https://localhost:44335/api/requirement-document/getall?projectId=${id}`);
+    const data = await res.json();
+
+    console.log(data);
+    return data;
+  };
+
+  const getProjectTestDocuments = async (id) => {
+    const res = await fetch(`https://localhost:44335/api/test-document/getall?projectId=${id}`);
     const data = await res.json();
 
     console.log(data);
@@ -78,12 +89,30 @@ const Header = () => {
                     <Link
                       to={`${"/" + projId + "/req/" + item.id} `}
                       className={`${item.id === item.id &&
-                          pathname.includes(item.id)
+                          pathname.includes(item.id) &&  pathname.includes("req")
                           ? "selected"
                           : ""
                         }`}
                     >
                       <span className="row">{item.typeName}</span>
+                    </Link>
+                  </Nav.Item>
+                );
+              })}
+              {projId === ""
+              ? null
+              : projectTest.map((item, index) => {
+                return (
+                  <Nav.Item key={index}>
+                    <Link
+                      to={`${"/" + projId + "/test/" + item.id} `}
+                      className={`${item.id === item.id &&
+                          pathname.includes(item.id) &&  pathname.includes("test")
+                          ? "selected"
+                          : ""
+                        }`}
+                    >
+                      <span className="row">{item.name}</span>
                     </Link>
                   </Nav.Item>
                 );
