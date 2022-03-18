@@ -16,7 +16,9 @@ import {
 
 const RequirementDocumentsPage = () => {
   const [project, setProject] = useState([]);
+  const [document, setDocument] = useState([]);
 
+  const [showDetails, setDetails] = useState(false);
   const [showDoc, setDoc] = useState(false);
   const [showGroup, setGroup] = useState(false);
   const [showReq, setReq] = useState(false);
@@ -34,9 +36,13 @@ const RequirementDocumentsPage = () => {
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
+  const docId = path[3];
 
   const docClose = () => setDoc(false);
   const docShow = () => setDoc(true);
+
+  const detailsClose = () => setDetails(false);
+  const detailsShow = () => setDetails(true);
 
   const groupClose = () => setGroup(false);
   const groupShow = () => setGroup(true);
@@ -64,7 +70,7 @@ const RequirementDocumentsPage = () => {
   const onSubmitDocument = (e) => {
     e.preventDefault();
 
-    if (!docName || !docDescription ) {
+    if (!docName || !docDescription) {
       alert("Please add the credentials");
       return;
     }
@@ -104,6 +110,33 @@ const RequirementDocumentsPage = () => {
     return data;
   };
 
+  useEffect(() => {
+    const getDocument = async () => {
+      const documentInfo = await fetchDocument(docId);
+      setDocument(documentInfo);
+    };
+
+    getDocument();
+  }, []);
+
+  const fetchDocument = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/requirement-document/getbyid?id=${id}`
+    );
+    const data = await res.json();
+
+    return data;
+  };
+
+  const dummydocument = {
+    description: "Dummy description",
+    comment: "Comment",
+    createDate: "31/01/2031",
+    updateDate: "31/31/3131",
+    name: "name",
+    testtype: "31 Testi"
+  };
+
   return (
     <>
       <Container fluid className="reqDocMainPage">
@@ -112,12 +145,12 @@ const RequirementDocumentsPage = () => {
             <Row className="projInfoRow">
               <Col sm={5}>
                 <h1>
-                  {`System Requirements Documents of ${project.name}`.length >
-                  50
-                    ? `System Requirements Documents of ${project.name}`
-                        .slice(0, 50)
-                        .concat("...")
-                    : `System Requirements Documents of ${project.name}`}
+                  {`${document.typeName} of ${project.name}`.length >
+                    50
+                    ? `${document.typeName} of ${project.name}`
+                      .slice(0, 50)
+                      .concat("...")
+                    : `${document.typeName} of ${project.name}`}
                 </h1>
               </Col>
               <Col sm={7} className="progressBar">
@@ -133,11 +166,7 @@ const RequirementDocumentsPage = () => {
             <Row className="projInfoRow">
               <Col>
                 <a>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse.
+                  {document.description}
                 </a>
               </Col>
             </Row>
@@ -187,18 +216,17 @@ const RequirementDocumentsPage = () => {
                   <td>1</td>
                   <td>Mark</td>
                   <td>Otto</td>
-                  <td 
-                   className={`${
-                    true === true
+                  <td
+                    className={`${true === true
                       ? "trueRow"
                       : "falseRow"
-                  }`}
+                      }`}
                   >Yes</td>
                   <td>
                     <Button
                       size="sm"
                       variant="info"
-                      className="btnTable" //onClick={docShow}
+                      className="btnTable" onClick={detailsShow}
                     >
                       View
                     </Button>
@@ -365,6 +393,28 @@ const RequirementDocumentsPage = () => {
         </Modal.Body>
       </Modal>
 
+      <Modal
+        //View Details Modal
+        show={showDetails}
+        onHide={detailsClose}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {dummydocument.name}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h5>Description:</h5> {dummydocument.description}
+          <h5>Comment:</h5> {dummydocument.comment}
+          <h5>Create Date:</h5> {dummydocument.createDate}
+          <h5>Update Date:</h5> {dummydocument.updateDate}
+          <h5>Test Type:</h5> {dummydocument.testtype}
+
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
