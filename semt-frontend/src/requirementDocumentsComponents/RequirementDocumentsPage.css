@@ -47,9 +47,21 @@ Table .header {
   width: 100px;
 }
 
+
 .btnTable {
+  height: 32px;
+  width: 100px;
   font-weight: bold;
 }
+
+
+.deletedBtn {
+  height: 32px;
+  width: 100px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
 
 tr .trueRow {
   background-color: #198754;
@@ -58,4 +70,8 @@ tr .trueRow {
 
 tr td {
   vertical-align: baseline;
+}
+
+.deleted{
+  background-color: #f78d86;
 }

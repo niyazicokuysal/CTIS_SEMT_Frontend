@@ -1,6 +1,7 @@
 import "./RequirementDocumentsPage.css";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import moment from "moment";
 import {
   Container,
   Accordion,
@@ -18,6 +19,8 @@ const RequirementDocumentsPage = () => {
   const [project, setProject] = useState([]);
   const [document, setDocument] = useState([]);
   const [docGrups, setDocGroups] = useState([]);
+  const [docRequirements, setDocumentRequirements] = useState([]);
+  const [singleReqInfo, setSingleReqInfo] = useState([]);
 
   const [showDetails, setDetails] = useState(false);
   const [showDoc, setDoc] = useState(false);
@@ -29,7 +32,7 @@ const RequirementDocumentsPage = () => {
 
   const [reqComment, setReqComment] = useState("");
   const [reqDesc, setReqDesc] = useState("");
-  const [reqGrp, setReqGrp] = useState("");
+  const [reqGrp, setReqGrp] = useState("null");
   const [reqType, setReqType] = useState("");
 
   const [groupName, setGroupName] = useState("");
@@ -43,7 +46,8 @@ const RequirementDocumentsPage = () => {
   const docShow = () => setDoc(true);
 
   const detailsClose = () => setDetails(false);
-  const detailsShow = () => setDetails(true);
+  const detailsShow = (id) => [{set:  setDetails(true), showedReqId: id ,req: getReqById(id) }]
+ 
 
   const groupClose = () => setGroup(false);
   const groupShow = () => setGroup(true);
@@ -56,30 +60,28 @@ const RequirementDocumentsPage = () => {
   const onSubmitReq = (e) => {
     e.preventDefault();
 
-    if (
-      !reqComment ||
-      !reqDesc ||
-      !reqType
-    ) {
+    if (!reqComment || !reqDesc || !reqType) {
       alert("Please add the credentials");
       return;
     }
 
+    console.log(reqComment, reqDesc, reqGrp, reqType);
 
-    console.log(reqComment, reqDesc, reqGrp, reqType)
-
-    
     const projectId = Number(projId);
     const requirementDocumentId = Number(docId);
-    const requirementGroupId = null
-    if (reqGrp !== "") {
-      requirementGroupId = reqGrp
-    }
+    const requirementGroupId = Number(reqGrp);
     const description = reqDesc;
     const comment = reqComment;
-    const testType = reqType;
+    const testTypes = reqType;
 
-    addRequriement({projectId, requirementDocumentId, requirementGroupId, description, comment, testType})
+    addRequriement({
+      projectId,
+      requirementDocumentId,
+      requirementGroupId,
+      description,
+      comment,
+      testTypes,
+    });
     setReqComment("");
     setReqDesc("");
     setReqGrp("");
@@ -87,19 +89,19 @@ const RequirementDocumentsPage = () => {
     reqClose(false);
   };
 
-  const addRequriement= async (reqInfo) => {
+  const addRequriement = async (reqInfo) => {
     console.log(JSON.stringify(reqInfo));
-    const res = await fetch(
-      "https://localhost:44335/api/requirement/add",
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(reqInfo),
-      }
-    );
+    const res = await fetch("https://localhost:44335/api/requirement/add", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(reqInfo),
+    });
+
+    const newRequirements = await getProjectDocumentsRequirements(docId);
+    setDocumentRequirements(newRequirements);
   };
 
   const onSubmitDocument = (e) => {
@@ -144,6 +146,17 @@ const RequirementDocumentsPage = () => {
         body: JSON.stringify(groupInfo),
       }
     );
+
+    const groupsInfo = await fetchDocumentGroups(docId);
+    setDocGroups(groupsInfo);
+  };
+
+  const deleteRequirement = async (id) => {
+    await fetch(`https://localhost:44335/api/requirement/delete?id=${id}`, {
+      method: "POST",
+    });
+    const docReqs = await getProjectDocumentsRequirements(docId);
+    setDocumentRequirements(docReqs);
   };
 
   const fetchDocumentGroups = async (id) => {
@@ -164,6 +177,37 @@ const RequirementDocumentsPage = () => {
     return data;
   };
 
+  const getProjectDocumentsRequirements = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/requirement/getbydocumentid?documentId=${id}`
+    );
+    const data = await res.json();
+
+    console.log(data);
+    return data;
+  };
+
+  const getReqById = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/requirement/getbyid?id=${id}`
+    );
+    const data = await res.json();
+
+    const projectInfo = data
+    setSingleReqInfo(projectInfo);
+    console.log(singleReqInfo)
+    return data;
+  }
+
+  const fetchDocument = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/requirement-document/getbyid?id=${id}`
+    );
+    const data = await res.json();
+
+    return data;
+  };
+
   useEffect(() => {
     const getProject = async () => {
       const projectInfo = await fetchProject(projId);
@@ -175,36 +219,21 @@ const RequirementDocumentsPage = () => {
       setDocument(documentInfo);
     };
 
-    console.log(docId);
     const getDocGroups = async () => {
       const groupsInfo = await fetchDocumentGroups(docId);
       setDocGroups(groupsInfo);
     };
 
-    console.log(docGrups);
+    const getDocReq = async () => {
+      const docReqs = await getProjectDocumentsRequirements(docId);
+      setDocumentRequirements(docReqs);
+    };
 
     getProject();
     getDocument();
+    getDocReq();
     getDocGroups();
-  }, []);
-
-  const fetchDocument = async (id) => {
-    const res = await fetch(
-      `https://localhost:44335/api/requirement-document/getbyid?id=${id}`
-    );
-    const data = await res.json();
-
-    return data;
-  };
-
-  const dummydocument = {
-    description: "Dummy description",
-    comment: "Comment",
-    createDate: "31/01/2031",
-    updateDate: "31/31/3131",
-    name: "name",
-    testtype: "31 Testi",
-  };
+  }, [projId]);
 
   return (
     <>
@@ -272,48 +301,49 @@ const RequirementDocumentsPage = () => {
                   <th style={{ width: "140px" }}>Req Id</th>
                   <th>Description</th>
                   <th style={{ width: "170px" }}>Test Types</th>
-                  <th style={{ width: "120px" }}>Is Verified</th>
+                  <th style={{ width: "120px" }}>Is Deleted</th>
+                  <th style={{ width: "105px" }}>Is Verified</th>
                   <th style={{ width: "118px" }}>View Details</th>
                   <th style={{ width: "118px" }}>Delete</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td className={`${true === true ? "trueRow" : "falseRow"}`}>
-                    Yes
-                  </td>
-                  <td>
-                    <Button
-                      size="sm"
-                      variant="info"
-                      className="btnTable"
-                      onClick={detailsShow}
-                    >
-                      View
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      size="sm"
-                      variant="danger"
-                      className="btnTable" //onClick={docShow}
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
+                {docRequirements.map((requirement, i) => (
+                  <tr key={i} className={`${requirement.isDeleted === true ? "deleted" : ""}`}>
+                    <td>{requirement.name}</td>
+                    <td>{requirement.description}</td>
+                    <td>{requirement.testTypes}</td>
+                    <td>
+                      {requirement.isDeleted === true ? "Deleted" : "Not Deleted"}
+                    </td>
+                    <td className={`${false === true ? "trueRow" : "falseRow"}`}>
+                      No
+                    </td>
+                    <td>
+                      <Button
+                        size="sm"
+                        variant="info"
+                        className="btnTable"
+                        onClick={() => detailsShow(requirement.id)}
+                      >
+                        View
+                      </Button>
+                    </td>
+                    <td>
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        onClick={() => deleteRequirement(requirement.id)}
+                        className={`${requirement.isDeleted === true ? "deletedBtn" : "btnTable"}`}
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+
                 <tr className="header">
-                  <td colSpan="6">ASDFASDF</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                  <td>1</td>
+                  <td colSpan="7">ASDFASDF</td>
                 </tr>
               </tbody>
             </Table>
@@ -401,10 +431,15 @@ const RequirementDocumentsPage = () => {
               />
             </Form.Group>
 
-            <Form.Select aria-label="Default select example"
-            onChange={e => {setReqType(e.target.value);
-            }}>
-              <option value="0" selected disabled>Please select a Type</option>
+            <Form.Select
+              aria-label="Default select example"
+              onChange={(e) => {
+                setReqType(e.target.value);
+              }}
+            >
+              <option value="0" selected disabled>
+                Please select a Type
+              </option>
               <option value="Inspection">Inspection</option>
               <option value="Demonstration">Demonstration</option>
               <option value="Test">Test</option>
@@ -412,11 +447,20 @@ const RequirementDocumentsPage = () => {
               <option value="Certification">Certification</option>
             </Form.Select>
 
-            <Form.Select aria-label="Default select example" style={{ marginTop: "20px" }}
-             onChange={e => {setReqGrp(e.target.value);}}>
-              <option value="0" selected disabled>Select a Header if you want</option>
+            <Form.Select
+              aria-label="Default select example"
+              style={{ marginTop: "20px" }}
+              onChange={(e) => {
+                setReqGrp(e.target.value);
+              }}
+            >
+              <option value="0" selected disabled>
+                Select a Header if you want
+              </option>
               {docGrups.map((doc, i) => (
-                  <option key={i} value={doc.id}>{doc.name}</option>
+                <option key={i} value={doc.id}>
+                  {doc.name}
+                </option>
               ))}
             </Form.Select>
 
@@ -472,15 +516,15 @@ const RequirementDocumentsPage = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {dummydocument.name}
+            {singleReqInfo.name}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h5>Description:</h5> {dummydocument.description}
-          <h5>Comment:</h5> {dummydocument.comment}
-          <h5>Create Date:</h5> {dummydocument.createDate}
-          <h5>Update Date:</h5> {dummydocument.updateDate}
-          <h5>Test Type:</h5> {dummydocument.testtype}
+          <h5>Description: {singleReqInfo.description} </h5>
+          <h5>Comment: {singleReqInfo.comment} </h5>
+          <h5>Create Date: {moment(singleReqInfo.createdDate).format("LLLL")}  </h5>
+          <h5>Update Date: {singleReqInfo.updatedDate === null ? "Not Yet Modified" : moment(singleReqInfo.updatedDate).format("LLLL")}  </h5>
+          <h5>Test Type: {singleReqInfo.testTypes} </h5>
         </Modal.Body>
       </Modal>
     </>

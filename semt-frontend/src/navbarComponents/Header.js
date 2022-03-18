@@ -15,6 +15,7 @@ const Header = () => {
   const { pathname } = useLocation()
   const path = pathname.split("/")
   const projId = path[1]
+  const docId = path[3];
 
   console.log(projId);
   
@@ -31,7 +32,7 @@ const Header = () => {
 
     getProjectReq();
 
-  }, [projId]);
+  }, [projId, docId]);
 
   const getProjectDocuments = async (id) => {
     const res = await fetch(`https://localhost:44335/api/requirement-document/getall?projectId=${id}`);
