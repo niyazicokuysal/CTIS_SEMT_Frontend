@@ -119,7 +119,7 @@ const ProjectMainPage = ({ dummyProject }) => {
   return (
     <>
       <Container fluid className="projectMainPage">
-        <Row>""
+        <Row>
           <Col sm={10} style={{ height: "200px" }}>
             <Row className="projInfoRow">
               <Col sm={5}>

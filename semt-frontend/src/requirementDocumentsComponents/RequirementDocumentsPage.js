@@ -16,6 +16,7 @@ import {
 
 const RequirementDocumentsPage = () => {
   const [project, setProject] = useState([]);
+  const [document, setDocument] = useState([]);
 
   const [showDetails, setDetails] = useState(false);
   const [showDoc, setDoc] = useState(false);
@@ -35,6 +36,7 @@ const RequirementDocumentsPage = () => {
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
+  const docId = path[3];
 
   const docClose = () => setDoc(false);
   const docShow = () => setDoc(true);
@@ -108,7 +110,25 @@ const RequirementDocumentsPage = () => {
     return data;
   };
 
-  const document = {
+  useEffect(() => {
+    const getDocument = async () => {
+      const documentInfo = await fetchDocument(docId);
+      setDocument(documentInfo);
+    };
+
+    getDocument();
+  }, []);
+
+  const fetchDocument = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/requirement-document/getbyid?id=${id}`
+    );
+    const data = await res.json();
+
+    return data;
+  };
+
+  const dummydocument = {
     description: "Dummy description",
     comment: "Comment",
     createDate: "31/01/2031",
@@ -125,12 +145,12 @@ const RequirementDocumentsPage = () => {
             <Row className="projInfoRow">
               <Col sm={5}>
                 <h1>
-                  {`System Requirements Documents of ${project.name}`.length >
+                  {`${document.typeName} of ${project.name}`.length >
                     50
-                    ? `System Requirements Documents of ${project.name}`
+                    ? `${document.typeName} of ${project.name}`
                       .slice(0, 50)
                       .concat("...")
-                    : `System Requirements Documents of ${project.name}`}
+                    : `${document.typeName} of ${project.name}`}
                 </h1>
               </Col>
               <Col sm={7} className="progressBar">
@@ -146,11 +166,7 @@ const RequirementDocumentsPage = () => {
             <Row className="projInfoRow">
               <Col>
                 <a>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse.
+                  {document.description}
                 </a>
               </Col>
             </Row>
@@ -387,15 +403,15 @@ const RequirementDocumentsPage = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {document.name}
+            {dummydocument.name}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h5>Description:</h5> {document.description}
-          <h5>Comment:</h5> {document.comment}
-          <h5>Create Date:</h5> {document.createDate}
-          <h5>Update Date:</h5> {document.updateDate}
-          <h5>Test Type:</h5> {document.testtype}
+          <h5>Description:</h5> {dummydocument.description}
+          <h5>Comment:</h5> {dummydocument.comment}
+          <h5>Create Date:</h5> {dummydocument.createDate}
+          <h5>Update Date:</h5> {dummydocument.updateDate}
+          <h5>Test Type:</h5> {dummydocument.testtype}
 
         </Modal.Body>
       </Modal>
