@@ -59,20 +59,47 @@ const RequirementDocumentsPage = () => {
     if (
       !reqComment ||
       !reqDesc ||
-      !docName ||
-      !docDescription ||
-      !reqGrp ||
       !reqType
     ) {
       alert("Please add the credentials");
       return;
     }
 
+
+    console.log(reqComment, reqDesc, reqGrp, reqType)
+
+    
+    const projectId = Number(projId);
+    const requirementDocumentId = Number(docId);
+    const requirementGroupId = null
+    if (reqGrp !== "") {
+      requirementGroupId = reqGrp
+    }
+    const description = reqDesc;
+    const comment = reqComment;
+    const testType = reqType;
+
+    addRequriement({projectId, requirementDocumentId, requirementGroupId, description, comment, testType})
     setReqComment("");
     setReqDesc("");
     setReqGrp("");
     setReqType("");
-    docClose(false);
+    reqClose(false);
+  };
+
+  const addRequriement= async (reqInfo) => {
+    console.log(JSON.stringify(reqInfo));
+    const res = await fetch(
+      "https://localhost:44335/api/requirement/add",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(reqInfo),
+      }
+    );
   };
 
   const onSubmitDocument = (e) => {
@@ -374,15 +401,20 @@ const RequirementDocumentsPage = () => {
               />
             </Form.Group>
 
-            <Form.Select aria-label="Default select example">
-              <option value="1">Inspection</option>
-              <option value="2">Demonstration</option>
-              <option value="3">Test</option>
-              <option value="4">Analysis</option>
-              <option value="5">Certification</option>
+            <Form.Select aria-label="Default select example"
+            onChange={e => {setReqType(e.target.value);
+            }}>
+              <option value="0" selected disabled>Please select a Type</option>
+              <option value="Inspection">Inspection</option>
+              <option value="Demonstration">Demonstration</option>
+              <option value="Test">Test</option>
+              <option value="Analysis">Analysis</option>
+              <option value="Certification">Certification</option>
             </Form.Select>
 
-            <Form.Select aria-label="Default select example" style={{ marginTop: "20px" }}>
+            <Form.Select aria-label="Default select example" style={{ marginTop: "20px" }}
+             onChange={e => {setReqGrp(e.target.value);}}>
+              <option value="0" selected disabled>Select a Header if you want</option>
               {docGrups.map((doc, i) => (
                   <option key={i} value={doc.id}>{doc.name}</option>
               ))}
