@@ -19,6 +19,7 @@ const TestDocumentsPage = () => {
   const [project, setProject] = useState([]);
   const [showTestCaseAdd, setShowTestCaseAdd] = useState(false);
   const [testCases, setTestCases] = useState([]);
+ // const [document, setDocument] = useState([]);
 
   const testCaseAddClose = () => setShowTestCaseAdd(false);
   const testCaseAddOpen = () => setShowTestCaseAdd(true);
@@ -75,6 +76,7 @@ const TestDocumentsPage = () => {
       `https://localhost:44335/api/test-document/getbyId?id=${id}`
     );
     const data = await res.json();
+    console.log("bruh",document)
     return data;
   };
 
@@ -86,10 +88,10 @@ const TestDocumentsPage = () => {
       return;
     }
 
-    const id = Number(testDoc.id);
-    testDoc.name = testDocName + " Test Document" ;
-    testDoc.description = testDocDesc;
-    updateTestDocument(testDoc);
+    const id = Number(document.id);
+    document.name = testDocName + " Test Document"; 
+    document.description = testDocDesc;
+    updateTestDocument(document);
     setTestDocName("");
     setTestDocDesc("");
     setDocument(false);
@@ -106,8 +108,8 @@ const TestDocumentsPage = () => {
       body: JSON.stringify(testDoc),
     });
     
-    const newDocument = await fetchTestDocument(testId);
-    setTestDoc(newDocument);
+    const newTestDocument = await fetchTestDocument(testDoc.id);
+    setDocument(newTestDocument);
   };
 
   const fetchTestCases = async (id) => {
@@ -163,18 +165,18 @@ const TestDocumentsPage = () => {
             <Row className="projInfoRow">
               <Col>
                 <h1>
-                  {`${testDoc.name} of ${project.name}`.length > 65
-                    ? `${testDoc.name} of ${project.name}`
+                  {`${document.name} of ${project.name}`.length > 65
+                    ? `${document.name} of ${project.name}`
                         .slice(0, 62)
                         .concat("...")
-                    : `${testDoc.name} of ${project.name}`}
+                    : `${document.name} of ${project.name}`}
                 </h1>
               </Col>
             </Row>
             <Row className="projInfoRow">
               <Col>
                 <a>
-                  {testDoc.description}
+                  {document.description}
                 </a>
               </Col>
             </Row>
