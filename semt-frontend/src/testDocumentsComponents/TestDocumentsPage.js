@@ -18,15 +18,18 @@ import {
 const TestDocumentsPage = () => {
   const [project, setProject] = useState([]);
   const [showTestCaseAdd, setShowTestCaseAdd] = useState(false);
+  const [testCases, setTestCases] = useState([]);
 
   const testCaseAddClose = () => setShowTestCaseAdd(false);
   const testCaseAddOpen = () => setShowTestCaseAdd(true);
   const [testDoc, setDocument] = useState([]);
 
-  const now = 60;
-
   const [testDocName, setTestDocName] = useState("");
   const [testDocDesc, setTestDocDesc] = useState("");
+
+  const [testName, setTestName] = useState("");
+  const [description, setDesc] = useState("");
+  const [requirementString, setRequirementString] = useState("");
 
   const [showTestDoc, setTestDoc] = useState(false);
 
@@ -43,9 +46,20 @@ const TestDocumentsPage = () => {
       const projectInfo = await fetchProject(projId);
       setProject(projectInfo);
     };
+    const getDocument = async () => {
+      const testInfo = await fetchTestDocument(testId);
+      setDocument(testInfo);
+    };
+    const getTestCases = async () => {
+      const testInfo = await fetchTestCases(testId);
+      setTestCases(testInfo);
+    };
 
+    getTestCases();
+    getDocument();
     getProject();
-  }, []);
+    console.log(testCases)
+  }, [projId]);
 
   const fetchProject = async (id) => {
     const res = await fetch(
@@ -56,21 +70,11 @@ const TestDocumentsPage = () => {
     return data;
   };
 
-  useEffect(() => {
-    const getDocument = async () => {
-      const testInfo = await fetchTestDocument(testId);
-      setDocument(testInfo);
-    };
-    getDocument();
-    
-  }, []);
-
   const fetchTestDocument = async (id) => {
     const res = await fetch(
-      `https://localhost:44335/api/test-document/getbyId?id=${testId}`
+      `https://localhost:44335/api/test-document/getbyId?id=${id}`
     );
     const data = await res.json();
-    console.log("bruh",testDoc)
     return data;
   };
 
@@ -83,7 +87,7 @@ const TestDocumentsPage = () => {
     }
 
     const id = Number(testDoc.id);
-    testDoc.name = testDocName;
+    testDoc.name = testDocName + " Test Document" ;
     testDoc.description = testDocDesc;
     updateTestDocument(testDoc);
     setTestDocName("");
@@ -104,6 +108,51 @@ const TestDocumentsPage = () => {
     
     const newDocument = await fetchTestDocument(testId);
     setTestDoc(newDocument);
+  };
+
+  const fetchTestCases = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/test-case/getall?documentId=${id}`
+    );
+    const data = await res.json();
+    return data;
+  };
+
+
+  const onSubmitCase = (e) => {
+    e.preventDefault();
+
+    if (!testName || !description || !requirementString) {
+      alert("Please add the credentials");
+      return;
+    } 
+
+    const projectId = Number(projId);
+    const testDocumentId = Number(testId);
+    const name = testName
+
+    const requirementNames = requirementString.split("/");
+
+    addTestCase({ projectId, testDocumentId, name, description,requirementNames });
+    setTestName("");
+    setDesc("");
+    setRequirementString("");
+    setTestDoc(false)
+  };
+
+  const addTestCase = async (addTestCase) => {
+    console.log(JSON.stringify(addTestCase));
+    const res = await fetch(
+      "https://localhost:44335/api/test-case/add",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(addTestCase),
+      }
+    );
   };
 
   return (
@@ -151,34 +200,42 @@ const TestDocumentsPage = () => {
         </Row>
         <Row>
           <Col>
-            <Accordion alwaysOpen>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Accordion Item #1</Accordion.Header>
-                <Accordion.Body>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </Accordion.Body>
-              </Accordion.Item>
-              <Accordion.Item eventKey="1">
-                <Accordion.Header>Accordion Item #2</Accordion.Header>
-                <Accordion.Body>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
+
+
+              {testCases.map((testCase, i) => {
+                <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>{testCase.name}</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>@fat</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td colSpan={2}>Larry the Bird</td>
+                    <td>@twitter</td>
+                  </tr>
+                </tbody>
+              </Table>
+
+
+              })}
+    
           </Col>
         </Row>
       </Container>
@@ -241,12 +298,12 @@ const TestDocumentsPage = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form //onSubmit={onSubmitGroup}
+          <Form onSubmit={onSubmitCase}
           >
             <Form.Group className="mb-3" controlId="">
             <Form.Label>Name of the Case</Form.Label>
               <Form.Control
-                //onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setTestName(e.target.value)}
                 type="text"
                 placeholder="Enter a name for the Case"
               />
@@ -254,11 +311,20 @@ const TestDocumentsPage = () => {
             <Form.Group className="mb-3" controlId="">
             <Form.Label>Requirement(s) that been Tested</Form.Label>
               <Form.Control
-                //onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setRequirementString(e.target.value)}
                 type="text"
                 placeholder="Enter requirement name(s)"
               />
             </Form.Group>
+            <Form.Label>Project Description</Form.Label>
+              <Form.Control
+                value={description}
+                onChange={(e) => setDesc(e.target.value)}
+                style={{ height: "200px" }}
+                rows="5"
+                as="textarea"
+                placeholder="Enter the description for the Project"
+              />
             <Modal.Footer>
               <Button variant="primary" type="submit">
                 Add Group
