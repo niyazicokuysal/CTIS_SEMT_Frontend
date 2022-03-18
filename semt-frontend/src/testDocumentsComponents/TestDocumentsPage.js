@@ -17,6 +17,10 @@ import {
 
 const TestDocumentsPage = () => {
   const [project, setProject] = useState([]);
+  const [showTestCaseAdd, setShowTestCaseAdd] = useState(false);
+
+  const testCaseAddClose = () => setShowTestCaseAdd(false);
+  const testCaseAddOpen = () => setShowTestCaseAdd(true);
 
   const now = 60;
 
@@ -81,17 +85,11 @@ const TestDocumentsPage = () => {
             </Button>
             <Button
               size="lg"
-              variant="danger"
-              className="btnReqDoc" //onClick={docShow}
-            >
-              Add Test in Document
-            </Button>
-            <Button
-              size="lg"
               variant="info"
-              className="btnReqDoc" //onClick={docShow}
+              className="btnReqDoc"
+              onClick={testCaseAddOpen}
             >
-              Add Test Group
+              Add Test Case
             </Button>
           </Col>
         </Row>
@@ -128,6 +126,48 @@ const TestDocumentsPage = () => {
           </Col>
         </Row>
       </Container>
+
+
+      <Modal
+        //Add Test Case Model
+        show={showTestCaseAdd}
+        onHide={testCaseAddClose}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Add Test Case 
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form //onSubmit={onSubmitGroup}
+          >
+            <Form.Group className="mb-3" controlId="">
+            <Form.Label>Name of the Case</Form.Label>
+              <Form.Control
+                //onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Enter a name for the Case"
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="">
+            <Form.Label>Requirement(s) that been Tested</Form.Label>
+              <Form.Control
+                //onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Enter requirement name(s)"
+              />
+            </Form.Group>
+            <Modal.Footer>
+              <Button variant="primary" type="submit">
+                Add Group
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

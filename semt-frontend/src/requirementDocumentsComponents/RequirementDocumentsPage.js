@@ -141,6 +141,9 @@ const RequirementDocumentsPage = () => {
       }
     );
 
+    const newdocs = await fetchDocumentGroups(docId);
+    setDocGroups(newdocs);
+
   }
 
   const onUpdateDocument = (e) => {
