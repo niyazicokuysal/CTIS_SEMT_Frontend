@@ -21,6 +21,7 @@ const RequirementDocumentsPage = () => {
   const [docGrups, setDocGroups] = useState([]);
   const [docRequirements, setDocumentRequirements] = useState([]);
   const [singleReqInfo, setSingleReqInfo] = useState([]);
+  const [singleGroupInfo, setSingleGroupInfo] = useState([null]);
 
   const [showDetails, setDetails] = useState(false);
   const [showDoc, setDoc] = useState(false);
@@ -46,8 +47,14 @@ const RequirementDocumentsPage = () => {
   const docShow = () => setDoc(true);
 
   const detailsClose = () => setDetails(false);
-  const detailsShow = (id) => [{set:  setDetails(true), showedReqId: id ,req: getReqById(id) }]
- 
+  const detailsShow = (id, group) => [
+    {
+      set: setDetails(true),
+      showedReqId: id,
+      req: getReqById(id),
+      group: getGroupById(group),
+    },
+  ];
 
   const groupClose = () => setGroup(false);
   const groupShow = () => setGroup(true);
@@ -193,11 +200,22 @@ const RequirementDocumentsPage = () => {
     );
     const data = await res.json();
 
-    const projectInfo = data
+    const projectInfo = data;
     setSingleReqInfo(projectInfo);
-    console.log(singleReqInfo)
+    console.log(singleReqInfo);
     return data;
-  }
+  };
+
+  const getGroupById = async (id) => {
+    if (id !== null) {
+      const res = await fetch(
+        `https://localhost:44335/api/requirement-group/getbyid?id=${id}`
+      );
+      const groupInfo = await res.json();
+      setSingleGroupInfo(groupInfo);
+      console.log(singleGroupInfo);
+    } else setSingleGroupInfo(null);
+  };
 
   const fetchDocument = async (id) => {
     const res = await fetch(
@@ -305,18 +323,28 @@ const RequirementDocumentsPage = () => {
                   <th style={{ width: "105px" }}>Is Verified</th>
                   <th style={{ width: "118px" }}>View Details</th>
                   <th style={{ width: "118px" }}>Delete</th>
+                  {/* <th style={{ width: "118px" }}>Group</th> */}
                 </tr>
               </thead>
               <tbody>
                 {docRequirements.map((requirement, i) => (
-                  <tr key={i} className={`${requirement.isDeleted === true ? "deleted" : ""}`}>
+                  <tr
+                    key={i}
+                    className={`${
+                      requirement.isDeleted === true ? "deleted" : ""
+                    }`}
+                  >
                     <td>{requirement.name}</td>
                     <td>{requirement.description}</td>
                     <td>{requirement.testTypes}</td>
                     <td>
-                      {requirement.isDeleted === true ? "Deleted" : "Not Deleted"}
+                      {requirement.isDeleted === true
+                        ? "Deleted"
+                        : "Not Deleted"}
                     </td>
-                    <td className={`${false === true ? "trueRow" : "falseRow"}`}>
+                    <td
+                      className={`${false === true ? "trueRow" : "falseRow"}`}
+                    >
                       No
                     </td>
                     <td>
@@ -324,7 +352,12 @@ const RequirementDocumentsPage = () => {
                         size="sm"
                         variant="info"
                         className="btnTable"
-                        onClick={() => detailsShow(requirement.id)}
+                        onClick={() =>
+                          detailsShow(
+                            requirement.id,
+                            requirement.requirementGroupId
+                          )
+                        }
                       >
                         View
                       </Button>
@@ -334,17 +367,23 @@ const RequirementDocumentsPage = () => {
                         size="sm"
                         variant="danger"
                         onClick={() => deleteRequirement(requirement.id)}
-                        className={`${requirement.isDeleted === true ? "deletedBtn" : "btnTable"}`}
+                        className={`${
+                          requirement.isDeleted === true
+                            ? "deletedBtn"
+                            : "btnTable"
+                        }`}
                       >
                         Delete
                       </Button>
                     </td>
+
+                    {/* <td>{singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}</td> */}
                   </tr>
                 ))}
 
-                <tr className="header">
+                {/* <tr className="header">
                   <td colSpan="7">ASDFASDF</td>
-                </tr>
+                </tr> */}
               </tbody>
             </Table>
           </Col>
@@ -522,8 +561,19 @@ const RequirementDocumentsPage = () => {
         <Modal.Body>
           <h5>Description: {singleReqInfo.description} </h5>
           <h5>Comment: {singleReqInfo.comment} </h5>
-          <h5>Create Date: {moment(singleReqInfo.createdDate).format("LLLL")}  </h5>
-          <h5>Update Date: {singleReqInfo.updatedDate === null ? "Not Yet Modified" : moment(singleReqInfo.updatedDate).format("LLLL")}  </h5>
+          <h5>
+            Create Date: {moment(singleReqInfo.createdDate).format("LLLL")}{" "}
+          </h5>
+          <h5>
+            Update Date:{" "}
+            {singleReqInfo.updatedDate === null
+              ? "Not Yet Modified"
+              : moment(singleReqInfo.updatedDate).format("LLLL")}{" "}
+          </h5>
+          <h5>
+            Group:{" "}
+            {singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}{" "}
+          </h5>
           <h5>Test Type: {singleReqInfo.testTypes} </h5>
         </Modal.Body>
       </Modal>
