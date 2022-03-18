@@ -28,8 +28,8 @@ const RequirementDocumentsPage = () => {
   const [showGroup, setGroup] = useState(false);
   const [showReq, setReq] = useState(false);
 
-  const [docName, setName] = useState("");
-  const [docDescription, setDesc] = useState("");
+  const [docTypeName, setDocTypeName] = useState("");
+  const [docDescription, setDocDesc] = useState("");
 
   const [reqComment, setReqComment] = useState("");
   const [reqDesc, setReqDesc] = useState("");
@@ -111,19 +111,6 @@ const RequirementDocumentsPage = () => {
     setDocumentRequirements(newRequirements);
   };
 
-  const onSubmitDocument = (e) => {
-    e.preventDefault();
-
-    if (!docName || !docDescription) {
-      alert("Please add the credentials");
-      return;
-    }
-
-    setName("");
-    setProject("");
-    docClose(false);
-  };
-
   const onSubmitGroup = (e) => {
     e.preventDefault();
 
@@ -154,9 +141,25 @@ const RequirementDocumentsPage = () => {
       }
     );
 
-    const groupsInfo = await fetchDocumentGroups(docId);
-    setDocGroups(groupsInfo);
-  };
+  }
+
+  const onUpdateDocument = (e) => {
+    e.preventDefault();
+
+    if (!docTypeName || !docDescription) {
+      alert("Please add the credentials");
+      return;
+    }
+
+    const id = Number(document.id);
+    console.log("UPDATE",document);
+    document.typeName = docTypeName;
+    document.description = docDescription;
+    updateDocument(document);
+    setDocTypeName("");
+    setDocDesc("");
+    setDocument(false);
+  }
 
   const deleteRequirement = async (id) => {
     await fetch(`https://localhost:44335/api/requirement/delete?id=${id}`, {
@@ -252,6 +255,22 @@ const RequirementDocumentsPage = () => {
     getDocReq();
     getDocGroups();
   }, [projId]);
+
+
+  const updateDocument = async (document) => {
+    console.log(JSON.stringify(document));
+    const res = await fetch("https://localhost:44335/api/requirement-document/update", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(document),
+    });
+    
+    const newDocument = await fetchDocument(document.id);
+    setDocument(newDocument);
+  };
 
   return (
     <>
@@ -404,11 +423,11 @@ const RequirementDocumentsPage = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={onSubmitDocument}>
+          <Form onSubmit={onUpdateDocument}>
             <Form.Group className="mb-3" controlId="">
               <Form.Label>Edit Document Name</Form.Label>
               <Form.Control
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setDocTypeName(e.target.value)}
                 type="text"
                 placeholder="Enter the name for the Document"
               />
@@ -417,7 +436,7 @@ const RequirementDocumentsPage = () => {
             <Form.Group className="mb-3" controlId="">
               <Form.Label>Edit Document Description</Form.Label>
               <Form.Control
-                onChange={(e) => setDesc(e.target.value)}
+                onChange={(e) => setDocDesc(e.target.value)}
                 style={{ height: "200px" }}
                 rows="5"
                 as="textarea"
