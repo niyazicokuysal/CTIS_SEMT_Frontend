@@ -17,6 +17,7 @@ import {
 const RequirementDocumentsPage = () => {
   const [project, setProject] = useState([]);
   const [document, setDocument] = useState([]);
+  const [docGrups, setDocGroups] = useState([]);
 
   const [showDetails, setDetails] = useState(false);
   const [showDoc, setDoc] = useState(false);
@@ -55,7 +56,14 @@ const RequirementDocumentsPage = () => {
   const onSubmitReq = (e) => {
     e.preventDefault();
 
-    if (!reqComment || !reqDesc || !docName || !docDescription || !reqGrp || !reqType) {
+    if (
+      !reqComment ||
+      !reqDesc ||
+      !docName ||
+      !docDescription ||
+      !reqGrp ||
+      !reqType
+    ) {
       alert("Please add the credentials");
       return;
     }
@@ -88,18 +96,37 @@ const RequirementDocumentsPage = () => {
       return;
     }
 
+    const name = groupName;
+    const requirementDocumentId = document.id;
+    const parentId = null;
+    addDocumentReqGroup({ parentId, requirementDocumentId, name });
     setGroup("");
     docClose(false);
   };
 
-  useEffect(() => {
-    const getProject = async () => {
-      const projectInfo = await fetchProject(projId);
-      setProject(projectInfo);
-    };
+  const addDocumentReqGroup = async (groupInfo) => {
+    console.log(JSON.stringify(groupInfo));
+    const res = await fetch(
+      "https://localhost:44335/api/requirement-group/add",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(groupInfo),
+      }
+    );
+  };
 
-    getProject();
-  }, []);
+  const fetchDocumentGroups = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/requirement-group/getall?documentId=${id}`
+    );
+    const data = await res.json();
+
+    return data;
+  };
 
   const fetchProject = async (id) => {
     const res = await fetch(
@@ -111,12 +138,27 @@ const RequirementDocumentsPage = () => {
   };
 
   useEffect(() => {
+    const getProject = async () => {
+      const projectInfo = await fetchProject(projId);
+      setProject(projectInfo);
+    };
+
     const getDocument = async () => {
       const documentInfo = await fetchDocument(docId);
       setDocument(documentInfo);
     };
 
+    console.log(docId);
+    const getDocGroups = async () => {
+      const groupsInfo = await fetchDocumentGroups(docId);
+      setDocGroups(groupsInfo);
+    };
+
+    console.log(docGrups);
+
+    getProject();
     getDocument();
+    getDocGroups();
   }, []);
 
   const fetchDocument = async (id) => {
@@ -134,7 +176,7 @@ const RequirementDocumentsPage = () => {
     createDate: "31/01/2031",
     updateDate: "31/31/3131",
     name: "name",
-    testtype: "31 Testi"
+    testtype: "31 Testi",
   };
 
   return (
@@ -145,11 +187,10 @@ const RequirementDocumentsPage = () => {
             <Row className="projInfoRow">
               <Col sm={5}>
                 <h1>
-                  {`${document.typeName} of ${project.name}`.length >
-                    50
+                  {`${document.typeName} of ${project.name}`.length > 50
                     ? `${document.typeName} of ${project.name}`
-                      .slice(0, 50)
-                      .concat("...")
+                        .slice(0, 50)
+                        .concat("...")
                     : `${document.typeName} of ${project.name}`}
                 </h1>
               </Col>
@@ -165,9 +206,7 @@ const RequirementDocumentsPage = () => {
             </Row>
             <Row className="projInfoRow">
               <Col>
-                <a>
-                  {document.description}
-                </a>
+                <a>{document.description}</a>
               </Col>
             </Row>
           </Col>
@@ -177,7 +216,6 @@ const RequirementDocumentsPage = () => {
               variant="success"
               className="btnReqDoc"
               onClick={docShow}
-
             >
               Edit Document Info
             </Button>
@@ -192,7 +230,8 @@ const RequirementDocumentsPage = () => {
             <Button
               size="lg"
               variant="info"
-              className="btnReqDoc" onClick={groupShow}
+              className="btnReqDoc"
+              onClick={groupShow}
             >
               Add Requirements Group
             </Button>
@@ -216,17 +255,15 @@ const RequirementDocumentsPage = () => {
                   <td>1</td>
                   <td>Mark</td>
                   <td>Otto</td>
-                  <td
-                    className={`${true === true
-                      ? "trueRow"
-                      : "falseRow"
-                      }`}
-                  >Yes</td>
+                  <td className={`${true === true ? "trueRow" : "falseRow"}`}>
+                    Yes
+                  </td>
                   <td>
                     <Button
                       size="sm"
                       variant="info"
-                      className="btnTable" onClick={detailsShow}
+                      className="btnTable"
+                      onClick={detailsShow}
                     >
                       View
                     </Button>
@@ -256,7 +293,6 @@ const RequirementDocumentsPage = () => {
           </Col>
         </Row>
       </Container>
-
 
       <Modal
         //Edit document modal
@@ -339,7 +375,6 @@ const RequirementDocumentsPage = () => {
             </Form.Group>
 
             <Form.Select aria-label="Default select example">
-              <option>Type</option>
               <option value="1">Inspection</option>
               <option value="2">Demonstration</option>
               <option value="3">Test</option>
@@ -347,8 +382,10 @@ const RequirementDocumentsPage = () => {
               <option value="5">Certification</option>
             </Form.Select>
 
-            <Form.Select aria-label="Default select example">
-              <option>Group</option>
+            <Form.Select aria-label="Default select example" style={{ marginTop: "20px" }}>
+              {docGrups.map((doc, i) => (
+                  <option key={i} value={doc.id}>{doc.name}</option>
+              ))}
             </Form.Select>
 
             <Modal.Footer>
@@ -412,7 +449,6 @@ const RequirementDocumentsPage = () => {
           <h5>Create Date:</h5> {dummydocument.createDate}
           <h5>Update Date:</h5> {dummydocument.updateDate}
           <h5>Test Type:</h5> {dummydocument.testtype}
-
         </Modal.Body>
       </Modal>
     </>

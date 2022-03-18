@@ -3,7 +3,6 @@ import Offcanvas from "react-bootstrap/Offcanvas";
 import { Container, Nav, NavDropdown, Image } from "react-bootstrap";
 import CloseButton from "react-bootstrap/CloseButton";
 import { Link, useLocation } from "react-router-dom";
-import { OffcanvasData } from "./OffcanvasData";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -83,13 +82,25 @@ const Header = () => {
             </Nav.Item>
             {projId === ""
               ? null
+              :  <Nav.Item key={10000000000000000000}> <Link
+              to={"/" + projId + "/main"}
+              className={`${pathname.includes("main")
+                ? "selected"
+                : ""
+                }`}
+            >
+              <span className="row" >Main</span>
+            </Link>
+            </Nav.Item>
+            }
+            {projId === ""
+              ? null
               : projectReq.map((item, index) => {
                 return (
                   <Nav.Item key={index}>
                     <Link
-                      to={`${"/" + projId + "/req/" + item.id} `}
-                      className={`${item.id === item.id &&
-                          pathname.includes(item.id) &&  pathname.includes("req")
+                      to={`${"/" + projId + "/req/" + item.id}`}
+                      className={`${pathname.includes(item.id) &&  pathname.includes("req")
                           ? "selected"
                           : ""
                         }`}
@@ -103,11 +114,10 @@ const Header = () => {
               ? null
               : projectTest.map((item, index) => {
                 return (
-                  <Nav.Item key={index}>
+                  <Nav.Item key={index+10000}>
                     <Link
                       to={`${"/" + projId + "/test/" + item.id} `}
-                      className={`${item.id === item.id &&
-                          pathname.includes(item.id) &&  pathname.includes("test")
+                      className={`${pathname.includes(item.id) &&  pathname.includes("test")
                           ? "selected"
                           : ""
                         }`}

@@ -17,8 +17,6 @@ import {
 const ProjectMainPage = ({ dummyProject }) => {
   const [project, setProject] = useState([]);
   const [projectReqDocs, setProjectReqDocs] = useState([]);
-  const [projectReq, setprojectReq] = useState([]);
-  const [projectTest, setProjectTest] = useState([]);
 
   const [show, setShow] = useState(false);
   const [showDoc, setDoc] = useState(false);
@@ -29,12 +27,8 @@ const ProjectMainPage = ({ dummyProject }) => {
   const [newDocHeader, setNewDocHeader] = useState("");
 
   const { pathname } = useLocation();
-
   const path = pathname.split("/");
   const projId = path[1];
-
-  const reqDocId = 1;
-  const testDocId = 1;
 
   const navigate = useNavigate();
 
@@ -62,8 +56,7 @@ const ProjectMainPage = ({ dummyProject }) => {
     };
 
     getProjectAllDoc();
-    console.log(projectReqDocs);
-  }, [projId]);
+  }, [projectReqDocs]);
 
   const getProjectAllDocuments = async (id) => {
     const res = await fetch(
@@ -129,14 +122,14 @@ const ProjectMainPage = ({ dummyProject }) => {
       return;
     }
 
-    const typeName = newDocName;
+    const typeName = newDocName + " Requirements Document";
     const header = newDocHeader;
     const description = "Can add description via Edit Document";
     const projectId = Number(projId);
     const testDocuments = [
       {
         projectId: projectId,
-        name: newDocName + "Test Document",
+        name: newDocName + " Test Document",
         description: description,
       },
     ];
@@ -200,7 +193,7 @@ const ProjectMainPage = ({ dummyProject }) => {
               className="btnProjectMain"
               onClick={docShow}
             >
-              Edit Project Documentation
+              Add Project Documentation
             </Button>
             <Button
               size="lg"
@@ -231,8 +224,8 @@ const ProjectMainPage = ({ dummyProject }) => {
                       </Link>
                     </td>
                     <td className="documentRow">
-                      <Link to={`/${projId}/test/${testDocId}`}>
-                        {document.testDocument.name}
+                      <Link to={`/${projId}/test/${document.testDocument.id}`}>
+                          {document.testDocument.name} 
                       </Link>
                     </td>
                     <td style={{ paddingTop: "13px" }}>
@@ -333,7 +326,7 @@ const ProjectMainPage = ({ dummyProject }) => {
                       </Link>
                     </td>
                     <td className="documentRow">
-                      <Link to={`/${projId}/test/${testDocId}`}>
+                      <Link to={`/${projId}/test/${document.testDocument.id}`}>
                         {document.testDocument.name}
                       </Link>
                     </td>
