@@ -97,6 +97,7 @@ const RequirementDocumentsPage = () => {
     }
 
     const id = Number(document.id);
+    console.log("UPDATE",document);
     document.typeName = docTypeName;
     document.description = docDescription;
     updateDocument(document);
