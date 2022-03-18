@@ -144,7 +144,6 @@ const ProjectMainPage = ({ dummyProject }) => {
     setNewDocName("");
     setNewDocHeader("");
     docClose(false);
-    navigate("")
   };
 
   const addDocuments = async (docInfoo) => {
