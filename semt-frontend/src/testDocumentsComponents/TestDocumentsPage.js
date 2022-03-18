@@ -21,12 +21,22 @@ const TestDocumentsPage = () => {
 
   const testCaseAddClose = () => setShowTestCaseAdd(false);
   const testCaseAddOpen = () => setShowTestCaseAdd(true);
+  const [testDoc, setDocument] = useState([]);
 
   const now = 60;
+
+  const [testDocName, setTestDocName] = useState("");
+  const [testDocDesc, setTestDocDesc] = useState("");
+
+  const [showTestDoc, setTestDoc] = useState(false);
 
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
+  const testId = path[3];
+
+  const testDocClose = () => setTestDoc(false);
+  const testDocShow = () => setTestDoc(true);
 
   useEffect(() => {
     const getProject = async () => {
@@ -46,6 +56,56 @@ const TestDocumentsPage = () => {
     return data;
   };
 
+  useEffect(() => {
+    const getDocument = async () => {
+      const testInfo = await fetchTestDocument(testId);
+      setDocument(testInfo);
+    };
+    getDocument();
+    
+  }, []);
+
+  const fetchTestDocument = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/test-document/getbyId?id=${testId}`
+    );
+    const data = await res.json();
+    console.log("bruh",testDoc)
+    return data;
+  };
+
+  const onUpdateTestDocument = (e) => {
+    e.preventDefault();
+
+    if (!testDocName || !testDocDesc) {
+      alert("Please add the credentials");
+      return;
+    }
+
+    const id = Number(testDoc.id);
+    testDoc.name = testDocName;
+    testDoc.description = testDocDesc;
+    updateTestDocument(testDoc);
+    setTestDocName("");
+    setTestDocDesc("");
+    setDocument(false);
+  };
+
+  const updateTestDocument = async (testDoc) => {
+    console.log("aaa",JSON.stringify(testDoc));
+    const res = await fetch("https://localhost:44335/api/test-document/update", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(testDoc),
+    });
+    
+    const newDocument = await fetchTestDocument(testId);
+    setTestDoc(newDocument);
+  };
+
   return (
     <>
       <Container fluid className="reqDocMainPage">
@@ -54,22 +114,18 @@ const TestDocumentsPage = () => {
             <Row className="projInfoRow">
               <Col>
                 <h1>
-                  {`System Test Documents of ${project.name}`.length > 65
-                    ? `System Test Documents of ${project.name}`
+                  {`${testDoc.name} of ${project.name}`.length > 65
+                    ? `${testDoc.name} of ${project.name}`
                         .slice(0, 62)
                         .concat("...")
-                    : `System Test Documents of ${project.name}`}
+                    : `${testDoc.name} of ${project.name}`}
                 </h1>
               </Col>
             </Row>
             <Row className="projInfoRow">
               <Col>
                 <a>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse.
+                  {testDoc.description}
                 </a>
               </Col>
             </Row>
@@ -79,7 +135,7 @@ const TestDocumentsPage = () => {
               size="lg"
               variant="success"
               className="btnReqDoc"
-              // onClick={handleShow}
+              onClick={testDocShow}
             >
               Edit Document Info
             </Button>
@@ -126,6 +182,49 @@ const TestDocumentsPage = () => {
           </Col>
         </Row>
       </Container>
+
+      <Modal
+        //Edit document modal
+        show={showTestDoc}
+        onHide={testDocClose}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Edit Document Info
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={onUpdateTestDocument}>
+            <Form.Group className="mb-3" controlId="">
+              <Form.Label>Edit Document Name</Form.Label>
+              <Form.Control
+                onChange={(e) => setTestDocName(e.target.value)}
+                type="text"
+                placeholder="Enter the name for the Document"
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="">
+              <Form.Label>Edit Document Description</Form.Label>
+              <Form.Control
+                onChange={(e) => setTestDocDesc(e.target.value)}
+                style={{ height: "200px" }}
+                rows="5"
+                as="textarea"
+                placeholder="Enter the description for the Document"
+              />
+            </Form.Group>
+            <Modal.Footer>
+              <Button variant="primary" type="submit">
+                Update Document
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal.Body>
+      </Modal>
 
 
       <Modal
