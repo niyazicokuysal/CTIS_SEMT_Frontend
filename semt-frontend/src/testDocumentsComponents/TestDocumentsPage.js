@@ -2,8 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import "./TestDocumentsPage.css";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import EditTestDocumentInfoModel from "./EditTestDocumentInfoModel"
-import AddTestCaseModel from "./AddTestCaseModel"
+import EditTestDocumentInfoModel from "./EditTestDocumentInfoModel";
+import AddTestCaseModel from "./AddTestCaseModel";
+import moment from "moment";
 import {
   Container,
   Accordion,
@@ -51,24 +52,16 @@ const TestDocumentsPage = () => {
       const testInfo = await fetchTestDocument(testId);
       setTestDocument(testInfo);
     };
-
-console.log("234")
-    getDocument();
-    getProject();
-    console.log(testCases)
-  }, [projId]);
-
-  useEffect(() => {
-    
     const getTestCases = async () => {
       const testCasesInfo = await fetchTestCases(testId);
       setTestCases(testCasesInfo);
     };
 
     getTestCases();
-      
-    
-  }, [testCases]);
+    getDocument();
+    getProject();
+    console.log(testCases);
+  }, [projId]);
 
   const fetchProject = async (id) => {
     const res = await fetch(
@@ -95,10 +88,10 @@ console.log("234")
       return;
     }
 
-    const id = Number(document.id);
-    document.name = testDocName + " Test Document";
-    document.description = testDocDesc;
-    updateTestDocument(document);
+    testDocument.name = testDocName + " Test Document";
+    testDocument.description = testDocDesc;
+
+    updateTestDocument(testDocument);
     setTestDocName("");
     setTestDocDesc("");
     setTestDoc(false);
@@ -166,6 +159,9 @@ console.log("234")
       },
       body: JSON.stringify(addTestCase),
     });
+
+    const testCasesInfo = await fetchTestCases(testId);
+    setTestCases(testCasesInfo);
   };
 
   return (
@@ -211,44 +207,84 @@ console.log("234")
         </Row>
         <Row>
           <Col>
-            {testCases.map((testCase, i) => {
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>{testCase.name}</th>
-                    <th>Last Name</th>
-                    <th>Username</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td colSpan={2}>Larry the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
-                </tbody>
-              </Table>;
-            })}
+            <Accordion alwaysOpen>
+              {testCases.map((testCase) => (
+                <Accordion.Item eventKey={testCase.id}>
+                  <Accordion.Header>{testCase.name}</Accordion.Header>
+                  <Accordion.Body style={{ backgroundColor:"#ffe5ba"}}>
+                    <Row><Col sm={11}>
+                      {" "}
+                      <Table bordered style={{borderColor:"black"}}>
+                        <tbody>
+                          <tr>
+                            <td>Description:</td>
+                            <td>
+                              <p className="testCaseText">
+                                {testCase.description}
+                              </p>
+                            </td>
+                            <td>Created Date:</td>
+                            <td>
+                              <p className="testCaseDate">
+                                {moment(testCase.createdDate).format("LLLL")}
+                              </p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style={{ width: "140px" }}>Requirements:</td>
+                            <td>
+                              <p className="testCaseText">
+                                {testCase.requirementTestCases}
+                              </p>
+                            </td>
+                            <td style={{ width: "150px" }}>Updated Date:</td>
+                            <td style={{ width: "310px" }}>
+                              <p className="testCaseDate">
+                                {testCase.updatedDate === null
+                                  ? "Not Yet Modified"
+                                  : moment(testCase.updatedDate).format("LLLL")}
+                              </p>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Table>
+                    </Col>
+                    <Col sm={1}>
+                      <Button
+                        size="lg"
+                        variant="success"
+                        className="addTestStepBtn"
+                        /* onClick={docShow} */
+                      >
+                        Add Test Step
+                      </Button>
+                    </Col></Row>
+                    
+                  </Accordion.Body>
+                </Accordion.Item>
+              ))}
+            </Accordion>
+            <div style={{ height: "100px" }}></div>
           </Col>
         </Row>
       </Container>
 
-      <EditTestDocumentInfoModel showTestDoc={showTestDoc} testDocClose={testDocClose} onUpdateTestDocument={onUpdateTestDocument} setTestDocName={setTestDocName} setTestDocDesc={setTestDocDesc}></EditTestDocumentInfoModel>
+      <EditTestDocumentInfoModel
+        showTestDoc={showTestDoc}
+        testDocClose={testDocClose}
+        onUpdateTestDocument={onUpdateTestDocument}
+        setTestDocName={setTestDocName}
+        setTestDocDesc={setTestDocDesc}
+      ></EditTestDocumentInfoModel>
 
-      <AddTestCaseModel showTestCaseAdd = {showTestCaseAdd} testCaseAddClose={testCaseAddClose} onSubmitCase={onSubmitCase} setTestName={setTestName} setRequirementString={setRequirementString} setDesc={setDesc}></AddTestCaseModel>
+      <AddTestCaseModel
+        showTestCaseAdd={showTestCaseAdd}
+        testCaseAddClose={testCaseAddClose}
+        onSubmitCase={onSubmitCase}
+        setTestName={setTestName}
+        setRequirementString={setRequirementString}
+        setDesc={setDesc}
+      ></AddTestCaseModel>
     </>
   );
 };

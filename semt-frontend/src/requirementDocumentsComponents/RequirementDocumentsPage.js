@@ -153,10 +153,9 @@ const RequirementDocumentsPage = () => {
       return;
     }
 
-    const id = Number(document.id);
-    console.log("UPDATE",document);
-    document.typeName = docTypeName;
+    document.typeName = docTypeName + " Requirements Document";
     document.description = docDescription;
+    console.log(document)
     updateDocument(document);
     setDocTypeName("");
     setDocDesc("");

@@ -1,39 +1,58 @@
 .reqDocMainPage {
-    margin-top: 20px;
-    padding-right: 30px;
-  }
-  
-  .reqDocMainPage h1 {
-    color: #f46e0f;
-    font-size: 40px;
-    font-weight: bolder;
-  }
-  
-  .reqDocMainPage a {
-    display: block;
-    margin-top: 5px;
-    margin-bottom: 5px;
-  
-    font-size: larger;
-    font-weight: bolder;
-  }
-  
-  .projInfoRow {
-      padding-left: 0;
-    }
-    
-    .btnReqDoc {
-      margin-top: 15px;
-      padding: 5px;
-      height: 46px;
-      width: 289px;
-    }
-    
-    .reqDocMainPage .progress {
-      height: 30px;
-    }
-    
-    .reqDocMainPage .progress-bar {
-      font-size: 18px;
-      font-weight: bolder;
-    }
+  margin-top: 20px;
+  padding-right: 30px;
+}
+
+.reqDocMainPage h1 {
+  color: #f46e0f;
+  font-size: 40px;
+  font-weight: bolder;
+}
+
+.reqDocMainPage a {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 5px;
+
+  font-size: larger;
+  font-weight: bolder;
+}
+
+.projInfoRow {
+  padding-left: 0;
+}
+
+.btnReqDoc {
+  margin-top: 15px;
+  padding: 5px;
+  height: 46px;
+  width: 289px;
+}
+
+.reqDocMainPage .progress {
+  height: 30px;
+}
+
+.reqDocMainPage .progress-bar {
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.reqDocMainPage .accordion-button {
+  color: #f46e0f;
+  font-weight: bold;
+}
+
+.testCaseDate{
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.testCaseText{
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.addTestStepBtn{
+
+}
