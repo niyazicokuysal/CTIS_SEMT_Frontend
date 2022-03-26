@@ -2,6 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "./ProjectMainPage.css";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import EditProjectInfoModal from "./EditProjectInfoModal";
+import AddProjectDocumentationModal from "./AddProjectDocumentationModal"
 import {
   Container,
   Row,
@@ -10,8 +12,6 @@ import {
   Button,
   ListGroup,
   ProgressBar,
-  Modal,
-  Form,
 } from "react-bootstrap";
 
 const ProjectMainPage = ({ dummyProject }) => {
@@ -169,7 +169,7 @@ const ProjectMainPage = ({ dummyProject }) => {
               </Col>
               <Col sm={7} className="progressBar">
                 {" "}
-                <ProgressBar animated now={now} label={`Validation: ${now}%`} />
+                <ProgressBar now={now} label={`Validation: ${now}%`} />
               </Col>
             </Row>
             <Row className="projInfoRow">
@@ -255,111 +255,10 @@ const ProjectMainPage = ({ dummyProject }) => {
         </Row>
       </Container>
 
-      <Modal
-        show={show}
-        onHide={handleClose}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Edit Project Info
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={onSubmit}>
-            <Form.Group className="mb-3" controlId="formCreateProject">
-              <Form.Label>Edit Project Name</Form.Label>
-              <Form.Control
-                onChange={(e) => setName(e.target.value)}
-                type="text"
-                placeholder="Enter the name for the Project"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Edit Project Description</Form.Label>
-              <Form.Control
-                onChange={(e) => setDesc(e.target.value)}
-                style={{ height: "200px" }}
-                rows="5"
-                as="textarea"
-                placeholder="Enter the description for the Project"
-              />
-            </Form.Group>
-            <Modal.Footer>
-              <Button variant="primary" type="submit">
-                Update Project
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal.Body>
-      </Modal>
-
-      <Modal
-        show={showDoc}
-        onHide={docClose}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Project Documentation
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Table hover className="documantTable">
-            <thead>
-              <tr>
-                <th style={{ width: "320px" }}>Requirements Documentation</th>
-                <th style={{ width: "320px" }}>Test Documentation</th>
-              </tr>
-            </thead>
-            <tbody>
-                {projectReqDocs.map((document, i) => (
-                  <tr key={i}>
-                    <td className="documentRow">
-                      <Link to={`/${projId}/req/${document.id}`}>
-                        {document.typeName}
-                      </Link>
-                    </td>
-                    <td className="documentRow">
-                      <Link to={`/${projId}/test/${document.testDocument.id}`}>
-                        {document.testDocument.name}
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
-          <Form onSubmit={onSubmitDocument}>
-            <Form.Group className="mb-3" controlId="formCreateProject">
-              <Form.Label>New Requirement Document</Form.Label>
-              <Form.Control
-                onChange={(e) => setNewDocName(e.target.value)}
-                type="text"
-                placeholder="Enter the name for the requirement document"
-              />
-              <Form.Label style={{ marginTop: "20px" }}>
-                New Requirement Document's Header
-              </Form.Label>
-              <Form.Control
-                onChange={(e) => setNewDocHeader(e.target.value)}
-                type="text"
-                placeholder="Enter the header"
-              />
-            </Form.Group>
-
-            <Modal.Footer>
-              <Button variant="primary" type="submit">
-                Add Requirement Documentation
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      <EditProjectInfoModal show={show} handleClose={handleClose} onSubmit={onSubmit} setName={setName} setDesc={setDesc}></EditProjectInfoModal>
+      
+      <AddProjectDocumentationModal showDoc={showDoc} docClose={docClose} projectReqDocs={projectReqDocs} onSubmitDocument={onSubmitDocument} setNewDocName={setNewDocName} setNewDocHeader={setNewDocHeader} projId={projId}></AddProjectDocumentationModal>
+ 
     </>
   );
 };

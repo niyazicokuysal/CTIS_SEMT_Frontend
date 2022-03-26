@@ -2,6 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "./TestDocumentsPage.css";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import EditTestDocumentInfoModel from "./EditTestDocumentInfoModel"
+import AddTestCaseModel from "./AddTestCaseModel"
 import {
   Container,
   Accordion,
@@ -17,13 +19,8 @@ import {
 
 const TestDocumentsPage = () => {
   const [project, setProject] = useState([]);
-  const [showTestCaseAdd, setShowTestCaseAdd] = useState(false);
+  const [testDocument, setTestDocument] = useState([]);
   const [testCases, setTestCases] = useState([]);
- // const [document, setDocument] = useState([]);
-
-  const testCaseAddClose = () => setShowTestCaseAdd(false);
-  const testCaseAddOpen = () => setShowTestCaseAdd(true);
-  const [testDoc, setDocument] = useState([]);
 
   const [testDocName, setTestDocName] = useState("");
   const [testDocDesc, setTestDocDesc] = useState("");
@@ -32,15 +29,18 @@ const TestDocumentsPage = () => {
   const [description, setDesc] = useState("");
   const [requirementString, setRequirementString] = useState("");
 
-  const [showTestDoc, setTestDoc] = useState(false);
-
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
   const testId = path[3];
 
+  const [showTestDoc, setTestDoc] = useState(false);
   const testDocClose = () => setTestDoc(false);
   const testDocShow = () => setTestDoc(true);
+
+  const [showTestCaseAdd, setShowTestCaseAdd] = useState(false);
+  const testCaseAddClose = () => setShowTestCaseAdd(false);
+  const testCaseAddOpen = () => setShowTestCaseAdd(true);
 
   useEffect(() => {
     const getProject = async () => {
@@ -49,18 +49,26 @@ const TestDocumentsPage = () => {
     };
     const getDocument = async () => {
       const testInfo = await fetchTestDocument(testId);
-      setDocument(testInfo);
-    };
-    const getTestCases = async () => {
-      const testInfo = await fetchTestCases(testId);
-      setTestCases(testInfo);
+      setTestDocument(testInfo);
     };
 
-    getTestCases();
+console.log("234")
     getDocument();
     getProject();
     console.log(testCases)
   }, [projId]);
+
+  useEffect(() => {
+    
+    const getTestCases = async () => {
+      const testCasesInfo = await fetchTestCases(testId);
+      setTestCases(testCasesInfo);
+    };
+
+    getTestCases();
+      
+    
+  }, [testCases]);
 
   const fetchProject = async (id) => {
     const res = await fetch(
@@ -76,7 +84,6 @@ const TestDocumentsPage = () => {
       `https://localhost:44335/api/test-document/getbyId?id=${id}`
     );
     const data = await res.json();
-    console.log("bruh",document)
     return data;
   };
 
@@ -89,27 +96,29 @@ const TestDocumentsPage = () => {
     }
 
     const id = Number(document.id);
-    document.name = testDocName + " Test Document"; 
+    document.name = testDocName + " Test Document";
     document.description = testDocDesc;
     updateTestDocument(document);
     setTestDocName("");
     setTestDocDesc("");
-    setDocument(false);
+    setTestDoc(false);
   };
 
   const updateTestDocument = async (testDoc) => {
-    console.log("aaa",JSON.stringify(testDoc));
-    const res = await fetch("https://localhost:44335/api/test-document/update", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(testDoc),
-    });
-    
+    const res = await fetch(
+      "https://localhost:44335/api/test-document/update",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(testDoc),
+      }
+    );
+
     const newTestDocument = await fetchTestDocument(testDoc.id);
-    setDocument(newTestDocument);
+    setTestDocument(newTestDocument);
   };
 
   const fetchTestCases = async (id) => {
@@ -120,41 +129,43 @@ const TestDocumentsPage = () => {
     return data;
   };
 
-
   const onSubmitCase = (e) => {
     e.preventDefault();
 
     if (!testName || !description || !requirementString) {
       alert("Please add the credentials");
       return;
-    } 
+    }
 
     const projectId = Number(projId);
     const testDocumentId = Number(testId);
-    const name = testName
+    const name = testName;
 
     const requirementNames = requirementString.split("/");
 
-    addTestCase({ projectId, testDocumentId, name, description,requirementNames });
+    addTestCase({
+      projectId,
+      testDocumentId,
+      name,
+      description,
+      requirementNames,
+    });
     setTestName("");
     setDesc("");
     setRequirementString("");
-    setTestDoc(false)
+    setShowTestCaseAdd(false);
   };
 
   const addTestCase = async (addTestCase) => {
     console.log(JSON.stringify(addTestCase));
-    const res = await fetch(
-      "https://localhost:44335/api/test-case/add",
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(addTestCase),
-      }
-    );
+    const res = await fetch("https://localhost:44335/api/test-case/add", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(addTestCase),
+    });
   };
 
   return (
@@ -165,19 +176,17 @@ const TestDocumentsPage = () => {
             <Row className="projInfoRow">
               <Col>
                 <h1>
-                  {`${document.name} of ${project.name}`.length > 65
-                    ? `${document.name} of ${project.name}`
+                  {`${testDocument.name} of ${project.name}`.length > 65
+                    ? `${testDocument.name} of ${project.name}`
                         .slice(0, 62)
                         .concat("...")
-                    : `${document.name} of ${project.name}`}
+                    : `${testDocument.name} of ${project.name}`}
                 </h1>
               </Col>
             </Row>
             <Row className="projInfoRow">
               <Col>
-                <a>
-                  {document.description}
-                </a>
+                <a>{testDocument.description}</a>
               </Col>
             </Row>
           </Col>
@@ -202,10 +211,8 @@ const TestDocumentsPage = () => {
         </Row>
         <Row>
           <Col>
-
-
-              {testCases.map((testCase, i) => {
-                <Table striped bordered hover>
+            {testCases.map((testCase, i) => {
+              <Table striped bordered hover>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -233,108 +240,15 @@ const TestDocumentsPage = () => {
                     <td>@twitter</td>
                   </tr>
                 </tbody>
-              </Table>
-
-
-              })}
-    
+              </Table>;
+            })}
           </Col>
         </Row>
       </Container>
 
-      <Modal
-        //Edit document modal
-        show={showTestDoc}
-        onHide={testDocClose}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Edit Document Info
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={onUpdateTestDocument}>
-            <Form.Group className="mb-3" controlId="">
-              <Form.Label>Edit Document Name</Form.Label>
-              <Form.Control
-                onChange={(e) => setTestDocName(e.target.value)}
-                type="text"
-                placeholder="Enter the name for the Document"
-              />
-            </Form.Group>
+      <EditTestDocumentInfoModel showTestDoc={showTestDoc} testDocClose={testDocClose} onUpdateTestDocument={onUpdateTestDocument} setTestDocName={setTestDocName} setTestDocDesc={setTestDocDesc}></EditTestDocumentInfoModel>
 
-            <Form.Group className="mb-3" controlId="">
-              <Form.Label>Edit Document Description</Form.Label>
-              <Form.Control
-                onChange={(e) => setTestDocDesc(e.target.value)}
-                style={{ height: "200px" }}
-                rows="5"
-                as="textarea"
-                placeholder="Enter the description for the Document"
-              />
-            </Form.Group>
-            <Modal.Footer>
-              <Button variant="primary" type="submit">
-                Update Document
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal.Body>
-      </Modal>
-
-
-      <Modal
-        //Add Test Case Model
-        show={showTestCaseAdd}
-        onHide={testCaseAddClose}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Add Test Case 
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={onSubmitCase}
-          >
-            <Form.Group className="mb-3" controlId="">
-            <Form.Label>Name of the Case</Form.Label>
-              <Form.Control
-                onChange={(e) => setTestName(e.target.value)}
-                type="text"
-                placeholder="Enter a name for the Case"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="">
-            <Form.Label>Requirement(s) that been Tested</Form.Label>
-              <Form.Control
-                onChange={(e) => setRequirementString(e.target.value)}
-                type="text"
-                placeholder="Enter requirement name(s)"
-              />
-            </Form.Group>
-            <Form.Label>Project Description</Form.Label>
-              <Form.Control
-                value={description}
-                onChange={(e) => setDesc(e.target.value)}
-                style={{ height: "200px" }}
-                rows="5"
-                as="textarea"
-                placeholder="Enter the description for the Project"
-              />
-            <Modal.Footer>
-              <Button variant="primary" type="submit">
-                Add Group
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      <AddTestCaseModel showTestCaseAdd = {showTestCaseAdd} testCaseAddClose={testCaseAddClose} onSubmitCase={onSubmitCase} setTestName={setTestName} setRequirementString={setRequirementString} setDesc={setDesc}></AddTestCaseModel>
     </>
   );
 };

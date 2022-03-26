@@ -1,6 +1,7 @@
-import { useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "./HomePage.css";
+import CreateNewProjectModal from "./CreateNewProjectModal";
 import {
   Container,
   Row,
@@ -29,15 +30,15 @@ const HomePage = () => {
   useEffect(() => {
     const getProjects = async () => {
       const projectsFromServer = await fetchProjects();
-      setProjects(projectsFromServer); 
+      setProjects(projectsFromServer);
     };
 
     getProjects();
   }, []);
 
-  const { pathname } = useLocation()
-  const path = pathname.split("/")
-  const projId = path[1]
+  const { pathname } = useLocation();
+  const path = pathname.split("/");
+  const projId = path[1];
 
   const addProject = async (project) => {
     console.log(JSON.stringify(project));
@@ -64,7 +65,9 @@ const HomePage = () => {
       alert(`Project Name is ${name.length} character should be Max 50`);
       return;
     } else if (description.length > 300) {
-      alert(`Project Name is ${description.length} character should be Max 300`);
+      alert(
+        `Project Name is ${description.length} character should be Max 300`
+      );
       return;
     }
 
@@ -147,7 +150,7 @@ const HomePage = () => {
                       className="tableCol"
                       style={{ width: "500px", paddingTop: "14px" }}
                     >
-                      <ProgressBar animated now={now} label={`${now}%`} />
+                      <ProgressBar now={now} label={`${now}%`} />
                     </td>
                     <td
                       onClick={(e) => e.stopPropagation()}
@@ -175,49 +178,15 @@ const HomePage = () => {
         </Row>
       </Container>
 
-      <Modal
+      <CreateNewProjectModal
         show={show}
-        onHide={handleClose}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Create New Project
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={onSubmit}>
-            <Form.Group className="mb-3" controlId="formCreateProject">
-              <Form.Label>Project Name</Form.Label>
-              <Form.Control
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                type="text"
-                placeholder="Enter the name for the Project"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Label>Project Description</Form.Label>
-              <Form.Control
-                value={description}
-                onChange={(e) => setDesc(e.target.value)}
-                style={{ height: "200px" }}
-                rows="5"
-                as="textarea"
-                placeholder="Enter the description for the Project"
-              />
-            </Form.Group>
-            <Modal.Footer>
-              <Button variant="primary" type="submit" onClick={handleClose}>
-                Add The Project
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Modal.Body>
-      </Modal>
+        handleClose={handleClose}
+        onSubmit={onSubmit}
+        name={name}
+        setName={setName}
+        description={description}
+        setDesc={setDesc}
+      ></CreateNewProjectModal>
     </>
   );
 };
