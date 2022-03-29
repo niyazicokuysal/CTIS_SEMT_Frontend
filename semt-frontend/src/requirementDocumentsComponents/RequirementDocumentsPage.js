@@ -1,5 +1,5 @@
 import "./RequirementDocumentsPage.css";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import EditReqDocumentInfoModal from "./EditReqDocumentInfoModal";
 import AddRequirementInDocumentModal from "./AddRequirementInDocumentModal";
@@ -12,9 +12,13 @@ import {
   Table,
   Button,
   ProgressBar,
+  Breadcrumb,
+  Spinner,
 } from "react-bootstrap";
 
 const RequirementDocumentsPage = () => {
+  const [loadingForProject, setLoadingForProject] = useState(false);
+  const [loadingForDocument, setLoadingForDocument] = useState(false);
   const [project, setProject] = useState([]);
   const [document, setDocument] = useState([]);
   const [docGroups, setDocGroups] = useState([]);
@@ -142,8 +146,7 @@ const RequirementDocumentsPage = () => {
 
     const newdocs = await fetchDocumentGroups(docId);
     setDocGroups(newdocs);
-
-  }
+  };
 
   const onUpdateDocument = (e) => {
     e.preventDefault();
@@ -155,12 +158,12 @@ const RequirementDocumentsPage = () => {
 
     document.typeName = docTypeName + " Requirements Document";
     document.description = docDescription;
-    console.log(document)
+    console.log(document);
     updateDocument(document);
     setDocTypeName("");
     setDocDesc("");
     setDoc(false);
-  }
+  };
 
   const deleteRequirement = async (id) => {
     await fetch(`https://localhost:44335/api/requirement/delete?id=${id}`, {
@@ -185,6 +188,7 @@ const RequirementDocumentsPage = () => {
     );
     const data = await res.json();
 
+    setLoadingForProject(true);
     return data;
   };
 
@@ -227,6 +231,7 @@ const RequirementDocumentsPage = () => {
     );
     const data = await res.json();
 
+    setLoadingForDocument(true);
     return data;
   };
 
@@ -257,166 +262,207 @@ const RequirementDocumentsPage = () => {
     getDocGroups();
   }, [projId]);
 
-
   const updateDocument = async (document) => {
     console.log(JSON.stringify(document));
-    const res = await fetch("https://localhost:44335/api/requirement-document/update", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(document),
-    });
-    
+    const res = await fetch(
+      "https://localhost:44335/api/requirement-document/update",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(document),
+      }
+    );
+
     const newDocument = await fetchDocument(document.id);
     setDocument(newDocument);
   };
 
   return (
     <>
-      <Container fluid className="reqDocMainPage">
-        <Row>
-          <Col sm={10} style={{ height: "200px" }}>
-            <Row className="projInfoRow">
-              <Col sm={5}>
-                <h1>
-                  {`${document.typeName} of ${project.name}`.length > 50
-                    ? `${document.typeName} of ${project.name}`
-                        .slice(0, 50)
-                        .concat("...")
-                    : `${document.typeName} of ${project.name}`}
-                </h1>
+      {!loadingForProject && !loadingForDocument ? (
+        <Spinner animation="border">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      ) : (
+        <>
+          <Container fluid className="reqDocMainPage">
+            <Row>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Link to={`${"/"}`}>Main Page</Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <Link to={`${"/" + projId + "/main"}`}>{project.name}</Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>{document.typeName}</Breadcrumb.Item>
+              </Breadcrumb>
+              <Col sm={10} style={{ height: "200px" }}>
+                <Row className="projInfoRow">
+                  <Col sm={5}>
+                    <h1>
+                      {`${document.typeName} of ${project.name}`.length > 50
+                        ? `${document.typeName} of ${project.name}`
+                            .slice(0, 50)
+                            .concat("...")
+                        : `${document.typeName} of ${project.name}`}
+                    </h1>
+                  </Col>
+                  <Col sm={7} className="progressBar">
+                    {" "}
+                    <ProgressBar now={now} label={`Validation: ${now}%`} />
+                  </Col>
+                </Row>
+                <Row className="projInfoRow">
+                  <Col className="projectReqDesc">
+                    <a>{document.description}</a>
+                  </Col>
+                </Row>
               </Col>
-              <Col sm={7} className="progressBar">
-                {" "}
-                <ProgressBar
-                  variant="danger"
-                  animated
-                  now={now}
-                  label={`Validation: ${now}%`}
-                />
+              <Col sm={2}>
+                <Button
+                  size="lg"
+                  variant="info"
+                  className="btnReqDoc"
+                  onClick={docShow}
+                >
+                  Edit Document Info
+                </Button>
+                <Button
+                  size="lg"
+                  variant="success"
+                  className="btnReqDoc"
+                  onClick={reqShow}
+                >
+                  Add Requirement in Document
+                </Button>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="btnReqDoc"
+                  onClick={groupShow}
+                >
+                  Add Requirements Group
+                </Button>
               </Col>
             </Row>
-            <Row className="projInfoRow">
+            <Row>
               <Col>
-                <a>{document.description}</a>
-              </Col>
-            </Row>
-          </Col>
-          <Col sm={2}>
-            <Button
-              size="lg"
-              variant="success"
-              className="btnReqDoc"
-              onClick={docShow}
-            >
-              Edit Document Info
-            </Button>
-            <Button
-              size="lg"
-              variant="danger"
-              className="btnReqDoc"
-              onClick={reqShow}
-            >
-              Add Requirement in Document
-            </Button>
-            <Button
-              size="lg"
-              variant="info"
-              className="btnReqDoc"
-              onClick={groupShow}
-            >
-              Add Requirements Group
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Table hover bordered className="reqTable">
-              <thead>
-                <tr>
-                  <th style={{ width: "140px" }}>Req Id</th>
-                  <th>Description</th>
-                  <th style={{ width: "170px" }}>Test Types</th>
-                  <th style={{ width: "120px" }}>Is Deleted</th>
-                  <th style={{ width: "105px" }}>Is Verified</th>
-                  <th style={{ width: "118px" }}>View Details</th>
-                  <th style={{ width: "118px" }}>Delete</th>
-                  {/* <th style={{ width: "118px" }}>Group</th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {docRequirements.map((requirement, i) => (
-                  <tr
-                    key={i}
-                    className={`${
-                      requirement.isDeleted === true ? "deleted" : ""
-                    }`}
-                  >
-                    <td>{requirement.name}</td>
-                    <td>{requirement.description}</td>
-                    <td>{requirement.testTypes}</td>
-                    <td>
-                      {requirement.isDeleted === true
-                        ? "Deleted"
-                        : "Not Deleted"}
-                    </td>
-                    <td
-                      className={`${false === true ? "trueRow" : "falseRow"}`}
-                    >
-                      No
-                    </td>
-                    <td>
-                      <Button
-                        size="sm"
-                        variant="info"
-                        className="btnTable"
-                        onClick={() =>
-                          detailsShow(
-                            requirement.id,
-                            requirement.requirementGroupId
-                          )
-                        }
-                      >
-                        View
-                      </Button>
-                    </td>
-                    <td>
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        onClick={() => deleteRequirement(requirement.id)}
+                <Table hover bordered className="reqTable">
+                  <thead>
+                    <tr>
+                      <th style={{ width: "140px" }}>Req Id</th>
+                      <th>Description</th>
+                      <th style={{ width: "170px" }}>Test Types</th>
+                      <th style={{ width: "120px" }}>Is Deleted</th>
+                      <th style={{ width: "105px" }}>Is Verified</th>
+                      <th style={{ width: "118px" }}>View Details</th>
+                      <th style={{ width: "118px" }}>Delete</th>
+                      {/* <th style={{ width: "118px" }}>Group</th> */}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {docRequirements.map((requirement, i) => (
+                      <tr
+                        key={i}
                         className={`${
-                          requirement.isDeleted === true
-                            ? "deletedBtn"
-                            : "btnTable"
+                          requirement.isDeleted === true ? "deleted" : ""
                         }`}
                       >
-                        Delete
-                      </Button>
-                    </td>
+                        <td>{requirement.name}</td>
+                        <td>{requirement.description}</td>
+                        <td>{requirement.testTypes}</td>
+                        <td>
+                          {requirement.isDeleted === true
+                            ? "Deleted"
+                            : "Not Deleted"}
+                        </td>
+                        <td
+                          className={`${
+                            false === true ? "trueRow" : "falseRow"
+                          }`}
+                        >
+                          No
+                        </td>
+                        <td>
+                          <Button
+                            size="sm"
+                            variant="primary"
+                            className="btnTable"
+                            onClick={() =>
+                              detailsShow(
+                                requirement.id,
+                                requirement.requirementGroupId
+                              )
+                            }
+                          >
+                            View
+                          </Button>
+                        </td>
+                        <td>
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            onClick={() => deleteRequirement(requirement.id)}
+                            className={`${
+                              requirement.isDeleted === true
+                                ? "deletedBtn"
+                                : "btnTable"
+                            }`}
+                          >
+                            Delete
+                          </Button>
+                        </td>
 
-                    {/* <td>{singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}</td> */}
-                  </tr>
-                ))}
+                        {/* <td>{singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}</td> */}
+                      </tr>
+                    ))}
 
-                {/* <tr className="header">
+                    {/* <tr className="header">
                   <td colSpan="7">ASDFASDF</td>
                 </tr> */}
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
-      </Container>
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+          </Container>
+        </>
+      )}
 
-      <EditReqDocumentInfoModal showDoc={showDoc} docClose={docClose} onUpdateDocument={onUpdateDocument} setDocTypeName={setDocTypeName} setDocDesc={setDocDesc}></EditReqDocumentInfoModal>
+      <EditReqDocumentInfoModal
+        showDoc={showDoc}
+        docClose={docClose}
+        onUpdateDocument={onUpdateDocument}
+        setDocTypeName={setDocTypeName}
+        setDocDesc={setDocDesc}
+      ></EditReqDocumentInfoModal>
 
-      <AddRequirementInDocumentModal showReq={showReq} reqClose={reqClose} onSubmitReq={onSubmitReq} setReqDesc={setReqDesc} setReqComment={setReqComment} setReqType={setReqType} setReqGrp={setReqGrp} docGroups={docGroups}></AddRequirementInDocumentModal>
+      <AddRequirementInDocumentModal
+        showReq={showReq}
+        reqClose={reqClose}
+        onSubmitReq={onSubmitReq}
+        setReqDesc={setReqDesc}
+        setReqComment={setReqComment}
+        setReqType={setReqType}
+        setReqGrp={setReqGrp}
+        docGroups={docGroups}
+      ></AddRequirementInDocumentModal>
 
-      <AddRequirGroupModal showGroup={showGroup} groupClose={groupClose} onSubmitGroup={onSubmitGroup} setGroupName={setGroupName}></AddRequirGroupModal>
+      <AddRequirGroupModal
+        showGroup={showGroup}
+        groupClose={groupClose}
+        onSubmitGroup={onSubmitGroup}
+        setGroupName={setGroupName}
+      ></AddRequirGroupModal>
 
-      <ViewReqDetailsModal showDetails={showDetails} detailsClose={detailsClose} singleReqInfo={singleReqInfo} singleGroupInfo={singleGroupInfo}></ViewReqDetailsModal>
+      <ViewReqDetailsModal
+        showDetails={showDetails}
+        detailsClose={detailsClose}
+        singleReqInfo={singleReqInfo}
+        singleGroupInfo={singleGroupInfo}
+      ></ViewReqDetailsModal>
     </>
   );
 };

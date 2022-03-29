@@ -9,14 +9,11 @@
   font-weight: bolder;
 }
 
-.reqDocMainPage a {
-  display: block;
-  margin-top: 5px;
-  margin-bottom: 5px;
-
-  font-size: larger;
+.projectReqDesc{
+  overflow-wrap: break-word;
   font-weight: bolder;
 }
+
 
 .projInfoRow {
   padding-left: 0;

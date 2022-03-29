@@ -62,86 +62,9 @@ const Header = () => {
   return (
     <Navbar className="navbar-custom" expand={false}>
       <Container fluid>
-        <Navbar.Offcanvas
-          style={{ width: "330px" }}
-          id="offcanvasNavbar"
-          aria-labelledby="offcanvasNavbarLabel"
-          placement="start"
-          scroll="true"
-        >
-          <Offcanvas.Header closeButton>
-            <Link to="inDev" className="header">
-              <Offcanvas.Title id="offcanvasNavbarLabel">
-                Mehmet Mehmetoğlu
-              </Offcanvas.Title>
-            </Link>
-          </Offcanvas.Header>
-
-
-          <Offcanvas.Body>
-            <Nav.Item key={0}>
-              <Link
-                to={""}
-                className={`${projId === ""
-                  ? "selected"
-                  : ""
-                  }`}
-              >
-                <span className="row" >Home</span>
-              </Link>
-            </Nav.Item>
-            {console.log(allDocuments)}
-            {projId === ""
-              ? null
-              :  <Nav.Item key={10000000000000000000}> <Link
-              to={"/" + projId + "/main"}
-              className={`${pathname.includes("main")
-                ? "selected"
-                : ""
-                }`}
-            >
-              <span className="row" >Main</span>
-            </Link>
-            </Nav.Item>
-            }
-            {projId === ""
-              ? null
-              : projectReq.map((item, index) => {
-                return (
-                  <Nav.Item key={index}>
-                    <Link
-                      to={`${"/" + projId + "/req/" + item.id}`}
-                      className={`${pathname.includes(item.id) &&  pathname.includes("req")
-                          ? "selected"
-                          : ""
-                        }`}
-                    >
-                      <span className="row">{item.typeName}</span>
-                    </Link>
-                  </Nav.Item>
-                );
-              })}
-              {projId === ""
-              ? null
-              : projectTest.map((item, index) => {
-                return (
-                  <Nav.Item key={index+10000}>
-                    <Link
-                      to={`${"/" + projId + "/test/" + item.id} `}
-                      className={`${pathname.includes(item.id) &&  pathname.includes("test")
-                          ? "selected"
-                          : ""
-                        }`}
-                    >
-                      <span className="row">{item.name}</span>
-                    </Link>
-                  </Nav.Item>
-                );
-              })}
-          </Offcanvas.Body>
-        </Navbar.Offcanvas>
-
-        <Navbar.Toggle aria-controls="offcanvasNavbar" />
+      <Navbar.Brand><Link to="" className="userName">
+            Mehmet Mehmetoğlu
+          </Link></Navbar.Brand>
         <Navbar.Brand>
           <Link to="" className="title">
             Cey Defence Software Engineering Management Tool

@@ -9,12 +9,8 @@
   font-weight: bolder;
 }
 
-.projectMainPage a {
-  display: block;
-  margin-top: 5px;
-  margin-bottom: 5px;
-
-  font-size: larger;
+.projectDesc{
+  overflow-wrap: break-word;
   font-weight: bolder;
 }
 
@@ -69,6 +65,6 @@
   color: #f46e0f;
 }
 
-.projectMainPage .col-sm-4{
+.projectMainPage .membersField{
   border-left: 1px solid black;
 }

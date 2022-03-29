@@ -9,12 +9,12 @@ import {
   Table,
   Button,
   ProgressBar,
-  Modal,
-  Form,
+  Spinner,
 } from "react-bootstrap";
 import moment from "moment";
 
 const HomePage = () => {
+  const [loadingForAllProjects, setLoadingForAllProjects] = useState(false);
   const [projects, setProjects] = useState([]);
   const [show, setShow] = useState(false);
   const [name, setName] = useState("");
@@ -27,6 +27,10 @@ const HomePage = () => {
 
   const now = 60;
 
+  const { pathname } = useLocation();
+  const path = pathname.split("/");
+  const projId = path[1];
+
   useEffect(() => {
     const getProjects = async () => {
       const projectsFromServer = await fetchProjects();
@@ -35,10 +39,6 @@ const HomePage = () => {
 
     getProjects();
   }, []);
-
-  const { pathname } = useLocation();
-  const path = pathname.split("/");
-  const projId = path[1];
 
   const addProject = async (project) => {
     console.log(JSON.stringify(project));
@@ -88,95 +88,104 @@ const HomePage = () => {
     const res = await fetch("https://localhost:44335/api/project/getall");
     const data = await res.json();
 
+    setLoadingForAllProjects(true);
     return data;
   };
 
   return (
     <>
-      <Container fluid className="containerM">
-        <Row>
-          <Col sm={8} className="welcome">
-            <h1 className="titleHP">Welcome Mehmet Mehmetoğlu</h1>
-          </Col>
-          <Col sm={4} style={{ textAlign: "end" }}>
-            <Button
-              size="lg"
-              variant="warning"
-              onClick={() => navigate("inDev")}
-            >
-              Manage Users
-            </Button>
-            <Button
-              size="lg"
-              variant="success"
-              style={{ marginLeft: "20px" }}
-              onClick={handleShow}
-            >
-              Create New Project
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Project Id</th>
-                  <th>Project Name</th>
-                  <th>User Count</th>
-                  <th>Creation Date</th>
-                  <th>Progress</th>
-                  <th>Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map((project) => (
-                  <tr
-                    key={project.id}
-                    onClick={() => navigate(`${project.id}/main`)}
-                    className="tableRow"
-                  >
-                    <td className="tableCol" style={{ width: "150px" }}>
-                      {project.id}
-                    </td>
-                    <td className="tableCol">{project.name}</td>
-                    <td className="tableCol" style={{ width: "150px" }}>
-                      12323
-                    </td>
-                    <td className="tableCol" style={{ width: "430px" }}>
-                      {moment(project.createdDate).format("LLLL")}
-                    </td>
-                    <td
-                      className="tableCol"
-                      style={{ width: "500px", paddingTop: "14px" }}
-                    >
-                      <ProgressBar now={now} label={`${now}%`} />
-                    </td>
-                    <td
-                      onClick={(e) => e.stopPropagation()}
-                      id="deleteColumn"
-                      style={{ width: "157px" }}
-                    >
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        className="btnDelete"
-                        onClick={() => deleteProject(project.id)}
+      {!loadingForAllProjects ? (
+        <Spinner animation="border">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      ) : (
+        <>
+          <Container fluid className="containerM">
+            <Row>
+              <Col sm={8} className="welcome">
+                <h1 className="titleHP">Welcome Mehmet Mehmetoğlu</h1>
+              </Col>
+              <Col sm={4} style={{ textAlign: "end" }}>
+                <Button
+                  size="lg"
+                  variant="warning"
+                  onClick={() => navigate("inDev")}
+                >
+                  Manage Users
+                </Button>
+                <Button
+                  size="lg"
+                  variant="success"
+                  style={{ marginLeft: "20px" }}
+                  onClick={handleShow}
+                >
+                  Create New Project
+                </Button>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Project Id</th>
+                      <th>Project Name</th>
+                      <th>User Count</th>
+                      <th>Creation Date</th>
+                      <th>Progress</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {projects.map((project) => (
+                      <tr
+                        key={project.id}
+                        onClick={() => navigate(`${project.id}/main`)}
+                        className="tableRow"
                       >
-                        Delete the Project
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={6}></Col>
-          <Col sm={6}></Col>
-        </Row>
-      </Container>
+                        <td className="tableCol" style={{ width: "150px" }}>
+                          {project.id}
+                        </td>
+                        <td className="tableCol">{project.name}</td>
+                        <td className="tableCol" style={{ width: "150px" }}>
+                          12323
+                        </td>
+                        <td className="tableCol" style={{ width: "430px" }}>
+                          {moment(project.createdDate).format("LLLL")}
+                        </td>
+                        <td
+                          className="tableCol"
+                          style={{ width: "500px", paddingTop: "14px" }}
+                        >
+                          <ProgressBar now={now} label={`${now}%`} />
+                        </td>
+                        <td
+                          onClick={(e) => e.stopPropagation()}
+                          id="deleteColumn"
+                          style={{ width: "157px" }}
+                        >
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            className="btnDelete"
+                            onClick={() => deleteProject(project.id)}
+                          >
+                            Delete the Project
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+            <Row>
+              <Col sm={6}></Col>
+              <Col sm={6}></Col>
+            </Row>
+          </Container>
+        </>
+      )}
 
       <CreateNewProjectModal
         show={show}

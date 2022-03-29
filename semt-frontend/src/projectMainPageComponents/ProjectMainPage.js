@@ -3,7 +3,7 @@ import "./ProjectMainPage.css";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import EditProjectInfoModal from "./EditProjectInfoModal";
-import AddProjectDocumentationModal from "./AddProjectDocumentationModal"
+import AddProjectDocumentationModal from "./AddProjectDocumentationModal";
 import {
   Container,
   Row,
@@ -12,9 +12,14 @@ import {
   Button,
   ListGroup,
   ProgressBar,
+  Breadcrumb,
+  Spinner,
 } from "react-bootstrap";
 
 const ProjectMainPage = ({ dummyProject }) => {
+  const [loadingForProjects, setLoadingForProjects] = useState(false);
+  const [loadingForProjectsReqDocs, setLoadingForProjectsReqDocs] =
+    useState(false);
   const [project, setProject] = useState([]);
   const [projectReqDocs, setProjectReqDocs] = useState([]);
 
@@ -64,6 +69,7 @@ const ProjectMainPage = ({ dummyProject }) => {
     );
     const data = await res.json();
 
+    setLoadingForProjectsReqDocs(true);
     return data;
   };
 
@@ -73,6 +79,7 @@ const ProjectMainPage = ({ dummyProject }) => {
     );
     const data = await res.json();
 
+    setLoadingForProjects(true);
     return data;
   };
 
@@ -156,109 +163,146 @@ const ProjectMainPage = ({ dummyProject }) => {
 
   return (
     <>
-      <Container fluid className="projectMainPage">
-        <Row>
-          <Col sm={10} style={{ height: "200px" }}>
-            <Row className="projInfoRow">
-              <Col sm={5}>
-                <h1>
-                  {`${project.name}`.length > 30
-                    ? `${project.name}`.slice(0, 27).concat("...")
-                    : `${project.name}`}
-                </h1>
+      {!loadingForProjects && !loadingForProjectsReqDocs ? (
+        <Spinner animation="border">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      ) : (
+        <>
+          <Container fluid className="projectMainPage">
+            <Row>
+              <Col sm={10} style={{ height: "200px" }}>
+                <Row className="projInfoRow">
+                  <Breadcrumb>
+                    <Breadcrumb.Item>
+                      <Link to={`${"/"}`}>Main Page</Link>
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item active>{project.name}</Breadcrumb.Item>
+                  </Breadcrumb>
+                  <Col sm={5}>
+                    <h1>
+                      {`${project.name}`.length > 30
+                        ? `${project.name}`.slice(0, 27).concat("...")
+                        : `${project.name}`}
+                    </h1>
+                  </Col>
+                  <Col sm={7} className="progressBar">
+                    {" "}
+                    <ProgressBar now={now} label={`Validation: ${now}%`} />
+                  </Col>
+                </Row>
+                <Row className="projInfoRow">
+                  <Col className="projectDesc">
+                    <a>{project.description}</a>
+                  </Col>
+                </Row>
               </Col>
-              <Col sm={7} className="progressBar">
-                {" "}
-                <ProgressBar now={now} label={`Validation: ${now}%`} />
+              <Col sm={2}>
+                <Button
+                  size="lg"
+                  variant="info"
+                  className="btnProjectMain"
+                  onClick={handleShow}
+                >
+                  Edit Project Info
+                </Button>
+                <Button
+                  size="lg"
+                  variant="success"
+                  className="btnProjectMain"
+                  onClick={docShow}
+                >
+                  Add Project Documentation
+                </Button>
+                <Button
+                  size="lg"
+                  variant="warning"
+                  className="btnProjectMain"
+                  onClick={() => navigate("/inDev")}
+                >
+                  Edit Project Members
+                </Button>
               </Col>
             </Row>
-            <Row className="projInfoRow">
-              <Col>
-                <a>{project.description}</a>
+            <Row>
+              <Col sm={10}>
+                <Table className="documantTable">
+                  <thead>
+                    <tr>
+                      <th style={{ width: "400px" }}>
+                        Requirements Documentation
+                      </th>
+                      <th style={{ width: "400px" }}>Test Documentation</th>
+                      <th>Requirements Validation Status</th>
+                      <th style={{ width: "75px" }}>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {projectReqDocs.map((document, i) => (
+                      <tr key={i}>
+                        <td className="documentRow">
+                          <Link to={`/${projId}/req/${document.id}`}>
+                            {document.typeName}
+                          </Link>
+                        </td>
+                        <td className="documentRow">
+                          <Link
+                            to={`/${projId}/test/${document.testDocument.id}`}
+                          >
+                            {document.testDocument.name}
+                          </Link>
+                        </td>
+                        <td style={{ paddingTop: "13px" }}>
+                          <ProgressBar now={now} label={`${now}%`} />
+                        </td>
+                        <td>
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            style={{ marginBottom: "5px" }}
+                          >
+                            Delete
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Col>
+              <Col sm={2} className="membersField">
+                <h4>Project Members</h4>
+                <ListGroup variant="flush">
+                  {dummyProject.members.map((member, i) => (
+                    <ListGroup.Item key={i}>
+                      <Link to={"/inDev"} className="projectMembers">
+                        {member}
+                      </Link>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
               </Col>
             </Row>
-          </Col>
-          <Col sm={2}>
-            <Button
-              size="lg"
-              variant="success"
-              className="btnProjectMain"
-              onClick={handleShow}
-            >
-              Edit Project Info
-            </Button>
-            <Button
-              size="lg"
-              variant="danger"
-              className="btnProjectMain"
-              onClick={docShow}
-            >
-              Add Project Documentation
-            </Button>
-            <Button
-              size="lg"
-              variant="info"
-              className="btnProjectMain"
-              onClick={() => navigate("/inDev")}
-            >
-              Edit Project Members
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm={8}>
-            <Table className="documantTable">
-              <thead>
-                <tr>
-                  <th style={{ width: "320px" }}>Requirements Documentation</th>
-                  <th style={{ width: "320px" }}>Test Documentation</th>
-                  <th>Requirements Validation Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projectReqDocs.map((document, i) => (
-                  <tr key={i}>
-                    <td className="documentRow">
-                      <Link to={`/${projId}/req/${document.id}`}>
-                        {document.typeName}
-                      </Link>
-                    </td>
-                    <td className="documentRow">
-                      <Link to={`/${projId}/test/${document.testDocument.id}`}>
-                          {document.testDocument.name} 
-                      </Link>
-                    </td>
-                    <td style={{ paddingTop: "13px" }}>
-                      <ProgressBar
-                        variant="danger"
-                        now={now}
-                        label={`${now}%`}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Col>
-          <Col sm={4}>
-            <h3>Project Members</h3>
-            <ListGroup variant="flush">
-              {dummyProject.members.map((member, i) => (
-                <ListGroup.Item key={i}>
-                  <Link to={"/inDev"} className="projectMembers">
-                    {member}
-                  </Link>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-          </Col>
-        </Row>
-      </Container>
+          </Container>
 
-      <EditProjectInfoModal show={show} handleClose={handleClose} onSubmit={onSubmit} setName={setName} setDesc={setDesc}></EditProjectInfoModal>
-      
-      <AddProjectDocumentationModal showDoc={showDoc} docClose={docClose} projectReqDocs={projectReqDocs} onSubmitDocument={onSubmitDocument} setNewDocName={setNewDocName} setNewDocHeader={setNewDocHeader} projId={projId}></AddProjectDocumentationModal>
- 
+          <EditProjectInfoModal
+            show={show}
+            handleClose={handleClose}
+            onSubmit={onSubmit}
+            setName={setName}
+            setDesc={setDesc}
+          ></EditProjectInfoModal>
+
+          <AddProjectDocumentationModal
+            showDoc={showDoc}
+            docClose={docClose}
+            projectReqDocs={projectReqDocs}
+            onSubmitDocument={onSubmitDocument}
+            setNewDocName={setNewDocName}
+            setNewDocHeader={setNewDocHeader}
+            projId={projId}
+          ></AddProjectDocumentationModal>
+        </>
+      )}
     </>
   );
 };
@@ -266,11 +310,11 @@ const ProjectMainPage = ({ dummyProject }) => {
 ProjectMainPage.defaultProps = {
   dummyProject: {
     members: [
-      "Mehmet Ali - Project Menager",
-      "Tahsin Küçük - Developer",
-      "Burak Demirbaş - Developer",
-      "Zeynep Zeynep Oğlu - Tester",
-      "Deniz Tuzlu - Tester",
+      "Mehmet Ali",
+      "Tahsin Küçük",
+      "Burak Demirbaş",
+      "Zeynep Zeynep Oğlu",
+      "Deniz Tuzlu",
     ],
   },
 };

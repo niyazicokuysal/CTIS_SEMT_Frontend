@@ -12,13 +12,14 @@ import {
   Col,
   Table,
   Button,
-  ListGroup,
-  ProgressBar,
-  Modal,
-  Form,
+  Breadcrumb,
+  Spinner,
 } from "react-bootstrap";
 
 const TestDocumentsPage = () => {
+  const [loadingForProject, setLoadingForProject] = useState(false);
+  const [loadingForTestDoc, setLoadingForTestDoc] = useState(false);
+  const [loadingForTestCases, setLoadingForTestCases] = useState(false);
   const [project, setProject] = useState([]);
   const [testDocument, setTestDocument] = useState([]);
   const [testCases, setTestCases] = useState([]);
@@ -69,6 +70,7 @@ const TestDocumentsPage = () => {
     );
     const data = await res.json();
 
+    setLoadingForProject(true);
     return data;
   };
 
@@ -77,6 +79,8 @@ const TestDocumentsPage = () => {
       `https://localhost:44335/api/test-document/getbyId?id=${id}`
     );
     const data = await res.json();
+
+    setLoadingForTestDoc(true);
     return data;
   };
 
@@ -119,6 +123,8 @@ const TestDocumentsPage = () => {
       `https://localhost:44335/api/test-case/getall?documentId=${id}`
     );
     const data = await res.json();
+
+    setLoadingForTestCases(true);
     return data;
   };
 
@@ -166,108 +172,134 @@ const TestDocumentsPage = () => {
 
   return (
     <>
-      <Container fluid className="reqDocMainPage">
-        <Row>
-          <Col sm={10} style={{ height: "200px" }}>
-            <Row className="projInfoRow">
-              <Col>
-                <h1>
-                  {`${testDocument.name} of ${project.name}`.length > 65
-                    ? `${testDocument.name} of ${project.name}`
-                        .slice(0, 62)
-                        .concat("...")
-                    : `${testDocument.name} of ${project.name}`}
-                </h1>
+      {!loadingForProject && !loadingForTestDoc && !loadingForTestCases ? (
+        <Spinner animation="border">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
+      ) : (
+        <>
+          <Container fluid className="testDocMainPage">
+            <Row>
+              <Breadcrumb>
+                <Breadcrumb.Item>
+                  <Link to={`${"/"}`}>Main Page</Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>
+                  <Link to={`${"/" + projId + "/main"}`}>{project.name}</Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item active>{testDocument.name}</Breadcrumb.Item>
+              </Breadcrumb>
+              <Col sm={10} style={{ height: "200px" }}>
+                <Row className="projInfoRow">
+                  <Col>
+                    <h1>
+                      {`${testDocument.name} of ${project.name}`.length > 65
+                        ? `${testDocument.name} of ${project.name}`
+                            .slice(0, 62)
+                            .concat("...")
+                        : `${testDocument.name} of ${project.name}`}
+                    </h1>
+                  </Col>
+                </Row>
+                <Row className="projInfoRow">
+                  <Col className="projectTestDesc">
+                    <a>{testDocument.description}</a>
+                  </Col>
+                </Row>
+              </Col>
+              <Col sm={2}>
+                <Button
+                  size="lg"
+                  variant="info"
+                  className="btnReqDoc"
+                  onClick={testDocShow}
+                >
+                  Edit Document Info
+                </Button>
+                <Button
+                  size="lg"
+                  variant="success"
+                  className="btnReqDoc"
+                  onClick={testCaseAddOpen}
+                >
+                  Add Test Case
+                </Button>
               </Col>
             </Row>
-            <Row className="projInfoRow">
+            <Row>
               <Col>
-                <a>{testDocument.description}</a>
+                <Accordion alwaysOpen>
+                  {testCases.map((testCase) => (
+                    <Accordion.Item eventKey={testCase.id}>
+                      <Accordion.Header>{testCase.name}</Accordion.Header>
+                      <Accordion.Body style={{ backgroundColor: "#ffe5ba" }}>
+                        <Row>
+                          <Col sm={11}>
+                            {" "}
+                            <Table bordered style={{ borderColor: "black" }}>
+                              <tbody>
+                                <tr>
+                                  <td>Description:</td>
+                                  <td>
+                                    <p className="testCaseText">
+                                      {testCase.description}
+                                    </p>
+                                  </td>
+                                  <td>Created Date:</td>
+                                  <td>
+                                    <p className="testCaseDate">
+                                      {moment(testCase.createdDate).format(
+                                        "LLLL"
+                                      )}
+                                    </p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style={{ width: "140px" }}>
+                                    Requirements:
+                                  </td>
+                                  <td>
+                                    <p className="testCaseText">
+                                      {testCase.requirementTestCases}
+                                    </p>
+                                  </td>
+                                  <td style={{ width: "150px" }}>
+                                    Updated Date:
+                                  </td>
+                                  <td style={{ width: "310px" }}>
+                                    <p className="testCaseDate">
+                                      {testCase.updatedDate === null
+                                        ? "Not Yet Modified"
+                                        : moment(testCase.updatedDate).format(
+                                            "LLLL"
+                                          )}
+                                    </p>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </Table>
+                          </Col>
+                          <Col sm={1}>
+                            <Button
+                              size="lg"
+                              variant="success"
+                              className="addTestStepBtn"
+                              /* onClick={docShow} */
+                            >
+                              Add Test Step
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  ))}
+                </Accordion>
+                <div style={{ height: "100px" }}></div>
               </Col>
             </Row>
-          </Col>
-          <Col sm={2}>
-            <Button
-              size="lg"
-              variant="success"
-              className="btnReqDoc"
-              onClick={testDocShow}
-            >
-              Edit Document Info
-            </Button>
-            <Button
-              size="lg"
-              variant="info"
-              className="btnReqDoc"
-              onClick={testCaseAddOpen}
-            >
-              Add Test Case
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Accordion alwaysOpen>
-              {testCases.map((testCase) => (
-                <Accordion.Item eventKey={testCase.id}>
-                  <Accordion.Header>{testCase.name}</Accordion.Header>
-                  <Accordion.Body style={{ backgroundColor:"#ffe5ba"}}>
-                    <Row><Col sm={11}>
-                      {" "}
-                      <Table bordered style={{borderColor:"black"}}>
-                        <tbody>
-                          <tr>
-                            <td>Description:</td>
-                            <td>
-                              <p className="testCaseText">
-                                {testCase.description}
-                              </p>
-                            </td>
-                            <td>Created Date:</td>
-                            <td>
-                              <p className="testCaseDate">
-                                {moment(testCase.createdDate).format("LLLL")}
-                              </p>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style={{ width: "140px" }}>Requirements:</td>
-                            <td>
-                              <p className="testCaseText">
-                                {testCase.requirementTestCases}
-                              </p>
-                            </td>
-                            <td style={{ width: "150px" }}>Updated Date:</td>
-                            <td style={{ width: "310px" }}>
-                              <p className="testCaseDate">
-                                {testCase.updatedDate === null
-                                  ? "Not Yet Modified"
-                                  : moment(testCase.updatedDate).format("LLLL")}
-                              </p>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </Table>
-                    </Col>
-                    <Col sm={1}>
-                      <Button
-                        size="lg"
-                        variant="success"
-                        className="addTestStepBtn"
-                        /* onClick={docShow} */
-                      >
-                        Add Test Step
-                      </Button>
-                    </Col></Row>
-                    
-                  </Accordion.Body>
-                </Accordion.Item>
-              ))}
-            </Accordion>
-            <div style={{ height: "100px" }}></div>
-          </Col>
-        </Row>
-      </Container>
+          </Container>
+        </>
+      )}
 
       <EditTestDocumentInfoModel
         showTestDoc={showTestDoc}

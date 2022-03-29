@@ -13,45 +13,18 @@
     color: white;
 }
 
-.header {
+.navbar-custom .userName{
+    font-weight: normal;
     text-decoration: none;
     color: #000;
 }
 
-.nav-item {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    list-style: none;
-    height: 60px;
+.navbar-custom .userName:hover{
+    text-decoration: underline;
+    color: white;
 }
 
-.nav-item a {
-    text-decoration: none;
-    color: #000;
-    font-size: 21px;
-    width: 95%;
-    height: 95%;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    border-radius: 4px;
-}
-
-.selected {
-    background-color: #f46e0f;
-    font-weight: bold;
-}
-
-.invisible {
-    visibility: hidden;
-}
-
-.nav-item a:hover {
-    color: #000;
-    background-color: #f46e0f;
-}
 
 .row {
-    padding-left: 20px;
+    padding-left: 10px;
 }

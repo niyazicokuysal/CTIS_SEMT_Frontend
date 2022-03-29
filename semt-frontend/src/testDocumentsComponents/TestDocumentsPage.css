@@ -1,22 +1,19 @@
-.reqDocMainPage {
+.testDocMainPage {
   margin-top: 20px;
   padding-right: 30px;
 }
 
-.reqDocMainPage h1 {
+.testDocMainPage h1 {
   color: #f46e0f;
   font-size: 40px;
   font-weight: bolder;
 }
 
-.reqDocMainPage a {
-  display: block;
-  margin-top: 5px;
-  margin-bottom: 5px;
-
-  font-size: larger;
+.projectTestDesc{
+  overflow-wrap: break-word;
   font-weight: bolder;
 }
+
 
 .projInfoRow {
   padding-left: 0;
