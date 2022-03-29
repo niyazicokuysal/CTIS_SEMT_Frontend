@@ -11,6 +11,7 @@ import "./Header.css";
 const Header = () => {
   const [projectReq, setprojectReq] = useState([]);
   const [projectTest, setProjectTest] = useState([]);
+  const [allDocuments, setAllDocuments] = useState([]);
 
   const { pathname } = useLocation()
   const path = pathname.split("/")
@@ -27,10 +28,20 @@ const Header = () => {
         const projectTest = await getProjectTestDocuments(projId);
         setProjectTest(projectTest)
       }
-
     }
 
     getProjectReq();
+    const temp = []
+    projectReq.forEach(reqDoc => {
+      temp.push({name: reqDoc.typeName, id: reqDoc.id, link: "/" + projId + "/req/" + reqDoc.id})
+    });
+
+    projectTest.forEach(reqTest => {
+      temp.push({name: reqTest.name, id: reqTest.id, link:"/" + projId + "/test/" + reqTest.id})
+    })
+
+    setAllDocuments(temp)
+
 
   }, [projId, docId]);
 
@@ -38,7 +49,6 @@ const Header = () => {
     const res = await fetch(`https://localhost:44335/api/requirement-document/getall?projectId=${id}`);
     const data = await res.json();
 
-    console.log(data);
     return data;
   };
 
@@ -46,7 +56,6 @@ const Header = () => {
     const res = await fetch(`https://localhost:44335/api/test-document/getall?projectId=${id}`);
     const data = await res.json();
 
-    console.log(data);
     return data;
   };
 
@@ -81,6 +90,7 @@ const Header = () => {
                 <span className="row" >Home</span>
               </Link>
             </Nav.Item>
+            {console.log(allDocuments)}
             {projId === ""
               ? null
               :  <Nav.Item key={10000000000000000000}> <Link

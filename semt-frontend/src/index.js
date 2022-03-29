@@ -11,11 +11,14 @@ import HomePage from './homePageComponents/HomePage'
 import ProjectMainPage from './projectMainPageComponents/ProjectMainPage';
 import RequirementDocumentsPage from './requirementDocumentsComponents/RequirementDocumentsPage'
 import TestDocumentsPage from './testDocumentsComponents/TestDocumentsPage'
+import App from './App'
 
 
 ReactDOM.render(
   <BrowserRouter>
     <React.StrictMode>
+
+      {/* <App></App> */}
       <Header />
 
       <Routes>
