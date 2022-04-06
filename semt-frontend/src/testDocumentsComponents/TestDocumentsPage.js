@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import EditTestDocumentInfoModel from "./EditTestDocumentInfoModel";
 import AddTestCaseModel from "./AddTestCaseModel";
+//import axios from "axios";
 import moment from "moment";
 import {
   Container,
@@ -18,8 +19,6 @@ import {
 
 const TestDocumentsPage = () => {
   const [loadingForProject, setLoadingForProject] = useState(false);
-  const [loadingForTestDoc, setLoadingForTestDoc] = useState(false);
-  const [loadingForTestCases, setLoadingForTestCases] = useState(false);
   const [project, setProject] = useState([]);
   const [testDocument, setTestDocument] = useState([]);
   const [testCases, setTestCases] = useState([]);
@@ -34,7 +33,7 @@ const TestDocumentsPage = () => {
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
-  const testId = path[3];
+  const testDocId = path[3];
 
   const [showTestDoc, setTestDoc] = useState(false);
   const testDocClose = () => setTestDoc(false);
@@ -44,45 +43,42 @@ const TestDocumentsPage = () => {
   const testCaseAddClose = () => setShowTestCaseAdd(false);
   const testCaseAddOpen = () => setShowTestCaseAdd(true);
 
-  useEffect(() => {
-    const getProject = async () => {
-      const projectInfo = await fetchProject(projId);
-      setProject(projectInfo);
-    };
-    const getDocument = async () => {
-      const testInfo = await fetchTestDocument(testId);
-      setTestDocument(testInfo);
-    };
-    const getTestCases = async () => {
-      const testCasesInfo = await fetchTestCases(testId);
-      setTestCases(testCasesInfo);
-    };
-
-    getTestCases();
-    getDocument();
-    getProject();
-    console.log(testCases);
-  }, [projId]);
-
   const fetchProject = async (id) => {
     const res = await fetch(
       `https://localhost:44335/api/project/getbyid?id=${id}`
     );
     const data = await res.json();
 
+    return data;
+  };
+
+  const fetchDocument = async (id) => {
+    const res = await fetch(
+      `https://localhost:44335/api/test-document/getbyid?id=${id}`
+    );
+    const data = await res.json();
+
+    setTestCases(data.testCases);
     setLoadingForProject(true);
     return data;
   };
 
-  const fetchTestDocument = async (id) => {
-    const res = await fetch(
-      `https://localhost:44335/api/test-document/getbyId?id=${id}`
-    );
-    const data = await res.json();
+  useEffect(() => {
+    const getProject = async () => {
+      const projectInfo = await fetchProject(projId);
+      setProject(projectInfo);
+    };
 
-    setLoadingForTestDoc(true);
-    return data;
-  };
+    const getDocument = async () => {
+      const groupsInfo = await fetchDocument(testDocId);
+      setTestDocument(groupsInfo);
+
+    };
+
+    getProject();
+    getDocument();
+
+  }, []);
 
   const onUpdateTestDocument = (e) => {
     e.preventDefault();
@@ -113,19 +109,6 @@ const TestDocumentsPage = () => {
         body: JSON.stringify(testDoc),
       }
     );
-
-    const newTestDocument = await fetchTestDocument(testDoc.id);
-    setTestDocument(newTestDocument);
-  };
-
-  const fetchTestCases = async (id) => {
-    const res = await fetch(
-      `https://localhost:44335/api/test-case/getall?documentId=${id}`
-    );
-    const data = await res.json();
-
-    setLoadingForTestCases(true);
-    return data;
   };
 
   const onSubmitCase = (e) => {
@@ -137,7 +120,7 @@ const TestDocumentsPage = () => {
     }
 
     const projectId = Number(projId);
-    const testDocumentId = Number(testId);
+    const testDocumentId = Number(testDocId);
     const name = testName;
 
     const requirementNames = requirementString.split("/");
@@ -166,13 +149,13 @@ const TestDocumentsPage = () => {
       body: JSON.stringify(addTestCase),
     });
 
-    const testCasesInfo = await fetchTestCases(testId);
-    setTestCases(testCasesInfo);
+    const groupsInfo = await fetchDocument(testDocId);
+    setTestDocument(groupsInfo);
   };
 
   return (
     <>
-      {!loadingForProject && !loadingForTestDoc && !loadingForTestCases ? (
+      {!loadingForProject ? (
         <Spinner animation="border">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
@@ -284,7 +267,6 @@ const TestDocumentsPage = () => {
                               size="lg"
                               variant="success"
                               className="addTestStepBtn"
-                              /* onClick={docShow} */
                             >
                               Add Test Step
                             </Button>

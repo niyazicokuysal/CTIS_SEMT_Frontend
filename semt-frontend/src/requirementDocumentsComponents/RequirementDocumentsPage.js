@@ -67,6 +67,33 @@ const RequirementDocumentsPage = () => {
 
   const now = 60;
 
+  useEffect(() => {
+    const getProject = async () => {
+      const projectInfo = await fetchProject(projId);
+      setProject(projectInfo);
+    };
+
+    const getDocument = async () => {
+      const documentInfo = await fetchDocument(docId);
+      setDocument(documentInfo);
+    };
+
+    const getDocGroups = async () => {
+      const groupsInfo = await fetchDocumentGroups(docId);
+      setDocGroups(groupsInfo);
+    };
+
+    const getDocReq = async () => {
+      const docReqs = await getProjectDocumentsRequirements(docId);
+      setDocumentRequirements(docReqs);
+    };
+
+    getProject();
+    getDocument();
+    getDocReq();
+    getDocGroups();
+  }, []);
+
   const onSubmitReq = (e) => {
     e.preventDefault();
 
@@ -235,33 +262,6 @@ const RequirementDocumentsPage = () => {
     return data;
   };
 
-  useEffect(() => {
-    const getProject = async () => {
-      const projectInfo = await fetchProject(projId);
-      setProject(projectInfo);
-    };
-
-    const getDocument = async () => {
-      const documentInfo = await fetchDocument(docId);
-      setDocument(documentInfo);
-    };
-
-    const getDocGroups = async () => {
-      const groupsInfo = await fetchDocumentGroups(docId);
-      setDocGroups(groupsInfo);
-    };
-
-    const getDocReq = async () => {
-      const docReqs = await getProjectDocumentsRequirements(docId);
-      setDocumentRequirements(docReqs);
-    };
-
-    getProject();
-    getDocument();
-    getDocReq();
-    getDocGroups();
-  }, [projId]);
-
   const updateDocument = async (document) => {
     console.log(JSON.stringify(document));
     const res = await fetch(
@@ -303,9 +303,9 @@ const RequirementDocumentsPage = () => {
                 <Row className="projInfoRow">
                   <Col sm={5}>
                     <h1>
-                      {`${document.typeName} of ${project.name}`.length > 50
+                      {`${document.typeName} of ${project.name}`.length > 100
                         ? `${document.typeName} of ${project.name}`
-                            .slice(0, 50)
+                            .slice(0, 100)
                             .concat("...")
                         : `${document.typeName} of ${project.name}`}
                     </h1>

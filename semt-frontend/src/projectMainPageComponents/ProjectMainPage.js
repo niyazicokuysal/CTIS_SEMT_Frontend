@@ -18,8 +18,8 @@ import {
 
 const ProjectMainPage = ({ dummyProject }) => {
   const [loadingForProjects, setLoadingForProjects] = useState(false);
-  const [loadingForProjectsReqDocs, setLoadingForProjectsReqDocs] =
-    useState(false);
+ // const [loadingForProjectsReqDocs, setLoadingForProjectsReqDocs] =  useState(false);
+
   const [project, setProject] = useState([]);
   const [projectReqDocs, setProjectReqDocs] = useState([]);
 
@@ -61,7 +61,7 @@ const ProjectMainPage = ({ dummyProject }) => {
     };
 
     getProjectAllDoc();
-  }, [projectReqDocs]);
+  }, []);
 
   const getProjectAllDocuments = async (id) => {
     const res = await fetch(
@@ -69,8 +69,26 @@ const ProjectMainPage = ({ dummyProject }) => {
     );
     const data = await res.json();
 
-    setLoadingForProjectsReqDocs(true);
+    //setLoadingForProjectsReqDocs(true);
     return data;
+  };
+
+  const addDocuments = async (docInfoo) => {
+    console.log(JSON.stringify(docInfoo));
+    const res = await fetch(
+      "https://localhost:44335/api/requirement-document/add",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(docInfoo),
+      }
+    );
+
+    const projectAllDoc = await getProjectAllDocuments(projId);
+    setProjectReqDocs(projectAllDoc);
   };
 
   const fetchProject = async (id) => {
@@ -81,6 +99,21 @@ const ProjectMainPage = ({ dummyProject }) => {
 
     setLoadingForProjects(true);
     return data;
+  };
+
+  const updateProject = async (project) => {
+    console.log(JSON.stringify(project));
+    const res = await fetch("https://localhost:44335/api/project/update", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(project),
+    });
+
+    const newProject = await fetchProject(projId);
+    setProject(newProject);
   };
 
   const onSubmit = (e) => {
@@ -104,21 +137,6 @@ const ProjectMainPage = ({ dummyProject }) => {
     setName("");
     setDesc("");
     setShow(false);
-  };
-
-  const updateProject = async (project) => {
-    console.log(JSON.stringify(project));
-    const res = await fetch("https://localhost:44335/api/project/update", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(project),
-    });
-
-    const newProject = await fetchProject(projId);
-    setProject(newProject);
   };
 
   const onSubmitDocument = (e) => {
@@ -146,24 +164,9 @@ const ProjectMainPage = ({ dummyProject }) => {
     docClose(false);
   };
 
-  const addDocuments = async (docInfoo) => {
-    console.log(JSON.stringify(docInfoo));
-    const res = await fetch(
-      "https://localhost:44335/api/requirement-document/add",
-      {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(docInfoo),
-      }
-    );
-  };
-
   return (
     <>
-      {!loadingForProjects && !loadingForProjectsReqDocs ? (
+      {!loadingForProjects ? (
         <Spinner animation="border">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
