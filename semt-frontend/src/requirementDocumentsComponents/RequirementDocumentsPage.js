@@ -280,43 +280,28 @@ const RequirementDocumentsPage = () => {
     const newDocument = await fetchDocument(document.id);
     setDocument(newDocument);
   };
-  const rendernullgroup = () => {
+  const renderNullGroup = () => {
     let isNull = false;
     for (let req in docRequirements) {
       if (req.requirementGroupId == null)
         isNull = true;
     }
     if (isNull) {
-      return <Table hover bordered className="reqTable">
-        <thead>
-          <tr className="header">
-            <td colSpan="7">No Group</td>
-          </tr>
-          <tr>
-            <th style={{ width: "140px" }}>Req Id</th>
-            <th>Description</th>
-            <th style={{ width: "170px" }}>Test Types</th>
-            <th style={{ width: "120px" }}>Is Deleted</th>
-            <th style={{ width: "105px" }}>Is Verified</th>
-            <th style={{ width: "118px" }}>View Details</th>
-            <th style={{ width: "118px" }}>Delete</th>
-            {/* <th style={{ width: "118px" }}>Group</th> */}
-          </tr>
-        </thead>
-        <tbody>
-          {docRequirements.map((requirement, i) => (
-            renderItem({ id: null }, requirement, i)
-          ))}
-
-          {/* <tr className="header">
-<td colSpan="7">ASDFASDF</td>
-</tr> */}
-        </tbody>
-      </Table>;
+      return <>
+        <tr className="header">
+          <td colSpan="7">No Group</td>
+        </tr>
+        {
+          docRequirements.map((requirement, i) => (
+            renderReq({ id: null }, requirement, i)
+          ))
+        }
+      </>
+        ;
     }
   };
 
-  const renderItem = (group, requirement, i) => {
+  const renderReq = (group, requirement, i) => {
     if (group.id == requirement.requirementGroupId) {
       return <tr
         key={i}
@@ -366,8 +351,6 @@ const RequirementDocumentsPage = () => {
             Delete
           </Button>
         </td>
-
-        {/* <td>{singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}</td> */}
       </tr>;
     }
     return null;
@@ -443,35 +426,35 @@ const RequirementDocumentsPage = () => {
             </Row>
             <Row>
               <Col>
-                {rendernullgroup()}
-                {docGroups.map((group, g) => (
-                  <Table hover bordered className="reqTable">
-                    <thead>
-                      <tr className="header">
-                        <td colSpan="7">{group.name}</td>
-                      </tr>
-                      <tr>
-                        <th style={{ width: "140px" }}>Req Id</th>
-                        <th>Description</th>
-                        <th style={{ width: "170px" }}>Test Types</th>
-                        <th style={{ width: "120px" }}>Is Deleted</th>
-                        <th style={{ width: "105px" }}>Is Verified</th>
-                        <th style={{ width: "118px" }}>View Details</th>
-                        <th style={{ width: "118px" }}>Delete</th>
-                        {/* <th style={{ width: "118px" }}>Group</th> */}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {docRequirements.map((requirement, i) => (
-                        renderItem(group, requirement, i)
-                      ))}
+                <Table hover bordered className="reqTable">
+                  <thead>
+                    <tr>
+                      <th style={{ width: "140px" }}>Req Id</th>
+                      <th>Description</th>
+                      <th style={{ width: "170px" }}>Test Types</th>
+                      <th style={{ width: "120px" }}>Is Deleted</th>
+                      <th style={{ width: "105px" }}>Is Verified</th>
+                      <th style={{ width: "118px" }}>View Details</th>
+                      <th style={{ width: "118px" }}>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {renderNullGroup()}
+                    {docGroups.map((group, g) => (
+                      <>
+                        <tr className="header">
+                          <td colSpan="7">{group.name}</td>
+                        </tr>
+                        {
+                          docRequirements.map((requirement, i) => (
+                            renderReq(group, requirement, i)
+                          ))
+                        }
+                      </>
+                    ))}
+                  </tbody>
+                </Table>
 
-                      {/* <tr className="header">
- <td colSpan="7">ASDFASDF</td>
-</tr> */}
-                    </tbody>
-                  </Table>
-                ))}
 
               </Col>
             </Row>
