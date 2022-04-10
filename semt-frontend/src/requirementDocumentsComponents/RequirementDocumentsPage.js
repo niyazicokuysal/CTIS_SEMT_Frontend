@@ -293,7 +293,7 @@ const RequirementDocumentsPage = () => {
         </tr>
         {
           docRequirements.map((requirement, i) => (
-            renderReq({ id: null }, requirement, i)
+            renderRequirements({ id: null }, requirement, i)
           ))
         }
       </>
@@ -301,7 +301,7 @@ const RequirementDocumentsPage = () => {
     }
   };
 
-  const renderReq = (group, requirement, i) => {
+  const renderRequirements = (group, requirement, i) => {
     if (group.id == requirement.requirementGroupId) {
       return <tr
         key={i}
@@ -447,7 +447,7 @@ const RequirementDocumentsPage = () => {
                         </tr>
                         {
                           docRequirements.map((requirement, i) => (
-                            renderReq(group, requirement, i)
+                            renderRequirements(group, requirement, i)
                           ))
                         }
                       </>
