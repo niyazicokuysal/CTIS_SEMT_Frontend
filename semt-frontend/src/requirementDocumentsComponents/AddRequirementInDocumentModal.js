@@ -8,7 +8,7 @@ const AddRequirementInDocumentModal = ({
   setReqDesc,
   setReqComment,
   setReqType,
-  setReqGrp,
+  setReqGrp = 0,
   docGroups,
 }) => {
   return (

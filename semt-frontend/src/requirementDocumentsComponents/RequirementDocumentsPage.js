@@ -85,6 +85,7 @@ const RequirementDocumentsPage = () => {
 
     const getDocReq = async () => {
       const docReqs = await getProjectDocumentsRequirements(docId);
+
       setDocumentRequirements(docReqs);
     };
 
@@ -279,6 +280,98 @@ const RequirementDocumentsPage = () => {
     const newDocument = await fetchDocument(document.id);
     setDocument(newDocument);
   };
+  const rendernullgroup = () => {
+    let isNull = false;
+    for (let req in docRequirements) {
+      if (req.requirementGroupId == null)
+        isNull = true;
+    }
+    if (isNull) {
+      return <Table hover bordered className="reqTable">
+        <thead>
+          <tr className="header">
+            <td colSpan="7">No Group</td>
+          </tr>
+          <tr>
+            <th style={{ width: "140px" }}>Req Id</th>
+            <th>Description</th>
+            <th style={{ width: "170px" }}>Test Types</th>
+            <th style={{ width: "120px" }}>Is Deleted</th>
+            <th style={{ width: "105px" }}>Is Verified</th>
+            <th style={{ width: "118px" }}>View Details</th>
+            <th style={{ width: "118px" }}>Delete</th>
+            {/* <th style={{ width: "118px" }}>Group</th> */}
+          </tr>
+        </thead>
+        <tbody>
+          {docRequirements.map((requirement, i) => (
+            renderItem({ id: null }, requirement, i)
+          ))}
+
+          {/* <tr className="header">
+<td colSpan="7">ASDFASDF</td>
+</tr> */}
+        </tbody>
+      </Table>;
+    }
+  };
+
+  const renderItem = (group, requirement, i) => {
+    if (group.id == requirement.requirementGroupId) {
+      return <tr
+        key={i}
+        className={`${requirement.isDeleted === true ? "deleted" : ""
+          }`}
+      >
+        <td>{requirement.name}</td>
+
+        <td>{requirement.description}</td>
+        <td>{requirement.testTypes}</td>
+        <td>
+          {requirement.isDeleted === true
+            ? "Deleted"
+            : "Not Deleted"}
+        </td>
+        <td
+          className={`${false === true ? "trueRow" : "falseRow"
+            }`}
+        >
+          No
+        </td>
+        <td>
+          <Button
+            size="sm"
+            variant="primary"
+            className="btnTable"
+            onClick={() =>
+              detailsShow(
+                requirement.id,
+                requirement.requirementGroupId
+              )
+            }
+          >
+            View
+          </Button>
+        </td>
+        <td>
+          <Button
+            size="sm"
+            variant="danger"
+            onClick={() => deleteRequirement(requirement.id)}
+            className={`${requirement.isDeleted === true
+              ? "deletedBtn"
+              : "btnTable"
+              }`}
+          >
+            Delete
+          </Button>
+        </td>
+
+        {/* <td>{singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}</td> */}
+      </tr>;
+    }
+    return null;
+  };
 
   return (
     <>
@@ -305,8 +398,8 @@ const RequirementDocumentsPage = () => {
                     <h1>
                       {`${document.typeName} of ${project.name}`.length > 100
                         ? `${document.typeName} of ${project.name}`
-                            .slice(0, 100)
-                            .concat("...")
+                          .slice(0, 100)
+                          .concat("...")
                         : `${document.typeName} of ${project.name}`}
                     </h1>
                   </Col>
@@ -350,81 +443,36 @@ const RequirementDocumentsPage = () => {
             </Row>
             <Row>
               <Col>
-                <Table hover bordered className="reqTable">
-                  <thead>
-                    <tr>
-                      <th style={{ width: "140px" }}>Req Id</th>
-                      <th>Description</th>
-                      <th style={{ width: "170px" }}>Test Types</th>
-                      <th style={{ width: "120px" }}>Is Deleted</th>
-                      <th style={{ width: "105px" }}>Is Verified</th>
-                      <th style={{ width: "118px" }}>View Details</th>
-                      <th style={{ width: "118px" }}>Delete</th>
-                      {/* <th style={{ width: "118px" }}>Group</th> */}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {docRequirements.map((requirement, i) => (
-                      <tr
-                        key={i}
-                        className={`${
-                          requirement.isDeleted === true ? "deleted" : ""
-                        }`}
-                      >
-                        <td>{requirement.name}</td>
-                        <td>{requirement.description}</td>
-                        <td>{requirement.testTypes}</td>
-                        <td>
-                          {requirement.isDeleted === true
-                            ? "Deleted"
-                            : "Not Deleted"}
-                        </td>
-                        <td
-                          className={`${
-                            false === true ? "trueRow" : "falseRow"
-                          }`}
-                        >
-                          No
-                        </td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="primary"
-                            className="btnTable"
-                            onClick={() =>
-                              detailsShow(
-                                requirement.id,
-                                requirement.requirementGroupId
-                              )
-                            }
-                          >
-                            View
-                          </Button>
-                        </td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            onClick={() => deleteRequirement(requirement.id)}
-                            className={`${
-                              requirement.isDeleted === true
-                                ? "deletedBtn"
-                                : "btnTable"
-                            }`}
-                          >
-                            Delete
-                          </Button>
-                        </td>
-
-                        {/* <td>{singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}</td> */}
+                {rendernullgroup()}
+                {docGroups.map((group, g) => (
+                  <Table hover bordered className="reqTable">
+                    <thead>
+                      <tr className="header">
+                        <td colSpan="7">{group.name}</td>
                       </tr>
-                    ))}
+                      <tr>
+                        <th style={{ width: "140px" }}>Req Id</th>
+                        <th>Description</th>
+                        <th style={{ width: "170px" }}>Test Types</th>
+                        <th style={{ width: "120px" }}>Is Deleted</th>
+                        <th style={{ width: "105px" }}>Is Verified</th>
+                        <th style={{ width: "118px" }}>View Details</th>
+                        <th style={{ width: "118px" }}>Delete</th>
+                        {/* <th style={{ width: "118px" }}>Group</th> */}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {docRequirements.map((requirement, i) => (
+                        renderItem(group, requirement, i)
+                      ))}
 
-                    {/* <tr className="header">
-                  <td colSpan="7">ASDFASDF</td>
-                </tr> */}
-                  </tbody>
-                </Table>
+                      {/* <tr className="header">
+ <td colSpan="7">ASDFASDF</td>
+</tr> */}
+                    </tbody>
+                  </Table>
+                ))}
+
               </Col>
             </Row>
           </Container>
