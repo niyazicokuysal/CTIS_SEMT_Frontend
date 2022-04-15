@@ -7,7 +7,7 @@ import {
     Table,
   } from "react-bootstrap";
 
-const AddProjectDocumentationModal = ({showDoc, docClose, projectReqDocs, onSubmitDocument, setNewDocName, setNewDocHeader, projId}) => {
+const AddProjectDocumentationModal = ({showDoc, docClose, projectReqDocs, onSubmitDocument, setNewDocName, setNewDocHeader, setNewDocParent, reqDocuments, projId}) => {
   return (
     <Modal
     show={showDoc}
@@ -63,6 +63,22 @@ const AddProjectDocumentationModal = ({showDoc, docClose, projectReqDocs, onSubm
             placeholder="Enter the header"
           />
         </Form.Group>
+        <Form.Select
+            aria-label="Default select example"
+            style={{ marginTop: "20px" }}
+             onChange={(e) => {
+              setNewDocParent(e.target.value);
+            }} 
+          >
+            <option value="0" selected disabled>
+              Select a Parent Requirement Document if you want
+            </option>
+            {reqDocuments.map((req, i) => (
+              <option key={i} value={req.id}>
+                {req.typeName}
+              </option>
+            ))}
+          </Form.Select>
 
         <Modal.Footer>
           <Button variant="primary" type="submit">

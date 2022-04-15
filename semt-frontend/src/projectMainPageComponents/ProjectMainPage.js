@@ -18,7 +18,8 @@ import {
 
 const ProjectMainPage = ({ dummyProject }) => {
   const [loadingForProjects, setLoadingForProjects] = useState(false);
- // const [loadingForProjectsReqDocs, setLoadingForProjectsReqDocs] =  useState(false);
+  const [loadingForProjectsReqDocs, setLoadingForProjectsReqDocs] =  useState(false);
+  const [error, setError] = useState("");
 
   const [project, setProject] = useState([]);
   const [projectReqDocs, setProjectReqDocs] = useState([]);
@@ -28,8 +29,10 @@ const ProjectMainPage = ({ dummyProject }) => {
 
   const [name, setName] = useState("");
   const [description, setDesc] = useState("");
+
   const [newDocName, setNewDocName] = useState("");
   const [newDocHeader, setNewDocHeader] = useState("");
+  const [newDocParent, setNewDocParent] = useState("null");
 
   const { pathname } = useLocation();
   const path = pathname.split("/");
@@ -69,7 +72,7 @@ const ProjectMainPage = ({ dummyProject }) => {
     );
     const data = await res.json();
 
-    //setLoadingForProjectsReqDocs(true);
+    setLoadingForProjectsReqDocs(true);
     return data;
   };
 
@@ -149,6 +152,7 @@ const ProjectMainPage = ({ dummyProject }) => {
 
     const typeName = newDocName + " Requirements Document";
     const header = newDocHeader;
+    const parentDocumentId = Number(newDocParent)
     const description = "Can add description via Edit Document";
     const projectId = Number(projId);
     const testDocuments = [
@@ -158,15 +162,25 @@ const ProjectMainPage = ({ dummyProject }) => {
         description: description,
       },
     ];
-    addDocuments({ projectId, typeName, header, description, testDocuments });
+    addDocuments({ projectId, parentDocumentId, typeName, header, description, testDocuments });
     setNewDocName("");
     setNewDocHeader("");
+    setNewDocParent("null")
     docClose(false);
+  };
+
+  const deleteDocuments = async (id) => {
+    /* await fetch(`https://localhost:44335/api/requirement-document/delete?id=${id}`, {
+      method: "POST",
+    }).catch((err) => {console.log(err)});
+
+    const projectAllDoc = await getProjectAllDocuments(projId);
+    setProjectReqDocs(projectAllDoc); */
   };
 
   return (
     <>
-      {!loadingForProjects ? (
+      {!loadingForProjects && !loadingForProjectsReqDocs ? (
         <Spinner animation="border">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
@@ -263,6 +277,7 @@ const ProjectMainPage = ({ dummyProject }) => {
                             size="sm"
                             variant="danger"
                             style={{ marginBottom: "5px" }}
+                            onClick={() => deleteDocuments(document.id)}
                           >
                             Delete
                           </Button>
@@ -302,6 +317,8 @@ const ProjectMainPage = ({ dummyProject }) => {
             onSubmitDocument={onSubmitDocument}
             setNewDocName={setNewDocName}
             setNewDocHeader={setNewDocHeader}
+            setNewDocParent={setNewDocParent}
+            reqDocuments={projectReqDocs}
             projId={projId}
           ></AddProjectDocumentationModal>
         </>
