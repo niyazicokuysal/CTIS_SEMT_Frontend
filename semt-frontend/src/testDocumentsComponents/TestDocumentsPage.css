@@ -20,7 +20,6 @@
 }
 
 .btnReqDoc {
-  margin-top: 15px;
   padding: 5px;
   height: 46px;
   width: 289px;
@@ -43,13 +42,18 @@
 .testCaseDate{
   font-size: 16px;
   font-weight: normal;
+  margin-bottom: 0px;
 }
 
 .testCaseText{
   font-size: 18px;
   font-weight: normal;
+  margin-bottom: 0px;
 }
 
-/* .addTestStepBtn{
+.addTestStepBtn{
+  padding: 5px;
+  width: 269px;
+  font-size: 23px;
+}
 
-} */

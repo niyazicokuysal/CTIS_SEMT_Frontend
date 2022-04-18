@@ -169,15 +169,6 @@ const ProjectMainPage = ({ dummyProject }) => {
     docClose(false);
   };
 
-  const deleteDocuments = async (id) => {
-    /* await fetch(`https://localhost:44335/api/requirement-document/delete?id=${id}`, {
-      method: "POST",
-    }).catch((err) => {console.log(err)});
-
-    const projectAllDoc = await getProjectAllDocuments(projId);
-    setProjectReqDocs(projectAllDoc); */
-  };
-
   return (
     <>
       {!loadingForProjects && !loadingForProjectsReqDocs ? (
@@ -251,7 +242,6 @@ const ProjectMainPage = ({ dummyProject }) => {
                       </th>
                       <th style={{ width: "400px" }}>Test Documentation</th>
                       <th>Requirements Validation Status</th>
-                      <th style={{ width: "75px" }}>Delete</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -271,16 +261,6 @@ const ProjectMainPage = ({ dummyProject }) => {
                         </td>
                         <td style={{ paddingTop: "13px" }}>
                           <ProgressBar now={now} label={`${now}%`} />
-                        </td>
-                        <td>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            style={{ marginBottom: "5px" }}
-                            onClick={() => deleteDocuments(document.id)}
-                          >
-                            Delete
-                          </Button>
                         </td>
                       </tr>
                     ))}

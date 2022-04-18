@@ -19,7 +19,7 @@ code {
   .breadcrumb li{
     text-decoration: none;
     font-size: 30px;
-    color: #f46e0f;
+    color: #f46e0f !important;
     font-weight: 500;
   }
   

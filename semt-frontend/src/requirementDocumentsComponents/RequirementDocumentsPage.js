@@ -65,8 +65,6 @@ const RequirementDocumentsPage = () => {
   const reqClose = () => setReq(false);
   const reqShow = () => setReq(true);
 
-  const now = 60;
-
   useEffect(() => {
     const getProject = async () => {
       const projectInfo = await fetchProject(projId);
@@ -375,20 +373,11 @@ const RequirementDocumentsPage = () => {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>{document.typeName}</Breadcrumb.Item>
               </Breadcrumb>
-              <Col sm={10} style={{ height: "200px" }}>
+              <Col sm={8} style={{ height: "140px" }}>
                 <Row className="projInfoRow">
-                  <Col sm={5}>
-                    <h1>
-                      {`${document.typeName} of ${project.name}`.length > 100
-                        ? `${document.typeName} of ${project.name}`
-                          .slice(0, 100)
-                          .concat("...")
-                        : `${document.typeName} of ${project.name}`}
-                    </h1>
-                  </Col>
-                  <Col sm={7} className="progressBar">
+                  <Col className="progressBar">
                     {" "}
-                    <ProgressBar now={now} label={`Validation: ${now}%`} />
+                    <ProgressBar now={document.finishRate} label={`Validation: ${document.finishRate}%`} />
                   </Col>
                 </Row>
                 <Row className="projInfoRow">
@@ -414,6 +403,8 @@ const RequirementDocumentsPage = () => {
                 >
                   Add Requirement in Document
                 </Button>
+              </Col>
+              <Col sm={2}>
                 <Button
                   size="lg"
                   variant="secondary"

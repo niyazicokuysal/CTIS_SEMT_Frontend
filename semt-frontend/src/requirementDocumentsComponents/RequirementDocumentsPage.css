@@ -3,13 +3,8 @@
   padding-right: 30px;
 }
 
-.reqDocMainPage h1 {
-  color: #f46e0f;
-  font-size: 30px;
-  font-weight: bolder;
-}
-
 .projectReqDesc{
+  margin-top: 20px;
   overflow-wrap: break-word;
   font-weight: bolder;
 }

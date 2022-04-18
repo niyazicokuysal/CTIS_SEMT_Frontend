@@ -72,12 +72,10 @@ const TestDocumentsPage = () => {
     const getDocument = async () => {
       const groupsInfo = await fetchDocument(testDocId);
       setTestDocument(groupsInfo);
-
     };
 
     getProject();
     getDocument();
-
   }, []);
 
   const onUpdateTestDocument = (e) => {
@@ -172,20 +170,9 @@ const TestDocumentsPage = () => {
                 </Breadcrumb.Item>
                 <Breadcrumb.Item active>{testDocument.name}</Breadcrumb.Item>
               </Breadcrumb>
-              <Col sm={10} style={{ height: "200px" }}>
+              <Col sm={8} style={{ height: "100px" }}>
                 <Row className="projInfoRow">
-                  <Col>
-                    <h1>
-                      {`${testDocument.name} of ${project.name}`.length > 65
-                        ? `${testDocument.name} of ${project.name}`
-                            .slice(0, 62)
-                            .concat("...")
-                        : `${testDocument.name} of ${project.name}`}
-                    </h1>
-                  </Col>
-                </Row>
-                <Row className="projInfoRow">
-                  <Col className="projectTestDesc">
+                <Col className="projectTestDesc">
                     <a>{testDocument.description}</a>
                   </Col>
                 </Row>
@@ -199,6 +186,8 @@ const TestDocumentsPage = () => {
                 >
                   Edit Document Info
                 </Button>
+              </Col>
+              <Col sm={2}>
                 <Button
                   size="lg"
                   variant="success"
@@ -217,52 +206,35 @@ const TestDocumentsPage = () => {
                       <Accordion.Header>{testCase.name}</Accordion.Header>
                       <Accordion.Body style={{ backgroundColor: "#ffe5ba" }}>
                         <Row>
-                          <Col sm={11}>
+                          <Col sm={10}>
                             {" "}
                             <Table bordered style={{ borderColor: "black" }}>
                               <tbody>
                                 <tr>
-                                  <td>Description:</td>
+                                  <td style={{ width: "130px" }}>
+                                    Description:
+                                  </td>
                                   <td>
                                     <p className="testCaseText">
                                       {testCase.description}
                                     </p>
                                   </td>
-                                  <td>Created Date:</td>
-                                  <td>
+                                  <td style={{ width: "135px" }}>
+                                    Created Date:
+                                  </td>
+                                  <td style={{ width: "150px" }}>
                                     <p className="testCaseDate">
                                       {moment(testCase.createdDate).format(
-                                        "LLLL"
+                                        "LL"
                                       )}
                                     </p>
                                   </td>
                                 </tr>
-                                <tr>
-                                  <td style={{ width: "140px" }}>
-                                    Requirements:
-                                  </td>
-                                  <td>
-                                    <p className="testCaseText">
-                                      {testCase.requirementTestCases}
-                                    </p>
-                                  </td>
-                                  <td style={{ width: "150px" }}>
-                                    Updated Date:
-                                  </td>
-                                  <td style={{ width: "310px" }}>
-                                    <p className="testCaseDate">
-                                      {testCase.updatedDate === null
-                                        ? "Not Yet Modified"
-                                        : moment(testCase.updatedDate).format(
-                                            "LLLL"
-                                          )}
-                                    </p>
-                                  </td>
-                                </tr>
+                                <tr></tr>
                               </tbody>
                             </Table>
                           </Col>
-                          <Col sm={1}>
+                          <Col sm={2}>
                             <Button
                               size="lg"
                               variant="success"
@@ -271,6 +243,28 @@ const TestDocumentsPage = () => {
                               Add Test Step
                             </Button>
                           </Col>
+                        </Row>
+                        <Row>
+                          <Table striped bordered hover>
+                            <thead>
+                              <tr>
+                                <th>Number</th>
+                                <th>Description</th>
+                                <th>Inputs</th>
+                                <th>Expected Output</th>
+                                <th>Comment</th>
+                                <th>Requirements Id's</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>1</td>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                              </tr>
+                            </tbody>
+                          </Table>
                         </Row>
                       </Accordion.Body>
                     </Accordion.Item>
