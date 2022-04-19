@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <Navbar className="navbar-custom" expand={false}>
       <Container fluid>
-      <Navbar.Brand><Link to="" className="userName">
+      <Navbar.Brand><Link to="/login" className="userName">
             Mehmet Mehmetoğlu
           </Link></Navbar.Brand>
         <Navbar.Brand>

@@ -1,0 +1,28 @@
+.loginBackGround{
+    background-image: url("../externalSources/bg.jpg") !important;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100vh;
+}
+
+.loginContainer{
+    width: 32%;
+    height: 40%;
+    background-color: white;
+    position: fixed;
+    top: 30%;
+    left: 34%;
+    border: 5px solid #f46e0f;
+    border-radius: 20px;
+    box-shadow: 5px 8px #da9b61;
+}
+
+.title1{
+    color: #f46e0f;
+}
+
+.title2{
+    padding-bottom: 7px;
+    border-bottom: 2px dashed black;
+}

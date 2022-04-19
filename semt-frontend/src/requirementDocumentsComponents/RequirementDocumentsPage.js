@@ -413,6 +413,14 @@ const RequirementDocumentsPage = () => {
                 >
                   Add Requirements Group
                 </Button>
+                <Button
+                  size="lg"
+                  variant="dark"
+                  className="btnReqDoc"
+                  //onClick={reqShow}
+                >
+                  Create Baseline of Document
+                </Button>
               </Col>
             </Row>
             <Row>
