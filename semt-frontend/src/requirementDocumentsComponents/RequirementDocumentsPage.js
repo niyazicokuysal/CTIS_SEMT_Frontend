@@ -5,6 +5,7 @@ import EditReqDocumentInfoModal from "./EditReqDocumentInfoModal";
 import AddRequirementInDocumentModal from "./AddRequirementInDocumentModal";
 import AddRequirGroupModal from "./AddRequirGroupModal";
 import ViewReqDetailsModal from "./ViewReqDetailsModal";
+import Switch from "react-js-switch";
 import {
   Container,
   Row,
@@ -19,6 +20,7 @@ import {
 const RequirementDocumentsPage = () => {
   const [loadingForProject, setLoadingForProject] = useState(false);
   const [loadingForDocument, setLoadingForDocument] = useState(false);
+  const [listById, setListById] = useState(true);
   const [project, setProject] = useState([]);
   const [document, setDocument] = useState([]);
   const [docGroups, setDocGroups] = useState([]);
@@ -278,80 +280,72 @@ const RequirementDocumentsPage = () => {
     const newDocument = await fetchDocument(document.id);
     setDocument(newDocument);
   };
+
   const renderNullGroup = () => {
     let isNull = false;
     for (let req in docRequirements) {
-      if (req.requirementGroupId == null)
-        isNull = true;
+      if (req.requirementGroupId == null) isNull = true;
     }
     if (isNull) {
-      return <>
-        <tr className="header">
-          <td colSpan="7">No Group</td>
-        </tr>
-        {
-          docRequirements.map((requirement, i) => (
+      return (
+        <>
+          <tr className="header">
+            <td colSpan="7">No Group</td>
+          </tr>
+          {docRequirements.map((requirement, i) =>
             renderRequirements({ id: null }, requirement, i)
-          ))
-        }
-      </>
-        ;
+          )}
+        </>
+      );
     }
   };
 
   const renderRequirements = (group, requirement, i) => {
     if (group.id == requirement.requirementGroupId) {
-      return <tr
-        key={i}
-        className={`${requirement.isDeleted === true ? "deleted" : ""
-          }`}
-      >
-        <td>{requirement.name}</td>
-
-        <td>{requirement.description}</td>
-        <td>{requirement.testTypes}</td>
-        <td>
-          {requirement.isDeleted === true
-            ? "Deleted"
-            : "Not Deleted"}
-        </td>
-        <td
-          className={`${false === true ? "trueRow" : "falseRow"
-            }`}
+      return (
+        <tr
+          key={i}
+          className={`${requirement.isDeleted === true ? "deleted" : ""}`}
         >
-          No
-        </td>
-        <td>
-          <Button
-            size="sm"
-            variant="primary"
-            className="btnTable"
-            onClick={() =>
-              detailsShow(
-                requirement.id,
-                requirement.requirementGroupId
-              )
-            }
-          >
-            View
-          </Button>
-        </td>
-        <td>
-          <Button
-            size="sm"
-            variant="danger"
-            onClick={() => deleteRequirement(requirement.id)}
-            className={`${requirement.isDeleted === true
-              ? "deletedBtn"
-              : "btnTable"
+          <td>{requirement.name}</td>
+
+          <td>{requirement.description}</td>
+          <td>{requirement.testTypes}</td>
+          <td>{requirement.isDeleted === true ? "Deleted" : "Not Deleted"}</td>
+          <td className={`${false === true ? "trueRow" : "falseRow"}`}>No</td>
+          <td>
+            <Button
+              size="sm"
+              variant="primary"
+              className="btnTable"
+              onClick={() =>
+                detailsShow(requirement.id, requirement.requirementGroupId)
+              }
+            >
+              View
+            </Button>
+          </td>
+          <td>
+            <Button
+              size="sm"
+              variant="danger"
+              onClick={() => deleteRequirement(requirement.id)}
+              className={`${
+                requirement.isDeleted === true ? "deletedBtn" : "btnTable"
               }`}
-          >
-            Delete
-          </Button>
-        </td>
-      </tr>;
+            >
+              Delete
+            </Button>
+          </td>
+        </tr>
+      );
     }
     return null;
+  };
+
+  const changelistRender = () => {
+    if (listById == false) setListById(true);
+    else setListById(false);
   };
 
   return (
@@ -363,7 +357,7 @@ const RequirementDocumentsPage = () => {
       ) : (
         <>
           <Container fluid className="reqDocMainPage">
-            <Row>
+          <Row>
               <Breadcrumb>
                 <Breadcrumb.Item>
                   <Link to={`${"/"}`}>Main Page</Link>
@@ -425,6 +419,22 @@ const RequirementDocumentsPage = () => {
             </Row>
             <Row>
               <Col>
+                <>
+                  List By Group
+                  <Switch
+                    borderColor={{ on: "#FF9A00", off: "#f9f9f9" }}
+                    backgroundColor={{ on: "#FF9A00", off: "#D0CDC8" }}
+                    color="#E3E3E3"
+                    value={listById}
+                    size={60}
+                    onChange={changelistRender}
+                  />
+                  <br />
+                </>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
                 <Table hover bordered className="reqTable">
                   <thead>
                     <tr>
@@ -438,23 +448,88 @@ const RequirementDocumentsPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {renderNullGroup()}
-                    {docGroups.map((group, g) => (
-                      <>
-                        <tr className="header">
-                          <td colSpan="7">{group.name}</td>
-                        </tr>
-                        {
-                          docRequirements.map((requirement, i) => (
-                            renderRequirements(group, requirement, i)
-                          ))
-                        }
-                      </>
-                    ))}
+                    <>
+                      {listById === false ? (
+                        <>
+                          {docRequirements.map((requirement, i) => (
+                            <>
+                              <tr
+                                key={i}
+                                className={`${
+                                  requirement.isDeleted === true
+                                    ? "deleted"
+                                    : ""
+                                }`}
+                              >
+                                <td>{requirement.name}</td>
+
+                                <td>{requirement.description}</td>
+                                <td>{requirement.testTypes}</td>
+                                <td>
+                                  {requirement.isDeleted === true
+                                    ? "Deleted"
+                                    : "Not Deleted"}
+                                </td>
+                                <td
+                                  className={`${
+                                    false === true ? "trueRow" : "falseRow"
+                                  }`}
+                                >
+                                  No
+                                </td>
+                                <td>
+                                  <Button
+                                    size="sm"
+                                    variant="primary"
+                                    className="btnTable"
+                                    onClick={() =>
+                                      detailsShow(
+                                        requirement.id,
+                                        requirement.requirementGroupId
+                                      )
+                                    }
+                                  >
+                                    View
+                                  </Button>
+                                </td>
+                                <td>
+                                  <Button
+                                    size="sm"
+                                    variant="danger"
+                                    onClick={() =>
+                                      deleteRequirement(requirement.id)
+                                    }
+                                    className={`${
+                                      requirement.isDeleted === true
+                                        ? "deletedBtn"
+                                        : "btnTable"
+                                    }`}
+                                  >
+                                    Delete
+                                  </Button>
+                                </td>
+                              </tr>
+                            </>
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          {renderNullGroup()}
+                          {docGroups.map((group, g) => (
+                            <>
+                              <tr className="header">
+                                <td colSpan="7">{group.name}</td>
+                              </tr>
+                              {docRequirements.map((requirement, i) =>
+                                renderRequirements(group, requirement, i)
+                              )}
+                            </>
+                          ))}
+                        </>
+                      )}
+                    </>
                   </tbody>
                 </Table>
-
-
               </Col>
             </Row>
           </Container>
