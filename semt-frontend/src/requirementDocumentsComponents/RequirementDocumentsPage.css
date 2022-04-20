@@ -9,7 +9,6 @@
   font-weight: bolder;
 }
 
-
 .projInfoRow {
   padding-left: 0;
 }
@@ -46,14 +45,12 @@ Table .header {
   font-weight: bold;
 }
 
-
 .deletedBtn {
   height: 32px;
   width: 100px;
   font-weight: bold;
   pointer-events: none;
 }
-
 
 tr .trueRow {
   background-color: #198754;
@@ -66,4 +63,8 @@ tr td {
 
 .deleted{
   background-color: #f78d86;
+}
+
+.tableSwitch{
+  margin-bottom: 10px;
 }

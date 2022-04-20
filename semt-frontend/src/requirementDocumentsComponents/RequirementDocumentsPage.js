@@ -357,7 +357,7 @@ const RequirementDocumentsPage = () => {
       ) : (
         <>
           <Container fluid className="reqDocMainPage">
-          <Row>
+            <Row>
               <Breadcrumb>
                 <Breadcrumb.Item>
                   <Link to={`${"/"}`}>Main Page</Link>
@@ -371,7 +371,10 @@ const RequirementDocumentsPage = () => {
                 <Row className="projInfoRow">
                   <Col className="progressBar">
                     {" "}
-                    <ProgressBar now={document.finishRate} label={`Validation: ${document.finishRate}%`} />
+                    <ProgressBar
+                      now={document.finishRate}
+                      label={`Validation: ${document.finishRate}%`}
+                    />
                   </Col>
                 </Row>
                 <Row className="projInfoRow">
@@ -417,20 +420,19 @@ const RequirementDocumentsPage = () => {
                 </Button>
               </Col>
             </Row>
-            <Row>
+            <Row className="tableSwitch">
+              <Col sm={2}>
+                  <h5>List By Group/List By Req Id:</h5>
+              </Col>
               <Col>
-                <>
-                  List By Group
                   <Switch
-                    borderColor={{ on: "#FF9A00", off: "#f9f9f9" }}
-                    backgroundColor={{ on: "#FF9A00", off: "#D0CDC8" }}
+                    borderColor={{ on: "#f46e0f", off: "#f9f9f9" }}
+                    backgroundColor={{ on: "#f46e0f", off: "#D0CDC8" }}
                     color="#E3E3E3"
                     value={listById}
                     size={60}
                     onChange={changelistRender}
                   />
-                  <br />
-                </>
               </Col>
             </Row>
             <Row>
