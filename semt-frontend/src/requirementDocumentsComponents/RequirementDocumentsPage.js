@@ -32,6 +32,7 @@ const RequirementDocumentsPage = () => {
   const [showDoc, setDoc] = useState(false);
   const [showGroup, setGroup] = useState(false);
   const [showReq, setReq] = useState(false);
+  const [showUpdateReq, setUpdateReq] = useState(false);
 
   const [docTypeName, setDocTypeName] = useState("");
   const [docDescription, setDocDesc] = useState("");
@@ -66,6 +67,8 @@ const RequirementDocumentsPage = () => {
 
   const reqClose = () => setReq(false);
   const reqShow = () => setReq(true);
+  const updateReqClose = () => setUpdateReq(false);
+  const updateReqShow = () => setUpdateReq(true);
 
   useEffect(() => {
     const getProject = async () => {
@@ -127,6 +130,33 @@ const RequirementDocumentsPage = () => {
     reqClose(false);
   };
 
+  const onSubmitEditReq = (e) => {
+    e.preventDefault();
+
+    console.log(reqComment, reqDesc, reqGrp, reqType);
+
+    const projectId = Number(projId);
+    const requirementDocumentId = Number(docId);
+    const requirementGroupId = Number(reqGrp);
+    const description = reqDesc;
+    const comment = reqComment;
+    const testTypes = reqType;
+
+    updateRequriement({
+      projectId,
+      requirementDocumentId,
+      requirementGroupId,
+      description,
+      comment,
+      testTypes,
+    });
+    setReqComment("");
+    setReqDesc("");
+    setReqGrp("");
+    setReqType("");
+    reqClose(false);
+  };
+
   const addRequriement = async (reqInfo) => {
     console.log(JSON.stringify(reqInfo));
     const res = await fetch("https://localhost:44335/api/requirement/add", {
@@ -140,6 +170,21 @@ const RequirementDocumentsPage = () => {
 
     const newRequirements = await getProjectDocumentsRequirements(docId);
     setDocumentRequirements(newRequirements);
+  };
+
+  const updateRequriement = async (reqInfo) => {
+        console.log(JSON.stringify(reqInfo));
+        const res = await fetch("https://localhost:44335/api/requirement/update", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify(reqInfo),
+        });
+
+        const newRequirements = await getProjectDocumentsRequirements(docId);
+        setDocumentRequirements(newRequirements);
   };
 
   const onSubmitGroup = (e) => {
@@ -446,6 +491,7 @@ const RequirementDocumentsPage = () => {
                       <th style={{ width: "120px" }}>Is Deleted</th>
                       <th style={{ width: "105px" }}>Is Verified</th>
                       <th style={{ width: "118px" }}>View Details</th>
+                      <th style={{ width: "118px" }}>Edit</th>
                       <th style={{ width: "118px" }}>Delete</th>
                     </tr>
                   </thead>
@@ -494,6 +540,19 @@ const RequirementDocumentsPage = () => {
                                     View
                                   </Button>
                                 </td>
+                                  <td>
+                                      <Button
+                                          size="sm"
+                                          variant="info"
+                                          onClick={() =>
+                                              updateReqShow
+                                          }
+                                          className="btnTable"
+                                      >
+                                          Edit
+                                      </Button>
+                                  </td>
+
                                 <td>
                                   <Button
                                     size="sm"
@@ -556,6 +615,17 @@ const RequirementDocumentsPage = () => {
         setReqGrp={setReqGrp}
         docGroups={docGroups}
       ></AddRequirementInDocumentModal>
+
+      <EditRequirementModal
+          showReq={showReq}
+          reqClose={reqClose}
+          onSubmitReq={onSubmitReq}
+          setReqDesc={setReqDesc}
+          setReqComment={setReqComment}
+          setReqType={setReqType}
+          setReqGrp={setReqGrp}
+          docGroups={docGroups}
+      ></EditRequirementModal>
 
       <AddRequirGroupModal
         showGroup={showGroup}
