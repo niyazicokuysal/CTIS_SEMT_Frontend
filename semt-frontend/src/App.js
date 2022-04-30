@@ -9,6 +9,7 @@ import ProjectMainPage from "./projectMainPageComponents/ProjectMainPage";
 import RequirementDocumentsPage from "./requirementDocumentsComponents/RequirementDocumentsPage";
 import UserLoginPage from "./userLoginComponents/UserLoginPage";
 import TestDocumentsPage from "./testDocumentsComponents/TestDocumentsPage";
+import RequirementDocumentBaseline from "./requirementDocumentsComponents/RequirementDocumentBaseline";
 
 const App = () => {
   const { pathname } = useLocation();
@@ -22,23 +23,17 @@ const App = () => {
           <Header />
 
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/:project_id/main" element={<ProjectMainPage />} />
-            <Route
-              path="/:project_id/req/:requirementDocuments_id"
-              element={<RequirementDocumentsPage />}
-            />
-            <Route
-              path="/:project_id/test/:testDocuments_id"
-              element={<TestDocumentsPage />}
-            />
-
-            <Route path="inDev" element={<InDevelopment />} />
+            <Route path="/"                                                   element={<HomePage />} />
+            <Route path="/:project_id/main"                                   element={<ProjectMainPage />} />
+            <Route path="/:project_id/req/:requirementDocuments_id"           element={<RequirementDocumentsPage />}/>
+            <Route path="/:project_id/reqHistory/:requirementDocuments_id"    element={<RequirementDocumentBaseline />}/>
+            <Route path="/:project_id/test/:testDocuments_id"                 element={<TestDocumentsPage />}/>
+            <Route path="inDev"                                               element={<InDevelopment />} />
           </Routes>
         </>
       ) : (
         <Routes>
-          <Route path="/login" element={<UserLoginPage />} />
+          <Route path="/login"                                                 element={<UserLoginPage />} />
         </Routes>
       )}
     </>

@@ -39,7 +39,6 @@ const TestDocumentsPage = () => {
   const [testStepRequirements, setTestStepRequirements] = useState("");
   const [fillerTestCaseId, setFillerTestCaseId] = useState("");
 
-
   const { pathname } = useLocation();
   const path = pathname.split("/");
   const projId = path[1];
@@ -55,11 +54,12 @@ const TestDocumentsPage = () => {
 
   const [showTestStepAdd, setShowTestStepAdd] = useState(false);
   const testStepAddClose = () => setShowTestStepAdd(false);
-  const testStepAddOpen = (id) => [{
-    set: setShowTestStepAdd(true),
-    testCase: getTestCaseById(id),
-  }
-]
+  const testStepAddOpen = (id) => [
+    {
+      set: setShowTestStepAdd(true),
+      testCase: getTestCaseById(id),
+    },
+  ];
 
   const fetchProject = async (id) => {
     const res = await fetch(
@@ -169,7 +169,6 @@ const TestDocumentsPage = () => {
     setTestDocument(groupsInfo);
   };
 
-  
   const getTestCaseById = async (id) => {
     const res = await fetch(
       `https://localhost:44335/api/test-case/getbyid?id=${id}`
@@ -184,17 +183,23 @@ const TestDocumentsPage = () => {
   const onSubmitStep = (e) => {
     e.preventDefault();
 
-    if (!testStepDescription || !testStepInputs || !testStepExpected || !testStepComments ||!testStepRequirements) {
+    if (
+      !testStepDescription ||
+      !testStepInputs ||
+      !testStepExpected ||
+      !testStepComments ||
+      !testStepRequirements
+    ) {
       alert("Please add the credentials");
       return;
     }
 
     const projectId = Number(projId);
-    const testCaseId = Number(fillerTestCaseId)
-    const description = testStepDescription
-    const inputs = testStepInputs
-    const expectedOutputs = testStepExpected
-    const comment = testStepComments
+    const testCaseId = Number(fillerTestCaseId);
+    const description = testStepDescription;
+    const inputs = testStepInputs;
+    const expectedOutputs = testStepExpected;
+    const comment = testStepComments;
 
     const requirementNames = testStepRequirements.split("/");
 
@@ -205,7 +210,7 @@ const TestDocumentsPage = () => {
       inputs,
       expectedOutputs,
       comment,
-      requirementNames
+      requirementNames,
     });
     setTestStepDescription("");
     setTestStepInputs("");
@@ -325,25 +330,67 @@ const TestDocumentsPage = () => {
                           </Col>
                         </Row>
                         <Row>
-                          <Table striped bordered hover>
+                          <Table
+                            striped
+                            bordered
+                            hover
+                            style={{ borderColor: "black" }}
+                          >
                             <thead>
                               <tr>
-                                <th>Number</th>
-                                <th>Description</th>
-                                <th>Inputs</th>
-                                <th>Expected Output</th>
-                                <th>Comment</th>
+                                <th style={{ width: "40px" }}>Step</th>
+                                <th style={{ width: "290px" }}>Description</th>
+                                <th style={{ width: "290px" }}>Inputs</th>
+                                <th style={{ width: "290px" }}>Expected Output</th>
+                                <th style={{ width: "290px" }}>Comment</th>
                                 <th>Requirements Id's</th>
+                                <th style={{ width: "110px" }}>Edit or View</th>
+                                <th style={{ width: "100px" }}>Pass</th>
+                                <th style={{ width: "100px" }}>Fail</th>
                               </tr>
                             </thead>
-                            <tbody>
-                              <tr>
-                                <td>1</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                              </tr>
-                            </tbody>
+                            {testCase.testCaseSteps.map((step) => (
+                              <tbody>
+                                <tr>
+                                  <td>{step.stepNumber}</td>
+                                  <td className="testStepColumn">{step.description}</td>
+                                  <td className="testStepColumn">{step.inputs}</td>
+                                  <td className="testStepColumn">{step.expectedOutputs}</td>
+                                  <td className="testStepColumn">{step.comment}</td>
+                                  <td className="testStepColumn">temptemptemptemp</td>
+                                  <td>
+                                    <Button
+                                      size="sm"
+                                      variant="primary"
+                                      className="btnTable"
+                                      //onClick={() => detailsShow(requirement.id,requirement.requirementGroupId)}
+                                    >
+                                      Edit/View
+                                    </Button>
+                                  </td>
+                                  <td>
+                                    <Button
+                                      size="sm"
+                                      variant="success"
+                                      className="btnTable"
+                                      //onClick={() => detailsShow(requirement.id,requirement.requirementGroupId)}
+                                    >
+                                      Pass
+                                    </Button>
+                                  </td>
+                                  <td>
+                                    <Button
+                                      size="sm"
+                                      variant="danger"
+                                      className="btnTable"
+                                      //onClick={() => detailsShow(requirement.id,requirement.requirementGroupId)}
+                                    >
+                                      Fail
+                                    </Button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            ))}
                           </Table>
                         </Row>
                       </Accordion.Body>
@@ -375,8 +422,8 @@ const TestDocumentsPage = () => {
       ></AddTestCaseModel>
 
       <AddTestStepModel
-        testCaseInfo = {singleTestCase}
-        setFillerTestCaseId = {setFillerTestCaseId}
+        testCaseInfo={singleTestCase}
+        setFillerTestCaseId={setFillerTestCaseId}
         showTestStepAdd={showTestStepAdd}
         testStepAddClose={testStepAddClose}
         onSubmitStep={onSubmitStep}

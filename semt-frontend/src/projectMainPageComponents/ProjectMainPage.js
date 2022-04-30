@@ -14,12 +14,13 @@ import {
   ProgressBar,
   Breadcrumb,
   Spinner,
+  Dropdown,
 } from "react-bootstrap";
 
 const ProjectMainPage = ({ dummyProject }) => {
   const [loadingForProjects, setLoadingForProjects] = useState(false);
-  const [loadingForProjectsReqDocs, setLoadingForProjectsReqDocs] =  useState(false);
-  const [error, setError] = useState("");
+  const [loadingForProjectsReqDocs, setLoadingForProjectsReqDocs] =
+    useState(false);
 
   const [project, setProject] = useState([]);
   const [projectReqDocs, setProjectReqDocs] = useState([]);
@@ -152,7 +153,7 @@ const ProjectMainPage = ({ dummyProject }) => {
 
     const typeName = newDocName + " Requirements Document";
     const header = newDocHeader;
-    const parentDocumentId = Number(newDocParent)
+    const parentDocumentId = Number(newDocParent);
     const description = "Can add description via Edit Document";
     const projectId = Number(projId);
     const testDocuments = [
@@ -162,10 +163,17 @@ const ProjectMainPage = ({ dummyProject }) => {
         description: description,
       },
     ];
-    addDocuments({ projectId, parentDocumentId, typeName, header, description, testDocuments });
+    addDocuments({
+      projectId,
+      parentDocumentId,
+      typeName,
+      header,
+      description,
+      testDocuments,
+    });
     setNewDocName("");
     setNewDocHeader("");
-    setNewDocParent("null")
+    setNewDocParent("null");
     docClose(false);
   };
 
@@ -237,11 +245,14 @@ const ProjectMainPage = ({ dummyProject }) => {
                 <Table className="documantTable">
                   <thead>
                     <tr>
-                      <th style={{ width: "400px" }}>
+                      <th style={{ width: "330px" }}>
                         Requirements Documentation
                       </th>
-                      <th style={{ width: "400px" }}>Test Documentation</th>
+                      <th style={{ width: "330px" }}>Test Documentation</th>
                       <th>Requirements Validation Status</th>
+                      <th style={{ width: "250px" }}>
+                        Baselines of the Document
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -249,18 +260,51 @@ const ProjectMainPage = ({ dummyProject }) => {
                       <tr key={i}>
                         <td className="documentRow">
                           <Link to={`/${projId}/req/${document.id}`}>
-                            {document.typeName}
+                            {`${document.typeName}`.length > 30
+                              ? `${document.typeName}`
+                                  .slice(0, 27)
+                                  .concat("...")
+                              : `${document.typeName}`}
                           </Link>
                         </td>
                         <td className="documentRow">
                           <Link
                             to={`/${projId}/test/${document.testDocument.id}`}
                           >
-                            {document.testDocument.name}
+                            {`${document.testDocument.name}`.length > 30
+                              ? `${document.testDocument.name}`
+                                  .slice(0, 27)
+                                  .concat("...")
+                              : `${document.testDocument.name}`}
                           </Link>
                         </td>
                         <td style={{ paddingTop: "13px" }}>
                           <ProgressBar now={now} label={`${now}%`} />
+                        </td>
+                        <td>
+                          <Dropdown>
+                            <Dropdown.Toggle
+                              id="dropdown-button-dark-example1"
+                              variant="secondary"
+                              style={{ width: "233px" }}
+                            >
+                              Select Baseline to Go
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu
+                              variant="dark"
+                              style={{ width: "233px" }}
+                            >
+                              <Dropdown.Item>
+                                <Link
+                                  to={`/${projId}/reqHistory/${document.id}`}
+                                  style={{textDecoration: "none", color: "#dee2e6"}}
+                                >
+                                  deneme
+                                </Link>
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
                         </td>
                       </tr>
                     ))}
