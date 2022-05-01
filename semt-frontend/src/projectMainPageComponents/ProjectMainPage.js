@@ -204,7 +204,7 @@ const ProjectMainPage = ({ dummyProject }) => {
                   </Col>
                   <Col sm={7} className="progressBar">
                     {" "}
-                    <ProgressBar now={now} label={`Validation: ${now}%`} />
+                    <ProgressBar now={project.finishRate} label={`Success Rate of the ALL Test Steps: ${parseFloat(project.finishRate).toFixed(2)}%`} />
                   </Col>
                 </Row>
                 <Row className="projInfoRow">
@@ -249,7 +249,7 @@ const ProjectMainPage = ({ dummyProject }) => {
                         Requirements Documentation
                       </th>
                       <th style={{ width: "330px" }}>Test Documentation</th>
-                      <th>Requirements Validation Status</th>
+                      <th>Success Rate of the Test Steps</th>
                       <th style={{ width: "250px" }}>
                         Baselines of the Document
                       </th>
@@ -279,7 +279,7 @@ const ProjectMainPage = ({ dummyProject }) => {
                           </Link>
                         </td>
                         <td style={{ paddingTop: "13px" }}>
-                          <ProgressBar now={now} label={`${now}%`} />
+                          <ProgressBar now={document.finishRate} label={`${parseFloat(document.finishRate).toFixed(2)}%`} />
                         </td>
                         <td>
                           <Dropdown>

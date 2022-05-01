@@ -132,7 +132,7 @@ const HomePage = () => {
                       <th>Project Name</th>
                       <th>User Count</th>
                       <th>Creation Date</th>
-                      <th>Progress</th>
+                      <th>Success Rate of All Test Steps</th>
                       <th>Delete</th>
                     </tr>
                   </thead>
@@ -157,7 +157,7 @@ const HomePage = () => {
                           className="tableCol"
                           style={{ width: "500px", paddingTop: "14px" }}
                         >
-                          <ProgressBar now={now} label={`${now}%`} />
+                          <ProgressBar now={project.finishRate} label={`${parseFloat(project.finishRate).toFixed(2)}%`} />
                         </td>
                         <td
                           onClick={(e) => e.stopPropagation()}

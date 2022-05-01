@@ -362,7 +362,7 @@ const RequirementDocumentsPage = () => {
         if (!loadingForReqHistory) {
             console.log("making request for ",reqName + "...")
             const res = await fetch(
-                `https://localhost:44335/api/requirement/history?projectId=1&name=${reqName}`
+                `https://localhost:44335/api/requirement/history?projectId=${projId}&name=${reqName}`
             );
             const data = await res.json();
 
@@ -515,7 +515,7 @@ const RequirementDocumentsPage = () => {
                                         {" "}
                                         <ProgressBar
                                             now={document.finishRate}
-                                            label={`Validation: ${document.finishRate}%`}
+                                            label={`Verification Rate of the Requirements: ${parseFloat(document.finishRate).toFixed(2)}%`}
                                         />
                                     </Col>
                                 </Row>
@@ -563,7 +563,7 @@ const RequirementDocumentsPage = () => {
                             </Col>
                         </Row>
                         <Row className="tableSwitch">
-                            <Col sm={2}>
+                            <Col sm={2} style={{paddingBottom:"10px"}}>
                                 <h5>List By Group/List By Req Id:</h5>
                             </Col>
                             <Col>
@@ -623,6 +623,7 @@ const RequirementDocumentsPage = () => {
                                 </Table>
                             </Col>
                         </Row>
+                        <div style={{ height: "100px" }}></div>
                     </Container>
                 </>
             )}
