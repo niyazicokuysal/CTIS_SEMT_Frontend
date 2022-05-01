@@ -57,6 +57,26 @@
 }
 
 .testStepColumn{
-  font-weight: normal;
   font-size: 15px;
+}
+
+.disabledBtn{
+  height: 32px;
+  width: 100px;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+.btnTableTestStep {
+  height: 32px;
+  width: 100px;
+  font-weight: bold;
+}
+
+.successRow{
+  background-color: #70f385;
+}
+
+.failRow{
+  background-color: #f79393;
 }

@@ -127,6 +127,24 @@ const TestDocumentsPage = () => {
     );
   };
 
+  const testPass = async (id) =>{
+    await fetch(`https://localhost:44335/api/test-case-step/success?id=${id}`, {
+      method: "POST",
+    });
+
+    const groupsInfo = await fetchDocument(testDocId);
+    setTestDocument(groupsInfo);
+  }
+
+  const testFail = async (id) =>{
+    await fetch(`https://localhost:44335/api/test-case-step/fail?id=${id}`, {
+      method: "POST",
+    });
+
+    const groupsInfo = await fetchDocument(testDocId);
+    setTestDocument(groupsInfo);
+  }
+
   const onSubmitCase = (e) => {
     e.preventDefault();
 
@@ -234,6 +252,17 @@ const TestDocumentsPage = () => {
     const groupsInfo = await fetchDocument(testDocId);
     setTestDocument(groupsInfo);
   };
+
+  const renderReqForSteps = (requirementTestCaseSteps) =>{
+    const listOfReqs = [];
+
+    requirementTestCaseSteps.map(element => {
+        listOfReqs.push(element.requirement.name)
+
+    });
+
+    return listOfReqs.join("/");
+  }
 
   return (
     <>
@@ -351,13 +380,18 @@ const TestDocumentsPage = () => {
                             </thead>
                             {testCase.testCaseSteps.map((step) => (
                               <tbody>
-                                <tr>
+                                <tr key={step.id} 
+                                className={`${
+                                  step.result === 2
+                                    ? "successRow" : step.result === 1 ? "failRow" : "EmptyRow"
+                                }`}
+                                >
                                   <td>{step.stepNumber}</td>
                                   <td className="testStepColumn">{step.description}</td>
                                   <td className="testStepColumn">{step.inputs}</td>
                                   <td className="testStepColumn">{step.expectedOutputs}</td>
                                   <td className="testStepColumn">{step.comment}</td>
-                                  <td className="testStepColumn">temptemptemptemp</td>
+                                  <td className="testStepColumn">{renderReqForSteps(step.requirementTestCaseSteps)}</td>
                                   <td>
                                     <Button
                                       size="sm"
@@ -372,8 +406,11 @@ const TestDocumentsPage = () => {
                                     <Button
                                       size="sm"
                                       variant="success"
-                                      className="btnTable"
-                                      //onClick={() => detailsShow(requirement.id,requirement.requirementGroupId)}
+                                      onClick={() => testPass(step.id)}       
+                                      className={`${
+                                        step.result === 2
+                                          ? "disabledBtn" : "btnTableTestStep"
+                                      }`}
                                     >
                                       Pass
                                     </Button>
@@ -382,8 +419,11 @@ const TestDocumentsPage = () => {
                                     <Button
                                       size="sm"
                                       variant="danger"
-                                      className="btnTable"
-                                      //onClick={() => detailsShow(requirement.id,requirement.requirementGroupId)}
+                                      onClick={() => testFail(step.id)}
+                                      className={`${
+                                        step.result === 1
+                                          ? "disabledBtn" : "btnTableTestStep"
+                                      }`}
                                     >
                                       Fail
                                     </Button>
