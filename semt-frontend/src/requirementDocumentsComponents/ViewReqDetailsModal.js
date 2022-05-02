@@ -55,11 +55,6 @@ const ViewReqDetailsModal = ({
               }}
             />
           </Col>
-          <Button
-            onClick={() => {
-              console.log(docGroups);
-            }}
-          ></Button>
         </Row>
       </Modal.Header>
       <Modal.Body>
@@ -91,7 +86,7 @@ const ViewReqDetailsModal = ({
               Group:{" "}
               {singleReqInfo.requirementGroupId === null
                 ? "No Group"
-                : docGroups[singleReqInfo.requirementGroupId - 1].name}{" "}
+                : docGroups.filter(doc => doc.id === singleReqInfo.requirementGroupId)[0].name}{" "}
             </h5>
             <h5>Test Type: {singleReqInfo.testTypes} </h5>
 
@@ -136,13 +131,13 @@ const ViewReqDetailsModal = ({
                                             "LLLL"
                                           )}{" "}
                                     </h5>
-                                    <h5>
+                                   { <h5>
                                       Group:{" "}
                                       {hist.requirementGroupId === null
                                         ? "No Group"
-                                        : docGroups[hist.requirementGroupId - 1]
-                                            .name}{" "}
-                                    </h5>
+                                        : docGroups.filter(doc => doc.id === hist.requirementGroupId)[0].name}{" "}
+
+                                    </h5>}
                                     <h5>Test Type: {hist.testTypes} </h5>
                                     ----------------------------------------------------------
                                   </>
