@@ -19,6 +19,7 @@ import {
 } from "react-bootstrap";
 
 const RequirementDocumentsPage = () => {
+    const [loading, setLoading] = useState(true);
     const [loadingForProject, setLoadingForProject] = useState(false);
     const [loadingForDocument, setLoadingForDocument] = useState(false);
     const [listById, setListById] = useState(true);
@@ -65,7 +66,7 @@ const RequirementDocumentsPage = () => {
             setLoadReq: setLoadingForReq(false),
             setLoadHistory: setLoadingForReqHistory(false),
             setShowReqHistory: setShowReqHistory(false),
-            test:console.log("On close, reqloading:",loadingForReq," showhist",showReqHistory)
+            test: console.log("On close, reqloading:", loadingForReq, " showhist", showReqHistory)
         },
     ];
     const detailsShow = (id, group, reqName) => [
@@ -73,7 +74,7 @@ const RequirementDocumentsPage = () => {
             set: setDetails(true),
             showedReqId: id,
             req: getReqById(id),
-            group: getGroupById(group),
+            //group: getGroupById(group),
             //history: getReqHistory(reqName)
         },
     ];
@@ -219,6 +220,7 @@ const RequirementDocumentsPage = () => {
     };
 
     const addRequriement = async (reqInfo) => {
+        setLoading(false);
         console.log(JSON.stringify(reqInfo));
         const res = await fetch("https://localhost:44335/api/requirement/add", {
             method: "POST",
@@ -231,9 +233,11 @@ const RequirementDocumentsPage = () => {
 
         const newRequirements = await getProjectDocumentsRequirements(docId);
         setDocumentRequirements(newRequirements);
+        setLoading(true);
     };
 
     const updateRequriement = async (reqInfo) => {
+        setLoading(false);
         console.log(JSON.stringify(reqInfo));
         const res = await fetch("https://localhost:44335/api/requirement/update", {
             method: "POST",
@@ -246,6 +250,7 @@ const RequirementDocumentsPage = () => {
 
         const newRequirements = await getProjectDocumentsRequirements(docId);
         setDocumentRequirements(newRequirements);
+        setLoading(true);
     };
 
     const onSubmitGroup = (e) => {
@@ -265,6 +270,7 @@ const RequirementDocumentsPage = () => {
     };
 
     const addDocumentReqGroup = async (groupInfo) => {
+        setLoading(false);
         console.log(JSON.stringify(groupInfo));
         const res = await fetch(
             "https://localhost:44335/api/requirement-group/add",
@@ -280,6 +286,7 @@ const RequirementDocumentsPage = () => {
 
         const newdocs = await fetchDocumentGroups(docId);
         setDocGroups(newdocs);
+        setLoading(true);
     };
 
     const onUpdateDocument = (e) => {
@@ -297,14 +304,19 @@ const RequirementDocumentsPage = () => {
         setDocTypeName("");
         setDocDesc("");
         setDoc(false);
+
     };
 
     const deleteRequirement = async (id) => {
+        setLoading(false);
+
         await fetch(`https://localhost:44335/api/requirement/delete?id=${id}`, {
             method: "POST",
         });
         const docReqs = await getProjectDocumentsRequirements(docId);
         setDocumentRequirements(docReqs);
+        setLoading(true);
+
     };
 
     const fetchDocumentGroups = async (id) => {
@@ -360,9 +372,9 @@ const RequirementDocumentsPage = () => {
 
     const getReqHistory = async (reqName) => {
         if (!loadingForReqHistory) {
-            console.log("making request for ",reqName + "...")
+            console.log("making request for ", reqName + "...")
             const res = await fetch(
-                `https://localhost:44335/api/requirement/history?projectId=1&name=${reqName}`
+                `https://localhost:44335/api/requirement/history?projectId=${projId}&name=${reqName}`
             );
             const data = await res.json();
 
@@ -384,6 +396,7 @@ const RequirementDocumentsPage = () => {
     };
 
     const updateDocument = async (document) => {
+        setLoading(true);
         console.log(JSON.stringify(document));
         const res = await fetch(
             "https://localhost:44335/api/requirement-document/update",
@@ -399,6 +412,7 @@ const RequirementDocumentsPage = () => {
 
         const newDocument = await fetchDocument(document.id);
         setDocument(newDocument);
+        setLoading(false);
     };
 
     const renderNullGroup = () => {
@@ -492,7 +506,7 @@ const RequirementDocumentsPage = () => {
 
     return (
         <>
-            {!loadingForProject && !loadingForDocument ? (
+            {(!loadingForProject && !loadingForDocument) ? (
                 <Spinner animation="border">
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
@@ -515,7 +529,7 @@ const RequirementDocumentsPage = () => {
                                         {" "}
                                         <ProgressBar
                                             now={document.finishRate}
-                                            label={`Validation: ${document.finishRate}%`}
+                                            label={`Verification Rate of the Requirements: ${parseFloat(document.finishRate).toFixed(2)}%`}
                                         />
                                     </Col>
                                 </Row>
@@ -531,6 +545,8 @@ const RequirementDocumentsPage = () => {
                                     variant="info"
                                     className="btnReqDoc"
                                     onClick={docShow}
+                                    disabled={!loading}
+
                                 >
                                     Edit Document Info
                                 </Button>
@@ -539,6 +555,7 @@ const RequirementDocumentsPage = () => {
                                     variant="success"
                                     className="btnReqDoc"
                                     onClick={reqShow}
+                                    disabled={!loading}
                                 >
                                     Add Requirement in Document
                                 </Button>
@@ -549,6 +566,8 @@ const RequirementDocumentsPage = () => {
                                     variant="secondary"
                                     className="btnReqDoc"
                                     onClick={groupShow}
+                                    disabled={!loading}
+
                                 >
                                     Add Requirements Group
                                 </Button>
@@ -556,14 +575,18 @@ const RequirementDocumentsPage = () => {
                                     size="lg"
                                     variant="dark"
                                     className="btnReqDoc"
-                                    onClick={()=> {console.log(docGroups)}}
+                                    /*onClick={() => {
+                                        console.log(docGroups)
+                                    }}*/
+                                    disabled={!loading}
+
                                 >
                                     Create Baseline of Document
                                 </Button>
                             </Col>
                         </Row>
                         <Row className="tableSwitch">
-                            <Col sm={2}>
+                            <Col sm={2} style={{paddingBottom: "10px"}}>
                                 <h5>List By Group/List By Req Id:</h5>
                             </Col>
                             <Col>
@@ -597,32 +620,46 @@ const RequirementDocumentsPage = () => {
                                         <th style={{width: "118px"}}>Delete</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style={{position: "relative"}}>
                                     <>
-                                        {listById === false ? (
-                                            <>
-                                                {renderById()}
-                                            </>
+                                        {!loading ? (
+                                            <Spinner style={{
+                                                position: "absolute",
+                                                top: "100%",
+                                                left: "50%",
+                                            }} animation="grow" role="status" size={"sm8"}>
+                                                <span className="visually-hidden">Loading...</span>
+                                            </Spinner>
                                         ) : (
                                             <>
-                                                {renderNullGroup()}
-                                                {docGroups.map((group, g) => (
+                                                {listById === false ? (
                                                     <>
-                                                        <tr className="header">
-                                                            <td colSpan="8">{group.name}</td>
-                                                        </tr>
-                                                        {docRequirements.map((requirement, i) =>
-                                                            renderGroupRequirements(group, requirement, i)
-                                                        )}
+                                                        {renderById()}
                                                     </>
-                                                ))}
+                                                ) : (
+                                                    <>
+                                                        {renderNullGroup()}
+                                                        {docGroups.map((group, g) => (
+                                                            <>
+                                                                <tr className="header">
+                                                                    <td colSpan="8">{group.name}</td>
+                                                                </tr>
+                                                                {docRequirements.map((requirement, i) =>
+                                                                    renderGroupRequirements(group, requirement, i)
+                                                                )}
+                                                            </>
+                                                        ))}
+                                                    </>
+                                                )}
                                             </>
                                         )}
                                     </>
+
                                     </tbody>
                                 </Table>
                             </Col>
                         </Row>
+                        <div style={{height: "100px"}}></div>
                     </Container>
                 </>
             )}

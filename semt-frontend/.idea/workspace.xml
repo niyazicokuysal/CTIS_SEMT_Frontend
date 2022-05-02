@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3fd5ba2d-046a-4e9f-a1cc-9d3ed4418b7f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/EditReqDocumentInfoModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/EditReqDocumentInfoModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/EditRequirementModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/EditRequirementModal.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/RequirementDocumentsPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/RequirementDocumentsPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/ViewReqDetailsModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/ViewReqDetailsModal.js" afterDir="false" />
     </list>
@@ -31,6 +29,8 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RunManager">
@@ -55,6 +55,7 @@
       <workItem from="1650926895228" duration="8751000" />
       <workItem from="1651153523782" duration="5702000" />
       <workItem from="1651409068985" duration="7954000" />
+      <workItem from="1651493623603" duration="8973000" />
     </task>
     <servers />
   </component>

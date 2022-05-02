@@ -15,7 +15,7 @@ const ViewReqDetailsModal = ({
                                  loadingForReqHistory,
                                  setShowReqHistory,
                                  loadReqHistory,
-                                 docGroups
+                                 docGroups,
                              }) => {
     return (
         <Modal
@@ -26,27 +26,17 @@ const ViewReqDetailsModal = ({
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
-
-
             <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    {singleReqInfo.name}
-                </Modal.Title>
-                <Row className="tableSwitch">
-                    <Col sm={4}
-                         style={{
-                             position: 'relative',
-                             top: '40%',
-                             left: '200%',
-                         }}>
-                        <h5>Show History</h5>
+                <Row style={{width: "100%"}}>
+                    <Col sm={6}>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                            {singleReqInfo.name}
+                        </Modal.Title>
                     </Col>
-                    <Col sm={4}
-                         style={{
-                             position: 'relative',
-                             top: '40%',
-                             left: '200%',
-                         }}>
+                    <Col sm={4} style={{paddingTop: "7px"}}>
+                        <h5>Toggle to Show History</h5>
+                    </Col>
+                    <Col sm={1} style={{paddingTop: "7px"}}>
                         <Switch
                             borderColor={{on: "#f46e0f", off: "#f9f9f9"}}
                             backgroundColor={{on: "#f46e0f", off: "#D0CDC8"}}
@@ -62,19 +52,22 @@ const ViewReqDetailsModal = ({
                                         setShowReqHistory(false);
                                     }
                                 }
-                            }
-                            }
+                            }}
                         />
                     </Col>
+                    <Button onClick={()=>{console.log(singleReqInfo.requirementGroupId)}}></Button>
                 </Row>
             </Modal.Header>
             <Modal.Body>
                 {!loadingForReq ? (
-                    <Spinner style={{
-                        position: 'relative',
-                        top: '40%',
-                        left: '50%',
-                    }} animation="grow">
+                    <Spinner
+                        style={{
+                            position: "relative",
+                            top: "40%",
+                            left: "50%",
+                        }}
+                        animation="grow"
+                    >
                         <span className="visually-hidden">Loading...</span>
                     </Spinner>
                 ) : (
@@ -92,7 +85,10 @@ const ViewReqDetailsModal = ({
                         </h5>
                         <h5>
                             Group:{" "}
-                            {singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}{" "}
+                            {singleReqInfo.requirementGroupId === null
+                                ? "No Group"
+                                : docGroups[singleReqInfo.requirementGroupId - 1]
+                                    .name}{" "}
                         </h5>
                         <h5>Test Type: {singleReqInfo.testTypes} </h5>
 
@@ -100,15 +96,17 @@ const ViewReqDetailsModal = ({
                         <>
                             {showReqHistory ? (
                                 <>
-                                    <>
-                                    </>
+                                    <></>
                                     <>
                                         {!loadingForReqHistory ? (
-                                            <Spinner style={{
-                                                position: 'relative',
-                                                top: '40%',
-                                                left: '50%',
-                                            }} animation="grow">
+                                            <Spinner
+                                                style={{
+                                                    position: "relative",
+                                                    top: "40%",
+                                                    left: "50%",
+                                                }}
+                                                animation="grow"
+                                            >
                                                 <span className="visually-hidden">Loading...</span>
                                             </Spinner>
                                         ) : (
@@ -119,25 +117,33 @@ const ViewReqDetailsModal = ({
                                                     ) : (
                                                         <>
                                                             <h5>History:</h5>
-                                                            {reqHistory.slice().reverse().map((hist, i) => (
-                                                                <>
-                                                                    --------------------------------------------------
-                                                                    <h5>Description: {hist.description} </h5>
-                                                                    <h5>Comment: {hist.comment} </h5>
-                                                                    <h5>
-                                                                        Update Date:{" "}
-                                                                        {hist.updatedDate === null
-                                                                            ? "First Entry"
-                                                                            : moment(hist.updatedDate).format("LLLL")}{" "}
-                                                                    </h5>
-                                                                    <h5>
-                                                                        Group:{" "}
-                                                                        {hist.requirementGroupId === null ? "No Group" : docGroups[hist.requirementGroupId - 1].name}{" "}
-                                                                    </h5>
-                                                                    <h5>Test Type: {hist.testTypes} </h5>
-                                                                    ----------------------------------------------------------
-                                                                </>
-                                                            ))}
+                                                            {reqHistory
+                                                                .slice()
+                                                                .reverse()
+                                                                .map((hist, i) => (
+                                                                    <>
+                                                                        --------------------------------------------------
+                                                                        <h5>Description: {hist.description} </h5>
+                                                                        <h5>Comment: {hist.comment} </h5>
+                                                                        <h5>
+                                                                            Update Date:{" "}
+                                                                            {hist.updatedDate === null
+                                                                                ? "First Entry"
+                                                                                : moment(hist.updatedDate).format(
+                                                                                    "LLLL"
+                                                                                )}{" "}
+                                                                        </h5>
+                                                                        <h5>
+                                                                            Group:{" "}
+                                                                            {hist.requirementGroupId === null
+                                                                                ? "No Group"
+                                                                                : docGroups[hist.requirementGroupId - 1]
+                                                                                    .name}{" "}
+                                                                        </h5>
+                                                                        <h5>Test Type: {hist.testTypes} </h5>
+                                                                        ----------------------------------------------------------
+                                                                    </>
+                                                                ))}
                                                         </>
                                                     )}
                                                 </>
@@ -148,7 +154,6 @@ const ViewReqDetailsModal = ({
                             ) : (
                                 <></>
                             )}
-
                         </>
                     </>
                 )}
