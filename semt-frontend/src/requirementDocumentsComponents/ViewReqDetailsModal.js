@@ -27,16 +27,16 @@ const ViewReqDetailsModal = ({
       centered
     >
       <Modal.Header closeButton>
-        <Row style={{width:"100%"}}>
-          <Col sm={6} >
+        <Row style={{ width: "100%" }}>
+          <Col sm={6}>
             <Modal.Title id="contained-modal-title-vcenter">
               {singleReqInfo.name}
             </Modal.Title>
           </Col>
-          <Col sm={4} style={{paddingTop:"7px"}}>
+          <Col sm={4} style={{ paddingTop: "7px" }}>
             <h5>Toggle to Show History</h5>
           </Col>
-          <Col sm={1} style={{paddingTop:"7px"}}>
+          <Col sm={1} style={{ paddingTop: "7px" }}>
             <Switch
               borderColor={{ on: "#f46e0f", off: "#f9f9f9" }}
               backgroundColor={{ on: "#f46e0f", off: "#D0CDC8" }}
@@ -55,6 +55,11 @@ const ViewReqDetailsModal = ({
               }}
             />
           </Col>
+          <Button
+            onClick={() => {
+              console.log(docGroups);
+            }}
+          ></Button>
         </Row>
       </Modal.Header>
       <Modal.Body>
@@ -84,7 +89,9 @@ const ViewReqDetailsModal = ({
             </h5>
             <h5>
               Group:{" "}
-              {singleGroupInfo === null ? "Has no Group" : singleGroupInfo.name}{" "}
+              {singleReqInfo.requirementGroupId === null
+                ? "No Group"
+                : docGroups[singleReqInfo.requirementGroupId - 1].name}{" "}
             </h5>
             <h5>Test Type: {singleReqInfo.testTypes} </h5>
 
