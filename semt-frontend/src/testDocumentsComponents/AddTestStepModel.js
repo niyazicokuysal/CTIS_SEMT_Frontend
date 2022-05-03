@@ -35,7 +35,7 @@ const AddTestStepModel = ({
             style={{ height: "100px" }}
             rows="5"
             as="textarea"
-            placeholder="Enter the description for the Project"
+            placeholder="Enter the description for the test step"
           />
           <Form.Label style={{marginTop:"20px"}}>Test Step Inputs</Form.Label>
           <Form.Control
@@ -43,7 +43,7 @@ const AddTestStepModel = ({
             style={{ height: "100px" }}
             rows="5"
             as="textarea"
-            placeholder="Enter the description for the Project"
+            placeholder="Enter inputs for the test step"
           />
           <Form.Label style={{marginTop:"20px"}}>Test Step Expected Outputs</Form.Label>
           <Form.Control
@@ -51,7 +51,7 @@ const AddTestStepModel = ({
             style={{ height: "100px" }}
             rows="5"
             as="textarea"
-            placeholder="Enter the description for the Project"
+            placeholder="Enter expected outputs for the test step"
           />
           <Form.Label style={{marginTop:"20px"}}>Test Step Comment</Form.Label>
           <Form.Control
@@ -59,7 +59,7 @@ const AddTestStepModel = ({
             style={{ height: "100px" }}
             rows="5"
             as="textarea"
-            placeholder="Enter the description for the Project"
+            placeholder="Enter the comment for the test step"
           />
          <Form.Group className="mb-3" controlId="" style={{marginTop:"20px"}}>
             <Form.Label>Requirement(s) that been Tested</Form.Label>
@@ -71,7 +71,7 @@ const AddTestStepModel = ({
           </Form.Group>
           <Modal.Footer>
             <Button variant="primary" type="submit" onClick={() => setFillerTestCaseId(testCaseInfo.id)}>
-              Add Test Case
+              Add Test Step
             </Button>
           </Modal.Footer>
         </Form>

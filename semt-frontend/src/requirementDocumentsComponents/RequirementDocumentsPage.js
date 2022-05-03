@@ -6,6 +6,7 @@ import AddRequirementInDocumentModal from "./AddRequirementInDocumentModal";
 import EditRequirementModal from "./EditRequirementModal";
 import AddRequirGroupModal from "./AddRequirGroupModal";
 import ViewReqDetailsModal from "./ViewReqDetailsModal";
+import DeleteReqConfirmModal from "./DeleteReqConfirmModal";
 import Switch from "react-js-switch";
 import {
     Container,
@@ -17,6 +18,7 @@ import {
     Breadcrumb,
     Spinner,
 } from "react-bootstrap";
+
 
 const RequirementDocumentsPage = () => {
     const [loading, setLoading] = useState(true);
@@ -49,8 +51,17 @@ const RequirementDocumentsPage = () => {
     const [reqType, setReqType] = useState("");
     const [reqId, setReqId] = useState("");
 
-
     const [groupName, setGroupName] = useState("");
+
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const deleteConfimrationShow = (req) => [{
+        setShow: setShowDeleteConfirmation(true),
+        setReq: getReqById(req.id)
+    }];
+    const closeDeleteConfirmation = () => [{
+        //setReq: setSingleReqInfo([]),
+        setClose: setShowDeleteConfirmation(false)
+    }];
 
     const {pathname} = useLocation();
     const path = pathname.split("/");
@@ -482,7 +493,7 @@ const RequirementDocumentsPage = () => {
                     <Button
                         size="sm"
                         variant="danger"
-                        onClick={() => deleteRequirement(requirement.id)}
+                        onClick={() => deleteConfimrationShow(requirement)}
                         className={`${
                             requirement.isDeleted === true ? "deletedBtn" : "btnTable"
                         }`}
@@ -722,6 +733,13 @@ const RequirementDocumentsPage = () => {
                 loadReqHistory={loadReqHistory}
                 docGroups={docGroups}
             ></ViewReqDetailsModal>
+
+            <DeleteReqConfirmModal
+                showDeleteConfirmation={showDeleteConfirmation}
+                closeDeleteConfirmation={closeDeleteConfirmation}
+                requirement={singleReqInfo}
+                deleteRequirement={deleteRequirement}
+            ></DeleteReqConfirmModal>
         </>
     );
 };
