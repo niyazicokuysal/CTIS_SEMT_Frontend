@@ -565,6 +565,8 @@ const TestDocumentsPage = () => {
                 onUpdateTestDocument={onUpdateTestDocument}
                 setTestDocName={setTestDocName}
                 setTestDocDesc={setTestDocDesc}
+                testDocDesc={testDocument.description}
+                testDocName={testDocument.name}
             ></EditTestDocumentInfoModel>
 
             <AddTestCaseModel
