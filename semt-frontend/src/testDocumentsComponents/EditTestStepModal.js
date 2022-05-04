@@ -74,7 +74,7 @@ const EditTestStepModal = ({
                             value={stepComment}
 
                         />
-                        <Form.Group className="mb-3" controlId="" style={{marginTop: "20px"}}>
+                        {/*<Form.Group className="mb-3" controlId="" style={{marginTop: "20px"}}>
                             <Form.Label>Requirement(s) that been Tested</Form.Label>
                             <Form.Control
                                 onChange={(e) => setTestStepRequirements(e.target.value)}
@@ -82,7 +82,7 @@ const EditTestStepModal = ({
                                 placeholder="Enter requirement name(s)"
                                 value={stepReqs}
                             />
-                        </Form.Group>
+                        </Form.Group>*/}
                         <Modal.Footer>
                             <Button variant="primary" type="submit">
                                 Update Test Step

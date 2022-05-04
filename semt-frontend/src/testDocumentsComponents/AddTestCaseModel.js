@@ -33,21 +33,13 @@ const AddTestCaseModel = ({
               placeholder="Enter a name for the Case"
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="">
-            <Form.Label>Requirement(s) that been Tested</Form.Label>
-            <Form.Control
-              onChange={(e) => setRequirementString(e.target.value)}
-              type="text"
-              placeholder="Enter requirement name(s)"
-            />
-          </Form.Group>
           <Form.Label>Test Case Description</Form.Label>
           <Form.Control
             onChange={(e) => setDesc(e.target.value)}
             style={{ height: "200px" }}
             rows="5"
             as="textarea"
-            placeholder="Enter the description for the Project"
+            placeholder="Enter the description for the test case"
           />
           <Modal.Footer>
             <Button variant="primary" type="submit">

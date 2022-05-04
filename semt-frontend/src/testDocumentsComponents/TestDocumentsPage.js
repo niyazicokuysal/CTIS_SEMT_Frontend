@@ -33,7 +33,6 @@ const TestDocumentsPage = () => {
 
     const [testName, setTestName] = useState("");
     const [description, setDesc] = useState("");
-    const [requirementString, setRequirementString] = useState("");
 
     const [testStepDescription, setTestStepDescription] = useState("");
     const [testStepInputs, setTestStepInputs] = useState("");
@@ -59,20 +58,27 @@ const TestDocumentsPage = () => {
     const [showUpdateStep, setShowUpdateStep] = useState(false);
     const testStepUpdateClose = () => setShowUpdateStep(false);
 
-    /*const testStepUpdateClose = () => [
-        {
-            setShow: setShowUpdateStep(false),
-            setStep: setSelectedStep([])
+    /*const setRequirementString = (reqs) =>{
+        let out = "";
+        //console.log("asdasd",reqs);
+        for(let i = 0; i < reqs.length; i++){
+            if(i>0)
+                out+="/"
+            out+=reqs[i].requirement.name;
         }
-    ];*/
+        setTestStepRequirements(out);
+        console.log(out);
+    }*/
+
     const testStepUpdateOpen = (testStep) => [
         {
+            //setReqs: setRequirementString(testStep.requirementTestCaseSteps),
+            //log: console.log("aga",testStepRequirements),
             setTestCaseId: setFillerTestCaseId(testStep.testCaseId),
             setDesc: setTestStepDescription(testStep.description),
             setInput: setTestStepInputs(testStep.inputs),
             setExpected: setTestStepExpected(testStep.expectedOutputs),
             setComments: setTestStepComments(testStep.comment),
-            setReqs: setTestStepRequirements(""),
             setShow: setShowUpdateStep(true),
             setStep: setSelectedStep(testStep)
         }
@@ -178,7 +184,7 @@ const TestDocumentsPage = () => {
     const onSubmitCase = (e) => {
         e.preventDefault();
 
-        if (!testName || !description || !requirementString) {
+        if (!testName || !description) {
             alert("Please add the credentials");
             return;
         }
@@ -187,18 +193,15 @@ const TestDocumentsPage = () => {
         const testDocumentId = Number(testDocId);
         const name = testName;
 
-        const requirementNames = requirementString.split("/");
 
         addTestCase({
             projectId,
             testDocumentId,
             name,
             description,
-            requirementNames,
         });
         setTestName("");
         setDesc("");
-        setRequirementString("");
         setShowTestCaseAdd(false);
     };
 
@@ -284,7 +287,6 @@ const TestDocumentsPage = () => {
             alert("Please add the credentials");
             return;
         }
-
         const id = Number(selectedStep.id);
         const projectId = Number(projId);
         const testCaseId = Number(fillerTestCaseId);
@@ -294,7 +296,7 @@ const TestDocumentsPage = () => {
         const comment = testStepComments;
         const result = 0;
         const requirementNames = testStepRequirements.split("/");
-
+        console.log("new",requirementNames);
         updateTestStep({
             id,
             projectId,
@@ -398,6 +400,20 @@ const TestDocumentsPage = () => {
 
                                 >
                                     Edit Document Info
+                                </Button>
+                            </Col>
+                            <Col sm={2}>
+                                <Button
+                                    size="lg"
+                                    variant="warning"
+                                    className="btnReqDoc"
+                                    onClick={() => {
+                                        console.log(testCases);
+                                    }}
+                                    disabled={loading}
+
+                                >
+                                    Debug
                                 </Button>
                             </Col>
                             <Col sm={2}>
@@ -574,7 +590,6 @@ const TestDocumentsPage = () => {
                 testCaseAddClose={testCaseAddClose}
                 onSubmitCase={onSubmitCase}
                 setTestName={setTestName}
-                setRequirementString={setRequirementString}
                 setDesc={setDesc}
             ></AddTestCaseModel>
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import {Button, Modal, Form, Alert} from "react-bootstrap";
 
 const AddTestStepModel = ({
   testCaseInfo,
@@ -62,7 +62,11 @@ const AddTestStepModel = ({
             placeholder="Enter the comment for the test step"
           />
          <Form.Group className="mb-3" controlId="" style={{marginTop:"20px"}}>
-            <Form.Label>Requirement(s) that been Tested</Form.Label>
+            <Form.Label>Requirement(s) to test</Form.Label>
+            <Alert variant={"danger"}>
+              <p>Test Case Step Requirements can NOT be updated.</p>
+              Seperate the requirements with "/".
+            </Alert>
             <Form.Control
               onChange={(e) => setTestStepRequirements(e.target.value)}
               type="text"

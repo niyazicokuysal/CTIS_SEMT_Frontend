@@ -123,6 +123,9 @@ const RequirementDocumentsPage = () => {
         const getDocument = async () => {
             const documentInfo = await fetchDocument(docId);
             setDocument(documentInfo);
+            setDocTypeName(documentInfo.header);
+            setDocDesc(documentInfo.description);
+            console.log("Document:",documentInfo);
         };
 
         const getDocGroups = async () => {
@@ -312,7 +315,6 @@ const RequirementDocumentsPage = () => {
         document.description = docDescription;
         console.log(document);
         updateDocument(document);
-        setDocTypeName("");
         setDocDesc("");
         setDoc(false);
 
@@ -407,7 +409,7 @@ const RequirementDocumentsPage = () => {
     };
 
     const updateDocument = async (document) => {
-        setLoading(true);
+        setLoading(false);
         console.log(JSON.stringify(document));
         const res = await fetch(
             "https://localhost:44335/api/requirement-document/update",
@@ -423,7 +425,7 @@ const RequirementDocumentsPage = () => {
 
         const newDocument = await fetchDocument(document.id);
         setDocument(newDocument);
-        setLoading(false);
+        setLoading(true);
     };
 
     const renderNullGroup = () => {
@@ -465,7 +467,9 @@ const RequirementDocumentsPage = () => {
                 <td>{requirement.description}</td>
                 <td>{requirement.testTypes}</td>
                 <td>{requirement.isDeleted === true ? "Deleted" : "Not Deleted"}</td>
-                <td className={`${false === true ? "trueRow" : "falseRow"}`}>No</td>
+                <td className={`${requirement.isValidated === true ? "trueRow" : "falseRow"}`}>
+                    {requirement.isValidated === true ? "Yes" : "No"}
+                </td>
                 <td>
                     <Button
                         size="sm"
@@ -517,7 +521,7 @@ const RequirementDocumentsPage = () => {
 
     return (
         <>
-            {(!loadingForProject && !loadingForDocument) ? (
+            {(!loadingForProject || !loadingForDocument) ? (
                 <Spinner animation="border">
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
@@ -540,7 +544,7 @@ const RequirementDocumentsPage = () => {
                                         {" "}
                                         <ProgressBar
                                             now={document.finishRate}
-                                            label={`Verification Rate of the Requirements: ${parseFloat(document.finishRate).toFixed(2)}%`}
+                                            label={`${parseFloat(document.finishRate).toFixed(2)}%`}
                                         />
                                     </Col>
                                 </Row>
@@ -586,9 +590,10 @@ const RequirementDocumentsPage = () => {
                                     size="lg"
                                     variant="dark"
                                     className="btnReqDoc"
-                                    /*onClick={() => {
-                                        console.log(docGroups)
-                                    }}*/
+                                    onClick={() => {
+                                        console.log(docRequirements);
+                                        console.log(docDescription);
+                                    }}
                                     disabled={!loading}
 
                                 >
@@ -681,8 +686,8 @@ const RequirementDocumentsPage = () => {
                 onUpdateDocument={onUpdateDocument}
                 setDocTypeName={setDocTypeName}
                 setDocDesc={setDocDesc}
-                docName={document.header}
-                docDesc={document.description}
+                docName={docTypeName}
+                docDesc={docDescription}
             ></EditReqDocumentInfoModal>
 
             <AddRequirementInDocumentModal
