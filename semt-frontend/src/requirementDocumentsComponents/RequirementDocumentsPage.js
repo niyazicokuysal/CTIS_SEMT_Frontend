@@ -543,6 +543,7 @@ const RequirementDocumentsPage = () => {
                                     <Col className="progressBar">
                                         {" "}
                                         <ProgressBar
+                                            striped variant="warning"
                                             now={document.finishRate}
                                             label={`${parseFloat(document.finishRate).toFixed(2)}%`}
                                         />

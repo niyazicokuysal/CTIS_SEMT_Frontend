@@ -281,8 +281,8 @@ const TestDocumentsPage = () => {
             !testStepDescription ||
             !testStepInputs ||
             !testStepExpected ||
-            !testStepComments ||
-            !testStepRequirements
+            !testStepComments //||
+            //!testStepRequirements
         ) {
             alert("Please add the credentials");
             return;
@@ -402,7 +402,7 @@ const TestDocumentsPage = () => {
                                     Edit Document Info
                                 </Button>
                             </Col>
-                            <Col sm={2}>
+                            {/*<Col sm={2}>
                                 <Button
                                     size="lg"
                                     variant="warning"
@@ -415,7 +415,7 @@ const TestDocumentsPage = () => {
                                 >
                                     Debug
                                 </Button>
-                            </Col>
+                            </Col>*/}
                             <Col sm={2}>
                                 <Button
                                     size="lg"
