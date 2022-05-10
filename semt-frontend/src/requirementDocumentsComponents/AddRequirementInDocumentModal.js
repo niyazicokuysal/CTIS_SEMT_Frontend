@@ -73,7 +73,7 @@ const AddRequirementInDocumentModal = ({
             }}
           >
             <option value="0" selected disabled>
-              Select a Header if you want
+              Select a Group(Optional)
             </option>
             {docGroups.map((doc, i) => (
               <option key={i} value={doc.id}>

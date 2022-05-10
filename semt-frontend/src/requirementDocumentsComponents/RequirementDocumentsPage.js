@@ -400,9 +400,9 @@ const RequirementDocumentsPage = () => {
                 const error = (data && data.message) || response.status;
                 setLoading(true);
 
-                toast.error(data + ".");
+                toast.error("Operation could not be completed.");
             } else
-                toast.success(data + ".");
+                toast.success("Operation completed successfully.");
         });
         const docReqs = await getProjectDocumentsRequirements(docId);
         setDocumentRequirements(docReqs);
