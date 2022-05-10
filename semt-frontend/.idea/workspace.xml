@@ -2,33 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3fd5ba2d-046a-4e9f-a1cc-9d3ed4418b7f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/GlobalToast.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/ViewBaselineReqDetailsModal.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/testDocumentsComponents/TestDocumentsBaseline.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/homePageComponents/DeleteProjConfirmModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/homePageComponents/DeleteProjConfirmModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/homePageComponents/HomePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/homePageComponents/HomePage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/navbarComponents/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/navbarComponents/Header.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/projectMainPageComponents/AddProjectDocumentationModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectMainPageComponents/AddProjectDocumentationModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/projectMainPageComponents/EditProjectInfoModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectMainPageComponents/EditProjectInfoModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/projectMainPageComponents/ProjectMainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/projectMainPageComponents/ProjectMainPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/AddRequirGroupModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/AddRequirGroupModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/AddRequirementInDocumentModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/AddRequirementInDocumentModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/EditReqDocumentInfoModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/EditReqDocumentInfoModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/EditRequirementModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/EditRequirementModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/RequirementDocumentBaseline.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/RequirementDocumentBaseline.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/RequirementDocumentsPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/RequirementDocumentsPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/requirementDocumentsComponents/ViewReqDetailsModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/requirementDocumentsComponents/ViewReqDetailsModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/testDocumentsComponents/AddTestCaseModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/testDocumentsComponents/AddTestCaseModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/testDocumentsComponents/AddTestStepModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/testDocumentsComponents/AddTestStepModal.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/testDocumentsComponents/EditTestDocumentInfoModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/testDocumentsComponents/EditTestDocumentInfoModel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/testDocumentsComponents/TestDocumentsPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/testDocumentsComponents/TestDocumentsPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/userLoginComponents/UserLoginPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/landingPage/LandingPage.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/userLoginComponents/UserLoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/landingPage/LandingPage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +76,8 @@
       <workItem from="1651836746348" duration="3999000" />
       <workItem from="1651863959396" duration="2462000" />
       <workItem from="1652097452812" duration="29561000" />
-      <workItem from="1652134178314" duration="8121000" />
+      <workItem from="1652134178314" duration="8197000" />
+      <workItem from="1652143092700" duration="41000" />
     </task>
     <servers />
   </component>
