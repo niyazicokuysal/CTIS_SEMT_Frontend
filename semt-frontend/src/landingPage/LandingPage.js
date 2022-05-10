@@ -1,36 +1,26 @@
 import React from "react";
-import "./UserLoginPage.css";
+import "./LandingPage.css";
 import {
   Container,
   Navbar,
   Button,
   Form,
 } from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
 
-const UserLoginPage = () => {
-
+const LandingPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="loginBackGround">
-      <Container className="loginContainer">
+      <Container className="loginContainer" >
         <h1 className="title1">Welcome to</h1>
         <h4 className="title2">
           Cey Defence Software Engineering Management Tool
         </h4>
 
-        <Form>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Login
-          </Button>
-        </Form>
+        <Button variant="warning" className="btnLogin" onClick={() => navigate("/")}>
+          Start Application
+        </Button>
       </Container>
 
       <Navbar expand="lg" variant="dark" bg="dark" fixed="bottom">
@@ -46,4 +36,4 @@ const UserLoginPage = () => {
   );
 };
 
-export default UserLoginPage;
+export default LandingPage;

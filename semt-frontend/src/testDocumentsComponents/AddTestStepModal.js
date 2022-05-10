@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Modal, Form, Alert} from "react-bootstrap";
 
-const AddTestStepModel = ({
+const AddTestStepModal = ({
   testCaseInfo,
   setFillerTestCaseId,
   showTestStepAdd,
@@ -65,7 +65,8 @@ const AddTestStepModel = ({
             <Form.Label>Requirement(s) to test</Form.Label>
             <Alert variant={"danger"}>
               <p>Test Case Step Requirements can NOT be updated.</p>
-              Seperate the requirements with "/".
+              <p>Seperate the requirements with "/".</p>
+              <p>Make sure you enter the requirement in the correct format.</p>
             </Alert>
             <Form.Control
               onChange={(e) => setTestStepRequirements(e.target.value)}
@@ -74,7 +75,7 @@ const AddTestStepModel = ({
             />
           </Form.Group>
           <Modal.Footer>
-            <Button variant="primary" type="submit" onClick={() => setFillerTestCaseId(testCaseInfo.id)}>
+            <Button variant="success" type="submit" onClick={() => setFillerTestCaseId(testCaseInfo.id)}>
               Add Test Step
             </Button>
           </Modal.Footer>
@@ -84,4 +85,4 @@ const AddTestStepModel = ({
   );
 };
 
-export default AddTestStepModel;
+export default AddTestStepModal;

@@ -9,7 +9,6 @@ const DeleteProjConfirmModal = ({
                             }) => {
     return (
         <Modal
-            //Add Requirement Group Modal
             show={showDeleteConfirmation}
             onHide={closeDeleteConfirmation}
             size=""
@@ -25,7 +24,6 @@ const DeleteProjConfirmModal = ({
                 <Row  style={{position: "relative", left: "15%"}}>
                     <Col>
                         <Button
-                            //size="sm"
                             variant="danger"
                             style={{position: "relative"}}
                             onClick={() => {
@@ -38,7 +36,6 @@ const DeleteProjConfirmModal = ({
                     </Col>
                     <Col>
                         <Button
-                            //size="sm"
                             variant="primary"
                             style={{position: "relative"}}
                             onClick={() => {

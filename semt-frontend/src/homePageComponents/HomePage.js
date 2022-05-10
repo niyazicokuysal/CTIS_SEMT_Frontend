@@ -14,6 +14,8 @@ import {
     Spinner,
 } from "react-bootstrap";
 import moment from "moment";
+import {toast} from "react-toastify";
+import GlobalToast from "../GlobalToast";
 
 const HomePage = () => {
     const [loadingForAllProjects, setLoadingForAllProjects] = useState(false);
@@ -38,7 +40,6 @@ const HomePage = () => {
         setProj: setSeletctedProj(project)
     }];
     const closeDeleteConfirmation = () => [{
-        //setReq: setSingleReqInfo([]),
         setClose: setShowDeleteConfirmation(false)
     }];
 
@@ -65,6 +66,17 @@ const HomePage = () => {
                 Accept: "application/json",
             },
             body: JSON.stringify(project),
+        }).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error(data + ".");
+            } else
+                toast.success(data + ".");
         });
 
         const newProjects = await fetchProjects();
@@ -97,11 +109,23 @@ const HomePage = () => {
         setLoading(true);
         await fetch(`https://localhost:44335/api/project/delete?id=${id}`, {
             method: "POST",
+        }).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error(data + ".");
+            } else
+                toast.success("Opeartion completed successfully.");
         });
+
         const projectsFromServer = await fetchProjects();
         setProjects(projectsFromServer);
         setLoading(false);
-    };
+    }
 
     const fetchProjects = async () => {
         const res = await fetch("https://localhost:44335/api/project/getall");
@@ -122,16 +146,9 @@ const HomePage = () => {
                     <Container fluid className="containerM">
                         <Row>
                             <Col sm={8} className="welcome">
-                                <h1 className="titleHP">Welcome Mehmet Mehmetoğlu</h1>
+                                <h1 className="titleHP">Welcome</h1>
                             </Col>
                             <Col sm={4} style={{textAlign: "end"}}>
-                                <Button
-                                    size="lg"
-                                    variant="warning"
-                                    onClick={() => navigate("inDev")}
-                                >
-                                    Manage Users
-                                </Button>
                                 <Button
                                     size="lg"
                                     variant="success"
@@ -149,7 +166,6 @@ const HomePage = () => {
                                     <tr>
                                         <th>Project Id</th>
                                         <th>Project Name</th>
-                                        <th>User Count</th>
                                         <th>Creation Date</th>
                                         <th>Success Rate of All Test Steps</th>
                                         <th>Delete</th>
@@ -177,9 +193,6 @@ const HomePage = () => {
                                                         {project.id}
                                                     </td>
                                                     <td className="tableCol">{project.name}</td>
-                                                    <td className="tableCol" style={{width: "150px"}}>
-                                                        12323
-                                                    </td>
                                                     <td className="tableCol" style={{width: "430px"}}>
                                                         {moment(project.createdDate).format("LLLL")}
                                                     </td>
@@ -238,6 +251,7 @@ const HomePage = () => {
                 project={selectedProj}
                 deleteProject={deleteProject}
             ></DeleteProjConfirmModal>}
+            <GlobalToast></GlobalToast>
         </>
     );
 };

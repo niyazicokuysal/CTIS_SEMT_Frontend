@@ -1,26 +1,243 @@
-import React from 'react'
-import { useLocation } from "react-router-dom";
+import React, {useEffect, useState} from 'react'
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Switch from "react-js-switch";
-import {
-    Container,
-    Row,
-    Col,
-    Table,
-    Button,
-    ProgressBar,
-    Breadcrumb,
-    Spinner,
-} from "react-bootstrap";
+import {Breadcrumb, Button, Col, Container, ProgressBar, Row, Spinner, Table,} from "react-bootstrap";
+import ViewBaselineReqDetailsModal from "./ViewBaselineReqDetailsModal";
 
 const RequirementDocumentBaseline = () => {
-    const { pathname } = useLocation();
+    const navigate = useNavigate();
+    const {pathname} = useLocation();
     const path = pathname.split("/");
     const projId = path[1];
-    const reqDocName= path[3];
-  
-  return (
-    <>
-{/*     {!loadingForProject && !loadingForDocument ? (
+    const reqDocName = path[3];
+
+    const [loading, setLoading] = useState(true);
+    const [loadingForProject, setLoadingForProject] = useState(false);
+    const [loadingForDocument, setLoadingForDocument] = useState(false);
+    const [listById, setListById] = useState(true);
+    const [project, setProject] = useState([]);
+    const [document, setDocument] = useState([]);
+    const [docGroups, setDocGroups] = useState([]);
+    const [docRequirements, setDocumentRequirements] = useState([]);
+    const [singleReqInfo, setSingleReqInfo] = useState([]);
+    const [singleGroupInfo, setSingleGroupInfo] = useState([null]);
+    const [reqHistory, setReqHistory] = useState("");
+    const [loadingForReq, setLoadingForReq] = useState(false);
+    const [loadingForReqHistory, setLoadingForReqHistory] = useState(false);
+    const [showReqHistory, setShowReqHistory] = useState(false);
+
+    const [showDetails, setDetails] = useState(false);
+
+    const [completionPercent, setCompletionPercent] = useState(0);
+
+    const docId = path[3];
+
+    const detailsClose = () => [
+        {
+            set: setDetails(false),
+            setLoadReq: setLoadingForReq(false),
+            setLoadHistory: setLoadingForReqHistory(false),
+            setShowReqHistory: setShowReqHistory(false),
+        },
+    ];
+    const detailsShow = (id, group, reqName) => [
+        {
+            set: setDetails(true),
+            showedReqId: id,
+            req: getReqById(id),
+            //group: getGroupById(group),
+            //history: getReqHistory(reqName)
+        },
+    ];
+
+    const loadReqHistory = (reqName) => [
+        {
+            set: setShowReqHistory(true),
+            history: getReqHistory(reqName)
+        },
+    ];
+
+
+    useEffect(() => {
+
+        const calculatePercentage = (reqs) => {
+            let validated = 0.00;
+            if (reqs.length > 0) {
+                for (let i = 0; i < reqs.length; i++) {
+                    if (reqs[i].isValidated)
+                        validated++;
+                }
+                setCompletionPercent(validated * 100.0 / reqs.length);
+            } else setCompletionPercent(0.00);
+        }
+
+
+        const getProject = async () => {
+            const projectInfo = await fetchProject(projId);
+            setProject(projectInfo);
+        };
+
+        const getDocument = async () => {
+            const documentInfo = await fetchDocument(docId);
+            setDocument(documentInfo);
+        };
+
+        const getDocGroups = async () => {
+            const groupsInfo = await fetchDocumentGroups(docId);
+            setDocGroups(groupsInfo);
+        };
+
+        const getDocReq = async () => {
+            const docReqs = await getProjectDocumentsRequirements(docId);
+            setDocumentRequirements(docReqs);
+            calculatePercentage(docReqs);
+        };
+
+
+        getDocReq();
+        getProject();
+        getDocument();
+        getDocGroups();
+        //calculatePercentage();
+    }, []);
+
+    const fetchDocumentGroups = async (id) => {
+        const res = await fetch(
+            `https://localhost:44335/api/requirement-group/getall?documentId=${id}`
+        );
+        const data = await res.json();
+
+        return data;
+    };
+
+    const fetchProject = async (id) => {
+        const res = await fetch(
+            `https://localhost:44335/api/project/getbyid?id=${id}`
+        );
+        const data = await res.json();
+
+        setLoadingForProject(true);
+        return data;
+    };
+
+    const getProjectDocumentsRequirements = async (id) => {
+        const res = await fetch(
+            `https://localhost:44335/api/requirement/getbydocumentid?documentId=${id}`
+        );
+        const data = await res.json();
+
+        return data;
+    };
+
+    const getReqById = async (id) => {
+        const res = await fetch(
+            `https://localhost:44335/api/requirement/getbyid?id=${id}`
+        );
+        const data = await res.json();
+
+        const projectInfo = data;
+        setSingleReqInfo(projectInfo);
+        setLoadingForReq(true);
+        return data;
+    };
+
+    const getReqHistory = async (reqName) => {
+        if (!loadingForReqHistory) {
+            const res = await fetch(
+                `https://localhost:44335/api/requirement/history?projectId=${projId}&name=${reqName}`
+            );
+            const data = await res.json();
+
+            const tempreqHistory = data;
+            setReqHistory(tempreqHistory);
+            setLoadingForReqHistory(true);
+            return data;
+        }
+    }
+
+    const fetchDocument = async (id) => {
+        const res = await fetch(
+            `https://localhost:44335/api/requirement-document/getbyid?id=${id}`
+        );
+        const data = await res.json();
+
+        setLoadingForDocument(true);
+        return data;
+    };
+
+
+    const renderNullGroup = () => {
+        let isNull = false;
+        for (let i = 0; i < docRequirements.length; i++) {
+            if (docRequirements[i].requirementGroupId == null || docRequirements[i].requirementGroupId == 0) isNull = true;
+        }
+        if (isNull) {
+            return (
+                <>
+                    <tr className="header">
+                        <td colSpan="8">No Group</td>
+                    </tr>
+                    {docRequirements.map((requirement, i) =>
+                        renderGroupRequirements({id: null}, requirement, i)
+                    )}
+                </>
+            );
+        }
+    };
+
+    const renderGroupRequirements = (group, requirement, i) => {
+        if (group.id == requirement.requirementGroupId) {
+            return (
+                renderReq(requirement, i)
+            );
+        }
+        return null;
+    };
+
+    const renderReq = (requirement, i) => {
+        return (
+            <tr
+                key={i}
+                className={`${requirement.isDeleted === true ? "deleted" : ""}`}
+            >
+                <td>{requirement.name}</td>
+
+                <td>{requirement.description}</td>
+                <td>{requirement.testTypes}</td>
+                <td>{requirement.isDeleted === true ? "Deleted" : "Not Deleted"}</td>
+                <td className={`${requirement.isValidated === true ? "trueRow" : "falseRow"}`}>
+                    {requirement.isValidated === true ? "Yes" : "No"}
+                </td>
+                <td>
+                    <Button
+                        size="sm"
+                        variant="primary"
+                        className="btnTable"
+                        onClick={() =>
+                            detailsShow(requirement.id, requirement.requirementGroupId, requirement.name)
+                        }
+                    >
+                        View
+                    </Button>
+                </td>
+            </tr>
+        );
+    }
+
+    const renderById = () => {
+        return (
+            <>
+                {docRequirements.map((requirement, i) => (
+                    renderReq(requirement, i)
+                ))}
+            </>
+        );
+    }
+
+
+    return (
+        <>
+            {(!loadingForProject || !loadingForDocument) ? (
                 <Spinner animation="border">
                     <span className="visually-hidden">Loading...</span>
                 </Spinner>
@@ -42,8 +259,9 @@ const RequirementDocumentBaseline = () => {
                                     <Col className="progressBar">
                                         {" "}
                                         <ProgressBar
-                                            now={document.finishRate}
-                                            label={`Verification Rate of the Requirements: ${parseFloat(document.finishRate).toFixed(2)}%`}
+                                            striped variant="warning"
+                                            now={completionPercent}
+                                            label={`${parseFloat(completionPercent).toFixed(2)}%`}
                                         />
                                     </Col>
                                 </Row>
@@ -54,44 +272,23 @@ const RequirementDocumentBaseline = () => {
                                 </Row>
                             </Col>
                             <Col sm={2}>
-                                <Button
-                                    size="lg"
-                                    variant="info"
-                                    className="btnReqDoc"
-                                    onClick={docShow}
-                                >
-                                    Edit Document Info
-                                </Button>
-                                <Button
-                                    size="lg"
-                                    variant="success"
-                                    className="btnReqDoc"
-                                    onClick={reqShow}
-                                >
-                                    Add Requirement in Document
-                                </Button>
+
                             </Col>
                             <Col sm={2}>
                                 <Button
                                     size="lg"
                                     variant="secondary"
                                     className="btnReqDoc"
-                                    onClick={groupShow}
+                                    disabled={!loading}
+                                    onClick={()=> {navigate(`/${projId}/testDocBaseline/${document.id}`)}}
+
                                 >
-                                    Add Requirements Group
-                                </Button>
-                                <Button
-                                    size="lg"
-                                    variant="dark"
-                                    className="btnReqDoc"
-                                    onClick={()=> {console.log(docGroups)}}
-                                >
-                                    Create Baseline of Document
+                                    Test Documents of Version
                                 </Button>
                             </Col>
                         </Row>
                         <Row className="tableSwitch">
-                            <Col sm={2} style={{paddingBottom:"10px"}}>
+                            <Col sm={2} style={{paddingBottom: "10px"}}>
                                 <h5>List By Group/List By Req Id:</h5>
                             </Col>
                             <Col>
@@ -105,8 +302,7 @@ const RequirementDocumentBaseline = () => {
                                         listById == false ? (
                                             setListById(true)
                                         ) : (setListById(false))
-                                    }
-                                    }
+                                    }}
                                 />
                             </Col>
                         </Row>
@@ -121,29 +317,39 @@ const RequirementDocumentBaseline = () => {
                                         <th style={{width: "120px"}}>Is Deleted</th>
                                         <th style={{width: "105px"}}>Is Verified</th>
                                         <th style={{width: "118px"}}>View Details</th>
-                                        <th style={{width: "118px"}}>Edit</th>
-                                        <th style={{width: "118px"}}>Delete</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style={{position: "relative"}}>
                                     <>
-                                        {listById === false ? (
-                                            <>
-                                                {renderById()}
-                                            </>
+                                        {!loading ? (
+                                            <Spinner style={{
+                                                position: "absolute",
+                                                top: "100%",
+                                                left: "50%",
+                                            }} animation="grow" role="status" size={"sm8"}>
+                                                <span className="visually-hidden">Loading...</span>
+                                            </Spinner>
                                         ) : (
                                             <>
-                                                {renderNullGroup()}
-                                                {docGroups.map((group, g) => (
+                                                {listById === false ? (
                                                     <>
-                                                        <tr className="header">
-                                                            <td colSpan="8">{group.name}</td>
-                                                        </tr>
-                                                        {docRequirements.map((requirement, i) =>
-                                                            renderGroupRequirements(group, requirement, i)
-                                                        )}
+                                                        {renderById()}
                                                     </>
-                                                ))}
+                                                ) : (
+                                                    <>
+                                                        {renderNullGroup()}
+                                                        {docGroups.map((group, g) => (
+                                                            <>
+                                                                <tr className="header">
+                                                                    <td colSpan="8">{group.name}</td>
+                                                                </tr>
+                                                                {docRequirements.map((requirement, i) =>
+                                                                    renderGroupRequirements(group, requirement, i)
+                                                                )}
+                                                            </>
+                                                        ))}
+                                                    </>
+                                                )}
                                             </>
                                         )}
                                     </>
@@ -151,12 +357,30 @@ const RequirementDocumentBaseline = () => {
                                 </Table>
                             </Col>
                         </Row>
-                        <div style={{ height: "100px" }}></div>
+                        <div style={{height: "100px"}}></div>
                     </Container>
                 </>
-            )} */}
-    </>
-  )
-}
+            )}
 
-export default RequirementDocumentBaseline
+            <ViewBaselineReqDetailsModal
+                showDetails={showDetails}
+                detailsClose={detailsClose}
+                singleReqInfo={singleReqInfo}
+                singleGroupInfo={singleGroupInfo}
+                reqHistory={reqHistory}
+                getReqHistory={getReqHistory}
+                loadingForReq={loadingForReq}
+                setLoadingForReqHistory={setLoadingForReqHistory}
+                showReqHistory={showReqHistory}
+                loadingForReqHistory={loadingForReqHistory}
+                setShowReqHistory={setShowReqHistory}
+                loadReqHistory={loadReqHistory}
+                docGroups={docGroups}
+                baselineDate={document.createdDate}
+            ></ViewBaselineReqDetailsModal>
+
+        </>
+    );
+};
+
+export default RequirementDocumentBaseline;

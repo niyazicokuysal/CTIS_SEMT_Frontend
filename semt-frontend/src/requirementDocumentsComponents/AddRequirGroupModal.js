@@ -33,7 +33,7 @@ const AddRequirGroupModal = ({
           </Form.Group>
 
           <Modal.Footer>
-            <Button variant="primary" type="submit">
+            <Button variant="warning" type="submit">
               Add Group
             </Button>
           </Modal.Footer>

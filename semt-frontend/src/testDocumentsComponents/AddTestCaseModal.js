@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 
-const AddTestCaseModel = ({
+const AddTestCaseModal = ({
   showTestCaseAdd,
   testCaseAddClose,
   onSubmitCase,
@@ -42,7 +42,7 @@ const AddTestCaseModel = ({
             placeholder="Enter the description for the test case"
           />
           <Modal.Footer>
-            <Button variant="primary" type="submit">
+            <Button variant="success" type="submit">
               Add Test Case
             </Button>
           </Modal.Footer>
@@ -52,4 +52,4 @@ const AddTestCaseModel = ({
   );
 };
 
-export default AddTestCaseModel;
+export default AddTestCaseModal;

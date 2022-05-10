@@ -16,14 +16,18 @@ import {
     Spinner,
     Dropdown,
 } from "react-bootstrap";
+import GlobalToast from "../GlobalToast";
+import {toast} from "react-toastify";
 
-const ProjectMainPage = ({dummyProject}) => {
+const ProjectMainPage = () => {
     const [loadingForProjects, setLoadingForProjects] = useState(false);
     const [loadingForProjectsReqDocs, setLoadingForProjectsReqDocs] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [project, setProject] = useState([]);
     const [projectReqDocs, setProjectReqDocs] = useState([]);
+    const [projName, setProjName] = useState("");
+    const [projDesc, setProjDesc] = useState("");
 
     const [show, setShow] = useState(false);
     const [showDoc, setDoc] = useState(false);
@@ -53,6 +57,8 @@ const ProjectMainPage = ({dummyProject}) => {
         const getProject = async () => {
             const projectInfo = await fetchProject(projId);
             setProject(projectInfo);
+            setName(projectInfo.name);
+            setDesc(projectInfo.description);
         };
 
         getProject();
@@ -90,7 +96,18 @@ const ProjectMainPage = ({dummyProject}) => {
                 },
                 body: JSON.stringify(docInfoo),
             }
-        );
+        ).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error("Operation could not be completed. Make sure there are no duplicate names or headers.");
+            } else
+                toast.success("Operation completed successfully.");
+        });
 
         const projectAllDoc = await getProjectAllDocuments(projId);
         setProjectReqDocs(projectAllDoc);
@@ -108,6 +125,7 @@ const ProjectMainPage = ({dummyProject}) => {
     };
 
     const updateProject = async (project) => {
+        setLoading(true);
         console.log(JSON.stringify(project));
         const res = await fetch("https://localhost:44335/api/project/update", {
             method: "POST",
@@ -116,10 +134,22 @@ const ProjectMainPage = ({dummyProject}) => {
                 Accept: "application/json",
             },
             body: JSON.stringify(project),
+        }).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error(data + ".");
+            } else
+                toast.success("Opeartion completed successfully.");
         });
 
         const newProject = await fetchProject(projId);
         setProject(newProject);
+        setLoading(false);
     };
 
     const onSubmit = (e) => {
@@ -236,23 +266,14 @@ const ProjectMainPage = ({dummyProject}) => {
                                 >
                                     Add Project Documentation
                                 </Button>
-                                <Button
-                                    size="lg"
-                                    variant="warning"
-                                    className="btnProjectMain"
-                                    onClick={() => navigate("/inDev")}
-                                    disabled={loading}
-
-                                >
-                                    Edit Project Members
-                                </Button>
                             </Col>
                         </Row>
                         <Row>
-                            <Col sm={10}>
+                            <Col sm={12}>
                                 <Table className="documantTable">
                                     <thead>
                                     <tr>
+                                        <th style={{width: "100px"}}>Version</th>
                                         <th style={{width: "330px"}}>
                                             Requirements Documentation
                                         </th>
@@ -277,6 +298,9 @@ const ProjectMainPage = ({dummyProject}) => {
                                         <>
                                             {projectReqDocs.map((document, i) => (
                                                 <tr key={i}>
+                                                    <td className="documentRow">
+                                                        {`${parseFloat(document.version).toFixed(1)}`}
+                                                    </td>
                                                     <td className="documentRow">
                                                         <Link to={`/${projId}/req/${document.id}`}>
                                                             {`${document.typeName}`.length > 30
@@ -307,6 +331,7 @@ const ProjectMainPage = ({dummyProject}) => {
                                                                 id="dropdown-button-dark-example1"
                                                                 variant="secondary"
                                                                 style={{width: "233px"}}
+                                                                disabled={document.oldVersion.length == 0}
                                                             >
                                                                 Select Baseline to Go
                                                             </Dropdown.Toggle>
@@ -315,17 +340,22 @@ const ProjectMainPage = ({dummyProject}) => {
                                                                 variant="dark"
                                                                 style={{width: "233px"}}
                                                             >
-                                                                <Dropdown.Item>
-                                                                    <Link
-                                                                        to={`/${projId}/reqHistory/${document.id}`}
-                                                                        style={{
-                                                                            textDecoration: "none",
-                                                                            color: "#dee2e6"
-                                                                        }}
-                                                                    >
-                                                                        deneme
-                                                                    </Link>
-                                                                </Dropdown.Item>
+
+                                                                {document.oldVersion.map((version, i) => (
+                                                                    <Dropdown.Item
+                                                                        onClick={() => navigate(`/${projId}/reqDocBaseline/${version.id}`)}>
+                                                                        <Link
+                                                                            to={`/${projId}/reqDocBaseline/${version.id}`}
+                                                                            style={{
+                                                                                textDecoration: "none",
+                                                                                color: "#dee2e6",
+
+                                                                            }}
+                                                                        >
+                                                                            {`${parseFloat(version.version).toFixed(1)}`}
+                                                                        </Link>
+                                                                    </Dropdown.Item>
+                                                                ))}
                                                             </Dropdown.Menu>
                                                         </Dropdown>
                                                     </td>
@@ -337,7 +367,7 @@ const ProjectMainPage = ({dummyProject}) => {
                                     </tbody>
                                 </Table>
                             </Col>
-                            <Col sm={2} className="membersField">
+                            {/*<Col sm={2} className="membersField">
                                 <h4>Project Members</h4>
                                 <ListGroup variant="flush">
                                     {dummyProject.members.map((member, i) => (
@@ -348,7 +378,7 @@ const ProjectMainPage = ({dummyProject}) => {
                                         </ListGroup.Item>
                                     ))}
                                 </ListGroup>
-                            </Col>
+                            </Col>*/}
                         </Row>
                     </Container>
 
@@ -358,6 +388,8 @@ const ProjectMainPage = ({dummyProject}) => {
                         onSubmit={onSubmit}
                         setName={setName}
                         setDesc={setDesc}
+                        projName={name}
+                        projDesc={description}
                     ></EditProjectInfoModal>
 
                     <AddProjectDocumentationModal
@@ -371,6 +403,7 @@ const ProjectMainPage = ({dummyProject}) => {
                         reqDocuments={projectReqDocs}
                         projId={projId}
                     ></AddProjectDocumentationModal>
+                    <GlobalToast></GlobalToast>
                 </>
             )}
         </>
@@ -378,15 +411,7 @@ const ProjectMainPage = ({dummyProject}) => {
 };
 
 ProjectMainPage.defaultProps = {
-    dummyProject: {
-        members: [
-            "Mehmet Ali",
-            "Tahsin Küçük",
-            "Burak Demirbaş",
-            "Zeynep Zeynep Oğlu",
-            "Deniz Tuzlu",
-        ],
-    },
+
 };
 
 export default ProjectMainPage;

@@ -9,11 +9,11 @@ const Header = () => {
   return (
     <Navbar className="navbar-custom" expand={false}>
       <Container fluid>
-      <Navbar.Brand><Link to="/login" className="userName">
-            Mehmet Mehmetoğlu
+      <Navbar.Brand><Link to="/" className="userName">
+
           </Link></Navbar.Brand>
         <Navbar.Brand>
-          <Link to="" className="title">
+          <Link to="/landing" className="title">
             Cey Defence Software Engineering Management Tool
           </Link>
         </Navbar.Brand>

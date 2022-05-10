@@ -48,7 +48,7 @@ const EditTestDocumentInfoModel = ({
                         />
                     </Form.Group>
                     <Modal.Footer>
-                        <Button variant="primary" type="submit">
+                        <Button variant="info" type="submit">
                             Update Document
                         </Button>
                     </Modal.Footer>

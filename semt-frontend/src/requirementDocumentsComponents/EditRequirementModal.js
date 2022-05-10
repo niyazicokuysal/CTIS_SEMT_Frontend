@@ -59,7 +59,6 @@ const EditRequirementModal = ({
                         aria-label="Default select example"
                         onChange={(e) => {
                             setReqType(e.target.value);
-                            console.log(reqGrp, reqDesc, reqComment);
                         }}
                         value={reqType}
                     >
@@ -82,7 +81,6 @@ const EditRequirementModal = ({
                             } else {
                                 setReqGrp(e.target.value);
                             }
-                            console.log(e.target.value);
                         }}
                         value={reqGrp}
                     >
@@ -97,7 +95,7 @@ const EditRequirementModal = ({
                     </Form.Select>
 
                     <Modal.Footer>
-                        <Button variant="primary" type="submit">
+                        <Button variant="info" type="submit">
                             Update Requirement
                         </Button>
                     </Modal.Footer>

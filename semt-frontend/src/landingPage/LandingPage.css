@@ -1,4 +1,4 @@
-.loginBackGround{
+.loginBackGround {
     background-image: url("../externalSources/bg.jpg") !important;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -6,23 +6,32 @@
     height: 100vh;
 }
 
-.loginContainer{
+.loginContainer {
     width: 32%;
-    height: 35%;
+    height: 28%;
     background-color: white;
     position: fixed;
-    top: 32.5%;
+    top: 36%;
     left: 34%;
     border: 5px solid #f46e0f;
     border-radius: 20px;
     box-shadow: 5px 8px #da9b61;
 }
 
-.title1{
+.btnLogin {
+    width: 70%;
+    height: 40%;
+    top: 10%;
+    left: 16%;
+    position: relative;
+    font-size: 40px;
+}
+
+.title1 {
     color: #f46e0f;
 }
 
-.title2{
+.title2 {
     padding-bottom: 7px;
     border-bottom: 2px dashed black;
 }

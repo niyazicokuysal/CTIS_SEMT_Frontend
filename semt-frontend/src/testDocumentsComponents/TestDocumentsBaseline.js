@@ -10,7 +10,7 @@ import EditTestStepModal from "./EditTestStepModal";
 import {toast} from "react-toastify";
 import GlobalToast from "../GlobalToast";
 
-const TestDocumentsPage = () => {
+const TestDocumentsBaseline = () => {
     const [loadingForProject, setLoadingForProject] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -51,7 +51,7 @@ const TestDocumentsPage = () => {
 
     const testStepUpdateOpen = (testStep) => [
         {
-            setTestCaseId: setFillerTestCaseId(testStep.testCaseId),
+            //setTestCaseId: setFillerTestCaseId(testStep.testCaseId),
             setDesc: setTestStepDescription(testStep.description),
             setInput: setTestStepInputs(testStep.inputs),
             setExpected: setTestStepExpected(testStep.expectedOutputs),
@@ -122,7 +122,6 @@ const TestDocumentsPage = () => {
     };
 
     const updateTestDocument = async (testDoc) => {
-        setLoading(true);
         const res = await fetch(
             "https://localhost:44335/api/test-document/update",
             {
@@ -145,7 +144,6 @@ const TestDocumentsPage = () => {
             } else
                 toast.success(data + ".");
         });
-        setLoading(false);
     };
 
     const testPass = async (id) => {
@@ -160,9 +158,9 @@ const TestDocumentsPage = () => {
                 const error = (data && data.message) || response.status;
                 setLoading(true);
 
-                toast.error("Operation could not be completed.");
+                toast.error(data + ".");
             } else
-                toast.success("Operation completed successfully.");
+                toast.success(data + ".");
         });
 
         const groupsInfo = await fetchDocument(testDocId);
@@ -182,9 +180,9 @@ const TestDocumentsPage = () => {
                 const error = (data && data.message) || response.status;
                 setLoading(true);
 
-                toast.error("Operation could not be completed.");
+                toast.error(data + ".");
             } else
-                toast.success("Operation completed successfully.");
+                toast.success(data + ".");
         });
 
         const groupsInfo = await fetchDocument(testDocId);
@@ -354,8 +352,7 @@ const TestDocumentsPage = () => {
             if (!response.ok) {
                 const error = (data && data.message) || response.status;
                 setLoading(true);
-
-                toast.error("Operation could not be completed.");
+                toast.error(data + ".");
             } else
                 toast.success(data + ".");
         });
@@ -428,29 +425,7 @@ const TestDocumentsPage = () => {
                                     </Col>
                                 </Row>
                             </Col>
-                            <Col sm={2}>
-                                <Button
-                                    size="lg"
-                                    variant="info"
-                                    className="btnReqDoc"
-                                    onClick={testDocShow}
-                                    disabled={loading}
 
-                                >
-                                    Edit Document Info
-                                </Button>
-                            </Col>
-                            <Col sm={2}>
-                                <Button
-                                    size="lg"
-                                    variant="success"
-                                    className="btnReqDoc"
-                                    onClick={testCaseAddOpen}
-                                    disabled={loading}
-                                >
-                                    Add Test Case
-                                </Button>
-                            </Col>
                         </Row>
                         <Row>
                             <Col>
@@ -469,7 +444,7 @@ const TestDocumentsPage = () => {
                                                 <Accordion.Header>{testCase.name}</Accordion.Header>
                                                 <Accordion.Body style={{backgroundColor: "#ffe5ba"}}>
                                                     <Row>
-                                                        <Col sm={10}>
+                                                        <Col sm={12}>
                                                             {" "}
                                                             <Table bordered style={{borderColor: "black"}}>
                                                                 <tbody style={{position: "relative"}}>
@@ -497,17 +472,6 @@ const TestDocumentsPage = () => {
                                                                 </tbody>
                                                             </Table>
                                                         </Col>
-                                                        <Col sm={2}>
-                                                            <Button
-                                                                size="lg"
-                                                                variant="success"
-                                                                className="addTestStepBtn"
-                                                                onClick={() => testStepAddOpen(testCase.id)}
-                                                                disabled={loading}
-                                                            >
-                                                                Add Test Step
-                                                            </Button>
-                                                        </Col>
                                                     </Row>
                                                     <Row>
                                                         <Table
@@ -524,9 +488,7 @@ const TestDocumentsPage = () => {
                                                                 <th style={{width: "290px"}}>Expected Output</th>
                                                                 <th style={{width: "290px"}}>Comment</th>
                                                                 <th>Requirements Id's</th>
-                                                                <th style={{width: "110px"}}>Edit or View</th>
-                                                                <th style={{width: "100px"}}>Pass</th>
-                                                                <th style={{width: "100px"}}>Fail</th>
+                                                                <th style={{width: "110px"}}>View</th>
                                                             </tr>
                                                             </thead>
                                                             {testCase.testCaseSteps.map((step) => (
@@ -555,32 +517,6 @@ const TestDocumentsPage = () => {
                                                                                 Edit/View
                                                                             </Button>
                                                                         </td>
-                                                                        <td>
-                                                                            <Button
-                                                                                size="sm"
-                                                                                variant="success"
-                                                                                onClick={() => testPass(step.id)}
-                                                                                className={`${
-                                                                                    step.result === 2
-                                                                                        ? "disabledBtn" : "btnTableTestStep"
-                                                                                }`}
-                                                                            >
-                                                                                Pass
-                                                                            </Button>
-                                                                        </td>
-                                                                        <td>
-                                                                            <Button
-                                                                                size="sm"
-                                                                                variant="danger"
-                                                                                onClick={() => testFail(step.id)}
-                                                                                className={`${
-                                                                                    step.result === 1
-                                                                                        ? "disabledBtn" : "btnTableTestStep"
-                                                                                }`}
-                                                                            >
-                                                                                Fail
-                                                                            </Button>
-                                                                        </td>
                                                                     </tr>
                                                                 </>
                                                                 </tbody>
@@ -600,36 +536,6 @@ const TestDocumentsPage = () => {
                 </>
             )}
 
-            <EditTestDocumentInfoModel
-                showTestDoc={showTestDoc}
-                testDocClose={testDocClose}
-                onUpdateTestDocument={onUpdateTestDocument}
-                setTestDocName={setTestDocName}
-                setTestDocDesc={setTestDocDesc}
-                testDocDesc={testDocDesc}
-                testDocName={testDocName}
-            ></EditTestDocumentInfoModel>
-
-            <AddTestCaseModal
-                showTestCaseAdd={showTestCaseAdd}
-                testCaseAddClose={testCaseAddClose}
-                onSubmitCase={onSubmitCase}
-                setTestName={setTestName}
-                setDesc={setDesc}
-            ></AddTestCaseModal>
-
-            <AddTestStepModal
-                testCaseInfo={singleTestCase}
-                setFillerTestCaseId={setFillerTestCaseId}
-                showTestStepAdd={showTestStepAdd}
-                testStepAddClose={testStepAddClose}
-                onSubmitStep={onSubmitStep}
-                setTestStepDescription={setTestStepDescription}
-                setTestStepInputs={setTestStepInputs}
-                setTestStepExpected={setTestStepExpected}
-                setTestStepComments={setTestStepComments}
-                setTestStepRequirements={setTestStepRequirements}
-            ></AddTestStepModal>
 
             <EditTestStepModal
                 showUpdateStep={showUpdateStep}
@@ -642,12 +548,6 @@ const TestDocumentsPage = () => {
                 stepComment={testStepComments}
                 stepReqs={testStepRequirements}
                 testCaseInfo={singleTestCase}
-                setTestStepDescription={setTestStepDescription}
-                setTestStepInputs={setTestStepInputs}
-                setTestStepExpected={setTestStepExpected}
-                setTestStepComments={setTestStepComments}
-                setTestStepRequirements={setTestStepRequirements}
-                setFillerTestCaseId={setFillerTestCaseId}
             ></EditTestStepModal>
             <GlobalToast></GlobalToast>
 
@@ -655,4 +555,4 @@ const TestDocumentsPage = () => {
     );
 };
 
-export default TestDocumentsPage;
+export default TestDocumentsBaseline;

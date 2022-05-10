@@ -5,7 +5,7 @@ import {
     Form,
   } from "react-bootstrap";
 
-const EditProjectInfoModal = ({show, handleClose, onSubmit, setName, setDesc }) => {
+const EditProjectInfoModal = ({show, handleClose, onSubmit, setName, setDesc, projName, projDesc }) => {
   return (
     <Modal
       show={show}
@@ -27,6 +27,7 @@ const EditProjectInfoModal = ({show, handleClose, onSubmit, setName, setDesc }) 
               onChange={(e) => setName(e.target.value)}
               type="text"
               placeholder="Enter the name for the Project"
+              value={projName}
             />
           </Form.Group>
 
@@ -38,10 +39,11 @@ const EditProjectInfoModal = ({show, handleClose, onSubmit, setName, setDesc }) 
               rows="5"
               as="textarea"
               placeholder="Enter the description for the Project"
+              value={projDesc}
             />
           </Form.Group>
           <Modal.Footer>
-            <Button variant="primary" type="submit">
+            <Button variant="info" type="submit">
               Update Project
             </Button>
           </Modal.Footer>

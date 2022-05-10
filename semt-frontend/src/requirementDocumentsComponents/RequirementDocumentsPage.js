@@ -1,26 +1,20 @@
 import "./RequirementDocumentsPage.css";
-import {Link, useLocation} from "react-router-dom";
-import {useState, useEffect} from "react";
+import {Link, useLocation, useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
 import EditReqDocumentInfoModal from "./EditReqDocumentInfoModal";
 import AddRequirementInDocumentModal from "./AddRequirementInDocumentModal";
 import EditRequirementModal from "./EditRequirementModal";
 import AddRequirGroupModal from "./AddRequirGroupModal";
 import ViewReqDetailsModal from "./ViewReqDetailsModal";
 import DeleteReqConfirmModal from "./DeleteReqConfirmModal";
+import {toast} from "react-toastify";
 import Switch from "react-js-switch";
-import {
-    Container,
-    Row,
-    Col,
-    Table,
-    Button,
-    ProgressBar,
-    Breadcrumb,
-    Spinner,
-} from "react-bootstrap";
+import {Breadcrumb, Button, Col, Container, ProgressBar, Row, Spinner, Table,} from "react-bootstrap";
+import GlobalToast from "../GlobalToast";
 
 
 const RequirementDocumentsPage = () => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [loadingForProject, setLoadingForProject] = useState(false);
     const [loadingForDocument, setLoadingForDocument] = useState(false);
@@ -54,9 +48,12 @@ const RequirementDocumentsPage = () => {
     const [groupName, setGroupName] = useState("");
 
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
+    const [completionPercent, setCompletionPercent] = useState(0);
+
     const deleteConfimrationShow = (req) => [{
         setShow: setShowDeleteConfirmation(true),
-        setReq: getReqById(req.id)
+        setReq: setSingleReqInfo(req)
     }];
     const closeDeleteConfirmation = () => [{
         //setReq: setSingleReqInfo([]),
@@ -77,7 +74,6 @@ const RequirementDocumentsPage = () => {
             setLoadReq: setLoadingForReq(false),
             setLoadHistory: setLoadingForReqHistory(false),
             setShowReqHistory: setShowReqHistory(false),
-            test: console.log("On close, reqloading:", loadingForReq, " showhist", showReqHistory)
         },
     ];
     const detailsShow = (id, group, reqName) => [
@@ -114,7 +110,24 @@ const RequirementDocumentsPage = () => {
         },
     ];
 
+    const calculatePercentage = (reqs) => {
+        let validated = 0.00;
+        let deleted = 0;
+        if (reqs.length > 0) {
+            for (let i = 0; i < reqs.length; i++) {
+                if (reqs[i].isDeleted)
+                    deleted++;
+            }
+            for (let i = 0; i < reqs.length; i++) {
+                if (reqs[i].isValidated && !reqs[i].isDeleted)
+                    validated++;
+            }
+            setCompletionPercent(validated * 100.0 / (reqs.length - deleted));
+        } else setCompletionPercent(0.00);
+    }
+
     useEffect(() => {
+
         const getProject = async () => {
             const projectInfo = await fetchProject(projId);
             setProject(projectInfo);
@@ -125,7 +138,6 @@ const RequirementDocumentsPage = () => {
             setDocument(documentInfo);
             setDocTypeName(documentInfo.header);
             setDocDesc(documentInfo.description);
-            console.log("Document:",documentInfo);
         };
 
         const getDocGroups = async () => {
@@ -135,13 +147,14 @@ const RequirementDocumentsPage = () => {
 
         const getDocReq = async () => {
             const docReqs = await getProjectDocumentsRequirements(docId);
-
             setDocumentRequirements(docReqs);
+            calculatePercentage(docReqs);
         };
 
+
+        getDocReq();
         getProject();
         getDocument();
-        getDocReq();
         getDocGroups();
     }, []);
 
@@ -174,7 +187,7 @@ const RequirementDocumentsPage = () => {
             testTypes,
         }));
 
-        addRequriement({
+        addRequirement({
             projectId,
             requirementDocumentId,
             requirementGroupId,
@@ -233,9 +246,8 @@ const RequirementDocumentsPage = () => {
         setUpdateReq(false);
     };
 
-    const addRequriement = async (reqInfo) => {
+    const addRequirement = async (reqInfo) => {
         setLoading(false);
-        console.log(JSON.stringify(reqInfo));
         const res = await fetch("https://localhost:44335/api/requirement/add", {
             method: "POST",
             headers: {
@@ -243,8 +255,18 @@ const RequirementDocumentsPage = () => {
                 Accept: "application/json",
             },
             body: JSON.stringify(reqInfo),
-        });
+        }).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
 
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error(data + ".");
+            } else
+                toast.success(data + ".");
+        });
         const newRequirements = await getProjectDocumentsRequirements(docId);
         setDocumentRequirements(newRequirements);
         setLoading(true);
@@ -252,7 +274,6 @@ const RequirementDocumentsPage = () => {
 
     const updateRequriement = async (reqInfo) => {
         setLoading(false);
-        console.log(JSON.stringify(reqInfo));
         const res = await fetch("https://localhost:44335/api/requirement/update", {
             method: "POST",
             headers: {
@@ -260,6 +281,17 @@ const RequirementDocumentsPage = () => {
                 Accept: "application/json",
             },
             body: JSON.stringify(reqInfo),
+        }).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error(data + ".");
+            } else
+                toast.success(data + ".");
         });
 
         const newRequirements = await getProjectDocumentsRequirements(docId);
@@ -285,7 +317,6 @@ const RequirementDocumentsPage = () => {
 
     const addDocumentReqGroup = async (groupInfo) => {
         setLoading(false);
-        console.log(JSON.stringify(groupInfo));
         const res = await fetch(
             "https://localhost:44335/api/requirement-group/add",
             {
@@ -296,11 +327,49 @@ const RequirementDocumentsPage = () => {
                 },
                 body: JSON.stringify(groupInfo),
             }
-        );
+        ).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error(data + ".");
+            } else
+                toast.success(data + ".");
+        });
 
         const newdocs = await fetchDocumentGroups(docId);
         setDocGroups(newdocs);
         setLoading(true);
+    };
+
+    const createBaseline = async () => {
+        setLoading(false);
+        const res = await fetch(
+            `https://localhost:44335/api/requirement-document/Baseline?id=${document.id}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                    Accept: "application/json",
+                }
+            }
+        ).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error(data + ".");
+            } else
+                toast.success(data + ".");
+        });
+        setLoading(true);
+        navigate(`/${projId}/main`);
     };
 
     const onUpdateDocument = (e) => {
@@ -310,12 +379,10 @@ const RequirementDocumentsPage = () => {
             alert("Please add the credentials");
             return;
         }
-
-        document.typeName = docTypeName + " Requirements Document";
-        document.description = docDescription;
-        console.log(document);
-        updateDocument(document);
-        setDocDesc("");
+        let updatedDoc = document;
+        updatedDoc.typeName = docTypeName + " Requirements Document";
+        updatedDoc.description = docDescription;
+        updateDocument(updatedDoc);
         setDoc(false);
 
     };
@@ -325,11 +392,21 @@ const RequirementDocumentsPage = () => {
 
         await fetch(`https://localhost:44335/api/requirement/delete?id=${id}`, {
             method: "POST",
+        }).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+
+                toast.error(data + ".");
+            } else
+                toast.success(data + ".");
         });
         const docReqs = await getProjectDocumentsRequirements(docId);
         setDocumentRequirements(docReqs);
         setLoading(true);
-
     };
 
     const fetchDocumentGroups = async (id) => {
@@ -352,12 +429,14 @@ const RequirementDocumentsPage = () => {
     };
 
     const getProjectDocumentsRequirements = async (id) => {
+        setLoading(false);
         const res = await fetch(
             `https://localhost:44335/api/requirement/getbydocumentid?documentId=${id}`
         );
         const data = await res.json();
 
-        console.log(data);
+        calculatePercentage(data);
+        setLoading(true);
         return data;
     };
 
@@ -373,19 +452,8 @@ const RequirementDocumentsPage = () => {
         return data;
     };
 
-    const getGroupById = async (id) => {
-        if (id !== null) {
-            const res = await fetch(
-                `https://localhost:44335/api/requirement-group/getbyid?id=${id}`
-            );
-            const groupInfo = await res.json();
-            setSingleGroupInfo(groupInfo);
-        } else setSingleGroupInfo(null);
-    };
-
     const getReqHistory = async (reqName) => {
         if (!loadingForReqHistory) {
-            console.log("making request for ", reqName + "...")
             const res = await fetch(
                 `https://localhost:44335/api/requirement/history?projectId=${projId}&name=${reqName}`
             );
@@ -410,7 +478,6 @@ const RequirementDocumentsPage = () => {
 
     const updateDocument = async (document) => {
         setLoading(false);
-        console.log(JSON.stringify(document));
         const res = await fetch(
             "https://localhost:44335/api/requirement-document/update",
             {
@@ -421,7 +488,20 @@ const RequirementDocumentsPage = () => {
                 },
                 body: JSON.stringify(document),
             }
-        );
+        ).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+                setDocDesc(document.description);
+                setDocTypeName(document.typeName);
+                console.log(document);
+                toast.error("Operation could not be completed. Make sure there are no duplicate names or headers.");
+            } else
+                toast.success("Operation completed succesfully.");
+        });
 
         const newDocument = await fetchDocument(document.id);
         setDocument(newDocument);
@@ -519,6 +599,7 @@ const RequirementDocumentsPage = () => {
         );
     }
 
+
     return (
         <>
             {(!loadingForProject || !loadingForDocument) ? (
@@ -544,8 +625,8 @@ const RequirementDocumentsPage = () => {
                                         {" "}
                                         <ProgressBar
                                             striped variant="warning"
-                                            now={document.finishRate}
-                                            label={`${parseFloat(document.finishRate).toFixed(2)}%`}
+                                            now={completionPercent}
+                                            label={`Success Rate of Requirements: ${parseFloat(completionPercent).toFixed(2)}%`}
                                         />
                                     </Col>
                                 </Row>
@@ -579,7 +660,7 @@ const RequirementDocumentsPage = () => {
                             <Col sm={2}>
                                 <Button
                                     size="lg"
-                                    variant="secondary"
+                                    variant="warning"
                                     className="btnReqDoc"
                                     onClick={groupShow}
                                     disabled={!loading}
@@ -589,12 +670,9 @@ const RequirementDocumentsPage = () => {
                                 </Button>
                                 <Button
                                     size="lg"
-                                    variant="dark"
+                                    variant="secondary"
                                     className="btnReqDoc"
-                                    onClick={() => {
-                                        console.log(docRequirements);
-                                        console.log(docDescription);
-                                    }}
+                                    onClick={createBaseline}
                                     disabled={!loading}
 
                                 >
@@ -746,6 +824,7 @@ const RequirementDocumentsPage = () => {
                 requirement={singleReqInfo}
                 deleteRequirement={deleteRequirement}
             ></DeleteReqConfirmModal>
+            <GlobalToast></GlobalToast>
         </>
     );
 };

@@ -7,18 +7,18 @@ import InDevelopment from "./InDevelopment";
 import HomePage from "./homePageComponents/HomePage";
 import ProjectMainPage from "./projectMainPageComponents/ProjectMainPage";
 import RequirementDocumentsPage from "./requirementDocumentsComponents/RequirementDocumentsPage";
-import UserLoginPage from "./userLoginComponents/UserLoginPage";
+import LandingPage from "./landingPage/LandingPage";
 import TestDocumentsPage from "./testDocumentsComponents/TestDocumentsPage";
 import RequirementDocumentBaseline from "./requirementDocumentsComponents/RequirementDocumentBaseline";
+import TestDocumentsBaseline from "./testDocumentsComponents/TestDocumentsBaseline";
 
 const App = () => {
   const { pathname } = useLocation();
   const path = pathname.split("/");
-  console.log(path[1]);
 
   return (
     <>
-      {path[1] !== "login" ? (
+      {path[1] !== "landing" ? (
         <>
           <Header />
 
@@ -28,12 +28,13 @@ const App = () => {
             <Route path="/:project_id/req/:requirementDocuments_id"           element={<RequirementDocumentsPage />}/>
             <Route path="/:project_id/reqDocBaseline/:requirementDocuments_id"    element={<RequirementDocumentBaseline />}/>
             <Route path="/:project_id/test/:testDocuments_id"                 element={<TestDocumentsPage />}/>
+            <Route path="/:project_id/testDocBaseline/:testDocuments_id"    element={<TestDocumentsBaseline />}/>
             <Route path="inDev"                                               element={<InDevelopment />} />
           </Routes>
         </>
       ) : (
         <Routes>
-          <Route path="/login"                                                 element={<UserLoginPage />} />
+          <Route path="/landing"                                                 element={<LandingPage />} />
         </Routes>
       )}
     </>

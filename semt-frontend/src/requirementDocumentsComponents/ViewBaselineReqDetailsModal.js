@@ -3,20 +3,21 @@ import {Button, Col, Modal, Row, Spinner} from "react-bootstrap";
 import moment from "moment";
 import Switch from "react-js-switch";
 
-const ViewReqDetailsModal = ({
-                                 showDetails,
-                                 detailsClose,
-                                 singleReqInfo,
-                                 singleGroupInfo,
-                                 reqHistory,
-                                 getReqHistory,
-                                 loadingForReq,
-                                 showReqHistory,
-                                 loadingForReqHistory,
-                                 setShowReqHistory,
-                                 loadReqHistory,
-                                 docGroups,
-                             }) => {
+const ViewBaselineReqDetailsModal = ({
+                                         showDetails,
+                                         detailsClose,
+                                         singleReqInfo,
+                                         singleGroupInfo,
+                                         reqHistory,
+                                         getReqHistory,
+                                         loadingForReq,
+                                         showReqHistory,
+                                         loadingForReqHistory,
+                                         setShowReqHistory,
+                                         loadReqHistory,
+                                         docGroups,
+                                         baselineDate,
+                                     }) => {
     return (
         <Modal
             //View Details Modal
@@ -110,38 +111,53 @@ const ViewReqDetailsModal = ({
                                         ) : (
                                             <>
                                                 <>
-                                                    {reqHistory.length == 0 ? (
+                                                    {singleReqInfo.updatedDate == null ? (
                                                         <h5>This requirement has not been updated yet.</h5>
                                                     ) : (
                                                         <>
-                                                            <h5>History:</h5>
-                                                            {reqHistory
-                                                                .slice()
-                                                                .reverse()
-                                                                .map((hist, i) => (
-                                                                    <>
-                                                                        --------------------------------------------------
-                                                                        <h5>Description: {hist.description} </h5>
-                                                                        <h5>Comment: {hist.comment} </h5>
-                                                                        <h5>
-                                                                            Update Date:{" "}
-                                                                            {hist.updatedDate === null
-                                                                                ? "First Entry"
-                                                                                : moment(hist.updatedDate).format(
-                                                                                    "LLLL"
-                                                                                )}{" "}
-                                                                        </h5>
-                                                                        {<h5>
-                                                                            Group:{" "}
-                                                                            {hist.requirementGroupId === null
-                                                                                ? "No Group"
-                                                                                : docGroups.filter(doc => doc.id === hist.requirementGroupId)[0].name}{" "}
 
-                                                                        </h5>}
-                                                                        <h5>Test Type: {hist.testTypes} </h5>
-                                                                        ----------------------------------------------------------
-                                                                    </>
-                                                                ))}
+                                                            <h5>History:</h5>
+                                                            {reqHistory.slice().reverse().map((hist, i) => (
+
+                                                                <>
+                                                                    {singleReqInfo.updatedDate == null ? (
+                                                                        <></>
+                                                                    ) : (
+                                                                        <>
+                                                                            {hist.updatedDate > baselineDate ? (
+                                                                                <></>
+                                                                            ) : (
+                                                                                <>
+                                                                                    --------------------------------------------------
+                                                                                    <h5>Description: {hist.description} </h5>
+                                                                                    <h5>Comment: {hist.comment} </h5>
+                                                                                    <h5>
+                                                                                        Update Date:{" "}
+                                                                                        {hist.updatedDate === null
+                                                                                            ? "First Entry"
+                                                                                            : moment(hist.updatedDate).format(
+                                                                                                "LLLL"
+                                                                                            )}{" "}
+                                                                                    </h5>
+                                                                                    {<h5>
+                                                                                        Group:{" "}
+                                                                                        {hist.requirementGroupId === null
+                                                                                            ? "No Group"
+                                                                                            : docGroups.filter(doc => doc.id === hist.requirementGroupId)[0].name}{" "}
+
+                                                                                    </h5>}
+                                                                                    <h5>Test
+                                                                                        Type: {hist.testTypes} </h5>
+                                                                                    ----------------------------------------------------------
+                                                                                </>
+                                                                            )}
+                                                                        </>
+
+                                                                    )}
+
+                                                                </>
+
+                                                            ))}
                                                         </>
                                                     )}
                                                 </>
@@ -160,4 +176,4 @@ const ViewReqDetailsModal = ({
     );
 };
 
-export default ViewReqDetailsModal;
+export default ViewBaselineReqDetailsModal;

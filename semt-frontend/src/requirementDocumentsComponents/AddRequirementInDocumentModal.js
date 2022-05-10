@@ -83,7 +83,7 @@ const AddRequirementInDocumentModal = ({
           </Form.Select>
 
           <Modal.Footer>
-            <Button variant="primary" type="submit">
+            <Button variant="success" type="submit">
               Add Requirement
             </Button>
           </Modal.Footer>
