@@ -18,6 +18,7 @@ const EditTestStepModal = ({
                                setTestStepComments,
                                setTestStepRequirements,
                                setFillerTestCaseId,
+                               isBaseline
                            }
     ) => {
         return (
@@ -84,7 +85,7 @@ const EditTestStepModal = ({
                             />
                         </Form.Group>*/}
                         <Modal.Footer>
-                            <Button variant="primary" type="submit">
+                            <Button hidden={isBaseline} variant="primary" type="submit">
                                 Update Test Step
                             </Button>
                         </Modal.Footer>

@@ -1,24 +1,24 @@
 import React from "react";
 import {Button, Modal, Form, Row, Col} from "react-bootstrap";
 
-const DeleteReqConfirmModal = ({
-                                showReqDeleteConfirmation,
-                                closeReqDeleteConfirmation,
-                                requirement,
-                                deleteRequirement
+const DeleteGroupConfirmModal = ({
+                                showGroupDeleteConfirmation,
+                                closeGroupDeleteConfirmation,
+                                group,
+                                deleteReqGroup
                             }) => {
     return (
         <Modal
             //Add Requirement Group Modal
-            show={showReqDeleteConfirmation}
-            onHide={closeReqDeleteConfirmation}
+            show={showGroupDeleteConfirmation}
+            onHide={closeGroupDeleteConfirmation}
             size=""
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Are you sure you want to delete {requirement.name}?
+                    Are you sure you want to delete {group.name}?
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -29,8 +29,8 @@ const DeleteReqConfirmModal = ({
                             variant="danger"
                             style={{position: "relative"}}
                             onClick={() => {
-                                closeReqDeleteConfirmation();
-                                deleteRequirement(requirement.id);
+                                closeGroupDeleteConfirmation();
+                                deleteReqGroup(group.id);
                             }}
                         >
                             Delete
@@ -42,7 +42,7 @@ const DeleteReqConfirmModal = ({
                             variant="primary"
                             style={{position: "relative"}}
                             onClick={() => {
-                                closeReqDeleteConfirmation();
+                                closeGroupDeleteConfirmation();
                             }}
                         >
                             Cancel
@@ -56,4 +56,4 @@ const DeleteReqConfirmModal = ({
     );
 };
 
-export default DeleteReqConfirmModal;
+export default DeleteGroupConfirmModal;

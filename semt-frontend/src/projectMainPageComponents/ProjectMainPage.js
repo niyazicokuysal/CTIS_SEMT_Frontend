@@ -183,7 +183,7 @@ const ProjectMainPage = () => {
             return;
         }
 
-        const typeName = newDocName + " Requirements Document";
+        const typeName = newDocName;
         const header = newDocHeader;
         const parentDocumentId = Number(newDocParent);
         const description = "Can add description via Edit Document";
@@ -191,7 +191,7 @@ const ProjectMainPage = () => {
         const testDocuments = [
             {
                 projectId: projectId,
-                name: newDocName + " Test Document",
+                name: newDocName,
                 description: description,
             },
         ];
@@ -237,7 +237,11 @@ const ProjectMainPage = () => {
                                     <Col sm={7} className="progressBar">
                                         {" "}
                                         <ProgressBar now={project.finishRate}
-                                                     label={`Success Rate of the ALL Test Steps: ${parseFloat(project.finishRate).toFixed(2)}%`}/>
+                                                     label={
+                                                         `${parseFloat(project.finishRate) < 34 ?
+                                                             `${parseFloat(project.finishRate).toFixed(2)}%` : `Success Rate of the ALL Test Steps: ${parseFloat(project.finishRate).toFixed(2)}%`}
+                                                         `
+                                                     }/>
                                     </Col>
                                 </Row>
                                 <Row className="projInfoRow">
@@ -303,22 +307,22 @@ const ProjectMainPage = () => {
                                                     </td>
                                                     <td className="documentRow">
                                                         <Link to={`/${projId}/req/${document.id}`}>
-                                                            {`${document.typeName}`.length > 30
-                                                                ? `${document.typeName}`
+                                                            {`${document.typeName} Requirements Document`.length > 30
+                                                                ? `${document.typeName} Requirements Document`
                                                                     .slice(0, 27)
                                                                     .concat("...")
-                                                                : `${document.typeName}`}
+                                                                : `${document.typeName} Requirements Document`}
                                                         </Link>
                                                     </td>
                                                     <td className="documentRow">
                                                         <Link
                                                             to={`/${projId}/test/${document.testDocument.id}`}
                                                         >
-                                                            {`${document.testDocument.name}`.length > 30
-                                                                ? `${document.testDocument.name}`
+                                                            {`${document.testDocument.name} Test Document`.length > 30
+                                                                ? `${document.testDocument.name} Test Document`
                                                                     .slice(0, 27)
                                                                     .concat("...")
-                                                                : `${document.testDocument.name}`}
+                                                                : `${document.testDocument.name} Test Document`}
                                                         </Link>
                                                     </td>
                                                     <td style={{paddingTop: "13px"}}>
@@ -410,8 +414,6 @@ const ProjectMainPage = () => {
     );
 };
 
-ProjectMainPage.defaultProps = {
-
-};
+ProjectMainPage.defaultProps = {};
 
 export default ProjectMainPage;

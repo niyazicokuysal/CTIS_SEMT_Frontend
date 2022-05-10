@@ -44,6 +44,7 @@ const ViewBaselineReqDetailsModal = ({
                             color="#E3E3E3"
                             value={showReqHistory}
                             size={60}
+                            disabled={!loadingForReq}
                             onChange={() => {
                                 {
                                     if (showReqHistory === false) {
@@ -112,7 +113,7 @@ const ViewBaselineReqDetailsModal = ({
                                             <>
                                                 <>
                                                     {singleReqInfo.updatedDate == null ? (
-                                                        <h5>This requirement has not been updated yet.</h5>
+                                                        <h5>This requirement has not been updated.</h5>
                                                     ) : (
                                                         <>
 

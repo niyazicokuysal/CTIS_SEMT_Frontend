@@ -11,6 +11,7 @@ import {toast} from "react-toastify";
 import Switch from "react-js-switch";
 import {Breadcrumb, Button, Col, Container, ProgressBar, Row, Spinner, Table,} from "react-bootstrap";
 import GlobalToast from "../GlobalToast";
+import DeleteGroupConfirmModal from "./DeleteGroupConfirmModal";
 
 
 const RequirementDocumentsPage = () => {
@@ -29,6 +30,7 @@ const RequirementDocumentsPage = () => {
     const [loadingForReq, setLoadingForReq] = useState(false);
     const [loadingForReqHistory, setLoadingForReqHistory] = useState(false);
     const [showReqHistory, setShowReqHistory] = useState(false);
+    const [completionPercent, setCompletionPercent] = useState(0);
 
     const [showDetails, setDetails] = useState(false);
     const [showDoc, setDoc] = useState(false);
@@ -47,17 +49,22 @@ const RequirementDocumentsPage = () => {
 
     const [groupName, setGroupName] = useState("");
 
-    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
-    const [completionPercent, setCompletionPercent] = useState(0);
+    const [showGroupDeleteConfirmation, setShowGroupDeleteConfirmation] = useState(false);
 
-    const deleteConfimrationShow = (req) => [{
-        setShow: setShowDeleteConfirmation(true),
-        setReq: setSingleReqInfo(req)
+    const closeGroupDeleteConfirmation = () => setShowGroupDeleteConfirmation(false);
+
+    const deleteGroupConfimrationShow = (group) => [{
+        setShow: setShowGroupDeleteConfirmation(true),
+        setGrp: setSingleGroupInfo(group)
     }];
-    const closeDeleteConfirmation = () => [{
-        //setReq: setSingleReqInfo([]),
-        setClose: setShowDeleteConfirmation(false)
+
+    const [showReqDeleteConfirmation, setShowReqDeleteConfirmation] = useState(false);
+    const closeReqDeleteConfirmation = () => setShowReqDeleteConfirmation(false);
+
+    const deleteReqConfimrationShow = (req) => [{
+        setShow: setShowReqDeleteConfirmation(true),
+        setReq: setSingleReqInfo(req)
     }];
 
     const {pathname} = useLocation();
@@ -136,7 +143,7 @@ const RequirementDocumentsPage = () => {
         const getDocument = async () => {
             const documentInfo = await fetchDocument(docId);
             setDocument(documentInfo);
-            setDocTypeName(documentInfo.header);
+            setDocTypeName(documentInfo.typeName);
             setDocDesc(documentInfo.description);
         };
 
@@ -380,7 +387,7 @@ const RequirementDocumentsPage = () => {
             return;
         }
         let updatedDoc = document;
-        updatedDoc.typeName = docTypeName + " Requirements Document";
+        updatedDoc.typeName = docTypeName;
         updatedDoc.description = docDescription;
         updateDocument(updatedDoc);
         setDoc(false);
@@ -407,6 +414,27 @@ const RequirementDocumentsPage = () => {
         const docReqs = await getProjectDocumentsRequirements(docId);
         setDocumentRequirements(docReqs);
         setLoading(true);
+    };
+
+    const deleteReqGroup = async (id) => {
+        setLoading(false);
+
+        await fetch(`https://localhost:44335/api/requirement-group/delete?id=${id}`, {
+            method: "POST",
+        }).then(async response => {
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                const error = (data && data.message) || response.status;
+                setLoading(true);
+                toast.error("Operation could not be completed. Make sure the group is empty.");
+            } else
+                toast.success("Operation completed successfully.");
+        });
+        setLoading(true);
+        const docGroups = await fetchDocumentGroups(docId);
+        setDocGroups(docGroups);
     };
 
     const fetchDocumentGroups = async (id) => {
@@ -497,7 +525,6 @@ const RequirementDocumentsPage = () => {
                 setLoading(true);
                 setDocDesc(document.description);
                 setDocTypeName(document.typeName);
-                console.log(document);
                 toast.error("Operation could not be completed. Make sure there are no duplicate names or headers.");
             } else
                 toast.success("Operation completed succesfully.");
@@ -577,7 +604,7 @@ const RequirementDocumentsPage = () => {
                     <Button
                         size="sm"
                         variant="danger"
-                        onClick={() => deleteConfimrationShow(requirement)}
+                        onClick={() => deleteReqConfimrationShow(requirement)}
                         className={`${
                             requirement.isDeleted === true ? "deletedBtn" : "btnTable"
                         }`}
@@ -617,14 +644,14 @@ const RequirementDocumentsPage = () => {
                                 <Breadcrumb.Item>
                                     <Link to={`${"/" + projId + "/main"}`}>{project.name}</Link>
                                 </Breadcrumb.Item>
-                                <Breadcrumb.Item active>{document.typeName}</Breadcrumb.Item>
+                                <Breadcrumb.Item active>{document.typeName} Requirements Document</Breadcrumb.Item>
                             </Breadcrumb>
                             <Col sm={8} style={{height: "140px"}}>
                                 <Row className="projInfoRow">
                                     <Col className="progressBar">
                                         {" "}
                                         <ProgressBar
-                                            striped variant="warning"
+                                            variant="warning"
                                             now={completionPercent}
                                             label={`Success Rate of Requirements: ${parseFloat(completionPercent).toFixed(2)}%`}
                                         />
@@ -737,7 +764,17 @@ const RequirementDocumentsPage = () => {
                                                         {docGroups.map((group, g) => (
                                                             <>
                                                                 <tr className="header">
-                                                                    <td colSpan="8">{group.name}</td>
+                                                                    <td colSpan="7">{group.name}</td>
+                                                                    <td colSpan="1">
+                                                                        <Button
+                                                                            size="sm"
+                                                                            variant="danger"
+                                                                            onClick={() => deleteGroupConfimrationShow(group)}
+                                                                            className="btnTable"
+                                                                        >
+                                                                            Delete
+                                                                        </Button>
+                                                                    </td>
                                                                 </tr>
                                                                 {docRequirements.map((requirement, i) =>
                                                                     renderGroupRequirements(group, requirement, i)
@@ -819,11 +856,17 @@ const RequirementDocumentsPage = () => {
             ></ViewReqDetailsModal>
 
             <DeleteReqConfirmModal
-                showDeleteConfirmation={showDeleteConfirmation}
-                closeDeleteConfirmation={closeDeleteConfirmation}
+                showReqDeleteConfirmation={showReqDeleteConfirmation}
+                closeReqDeleteConfirmation={closeReqDeleteConfirmation}
                 requirement={singleReqInfo}
                 deleteRequirement={deleteRequirement}
             ></DeleteReqConfirmModal>
+            <DeleteGroupConfirmModal
+                showGroupDeleteConfirmation={showGroupDeleteConfirmation}
+                closeGroupDeleteConfirmation={closeGroupDeleteConfirmation}
+                group={singleGroupInfo}
+                deleteReqGroup={deleteReqGroup}
+            ></DeleteGroupConfirmModal>
             <GlobalToast></GlobalToast>
         </>
     );

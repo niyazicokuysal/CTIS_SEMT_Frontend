@@ -259,9 +259,10 @@ const RequirementDocumentBaseline = () => {
                                     <Col className="progressBar">
                                         {" "}
                                         <ProgressBar
-                                            striped variant="warning"
+                                            variant="warning"
                                             now={completionPercent}
-                                            label={`${parseFloat(completionPercent).toFixed(2)}%`}
+                                            label={`Success Rate of Requirements: ${parseFloat(completionPercent).toFixed(2)}%`}
+
                                         />
                                     </Col>
                                 </Row>

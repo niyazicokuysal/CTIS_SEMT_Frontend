@@ -441,7 +441,7 @@ const TestDocumentsBaseline = () => {
                                     <Accordion alwaysOpen>
                                         {testCases.map((testCase) => (
                                             <Accordion.Item eventKey={testCase.id}>
-                                                <Accordion.Header>{testCase.name}</Accordion.Header>
+                                                <Accordion.Header>{testCase.name}  Test Case</Accordion.Header>
                                                 <Accordion.Body style={{backgroundColor: "#ffe5ba"}}>
                                                     <Row>
                                                         <Col sm={12}>
@@ -548,6 +548,7 @@ const TestDocumentsBaseline = () => {
                 stepComment={testStepComments}
                 stepReqs={testStepRequirements}
                 testCaseInfo={singleTestCase}
+                isBaseline={true}
             ></EditTestStepModal>
             <GlobalToast></GlobalToast>
 

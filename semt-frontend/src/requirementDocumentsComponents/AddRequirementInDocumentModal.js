@@ -56,7 +56,7 @@ const AddRequirementInDocumentModal = ({
             }}
           >
             <option value="0" selected disabled>
-              Please select a Type
+              Test Type
             </option>
             <option value="Inspection">Inspection</option>
             <option value="Demonstration">Demonstration</option>
@@ -73,7 +73,7 @@ const AddRequirementInDocumentModal = ({
             }}
           >
             <option value="0" selected disabled>
-              Select a Group(Optional)
+              Requirement Group (Optional)
             </option>
             {docGroups.map((doc, i) => (
               <option key={i} value={doc.id}>

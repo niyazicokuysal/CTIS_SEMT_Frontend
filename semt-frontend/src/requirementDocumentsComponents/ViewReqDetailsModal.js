@@ -43,6 +43,7 @@ const ViewReqDetailsModal = ({
                             color="#E3E3E3"
                             value={showReqHistory}
                             size={60}
+                            disabled={loadingForReqHistory || loadingForReq}
                             onChange={() => {
                                 {
                                     if (showReqHistory === false) {

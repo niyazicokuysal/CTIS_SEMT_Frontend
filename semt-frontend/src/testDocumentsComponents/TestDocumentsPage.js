@@ -141,9 +141,9 @@ const TestDocumentsPage = () => {
                 const error = (data && data.message) || response.status;
                 setLoading(true);
 
-                toast.error(data + ".");
+                toast.error("Operation could not be completed.");
             } else
-                toast.success(data + ".");
+                toast.success("Operation completed successfully.");
         });
         setLoading(false);
     };
@@ -233,9 +233,9 @@ const TestDocumentsPage = () => {
                 const error = (data && data.message) || response.status;
                 setLoading(true);
 
-                toast.error(data + ".");
+                toast.error("Operation could not be completed.");
             } else
-                toast.success(data + ".");
+                toast.success("Operation completed successfully.");
         });
 
         const groupsInfo = await fetchDocument(testDocId);
@@ -357,7 +357,7 @@ const TestDocumentsPage = () => {
 
                 toast.error("Operation could not be completed.");
             } else
-                toast.success(data + ".");
+                toast.success("Operation completed successfully.");
         });
 
         const groupsInfo = await fetchDocument(testDocId);
@@ -381,9 +381,9 @@ const TestDocumentsPage = () => {
             if (!response.ok) {
                 const error = (data && data.message) || response.status;
                 setLoading(true);
-                toast.error(data + ".");
+                toast.error("Operation could not be completed.");
             } else
-                toast.success(data + ".");
+                toast.success("Operation completed successfully.");
         });
 
         const groupsInfo = await fetchDocument(testDocId);
@@ -466,7 +466,7 @@ const TestDocumentsPage = () => {
                                     <Accordion alwaysOpen>
                                         {testCases.map((testCase) => (
                                             <Accordion.Item eventKey={testCase.id}>
-                                                <Accordion.Header>{testCase.name}</Accordion.Header>
+                                                <Accordion.Header>{testCase.name} Test Case</Accordion.Header>
                                                 <Accordion.Body style={{backgroundColor: "#ffe5ba"}}>
                                                     <Row>
                                                         <Col sm={10}>
@@ -648,6 +648,7 @@ const TestDocumentsPage = () => {
                 setTestStepComments={setTestStepComments}
                 setTestStepRequirements={setTestStepRequirements}
                 setFillerTestCaseId={setFillerTestCaseId}
+                isBaseline={false}
             ></EditTestStepModal>
             <GlobalToast></GlobalToast>
 

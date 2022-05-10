@@ -154,6 +154,7 @@ const HomePage = () => {
                                     variant="success"
                                     style={{marginLeft: "20px"}}
                                     onClick={handleShow}
+                                    disabled={loading}
                                 >
                                     Create New Project
                                 </Button>
